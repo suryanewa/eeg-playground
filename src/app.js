@@ -3,26 +3,20 @@ import { generateColorRamp } from "rampensau";
 import { Poline } from "poline";
 import { rybHsl2rgb } from "rybitten";
 import {
-  DitheringTypes,
   GemSmokeShapes,
-  GlassDistortionShapes,
-  GlassGridShapes,
   HalftoneCmykTypes,
   HalftoneDotsGrids,
   HalftoneDotsTypes,
   LiquidMetalShapes,
   ShaderFitOptions,
   ShaderMount,
-  flutedGlassFragmentShader,
   gemSmokeFragmentShader,
   getShaderColorFromString,
   getShaderNoiseTexture,
   halftoneCmykFragmentShader,
   halftoneDotsFragmentShader,
   heatmapFragmentShader,
-  imageDitheringFragmentShader,
   liquidMetalFragmentShader,
-  waterFragmentShader,
 } from "@paper-design/shaders";
 
 const shaderLayer = document.querySelector("#shader-layer");
@@ -33,7 +27,6 @@ const toggleGradientButton = document.querySelector("#toggle-gradient");
 const orderStatus = document.querySelector("#order-status");
 const dialog = document.querySelector("#logo-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
-const shaderTitle = document.querySelector("#shader-title");
 const closeButton = dialog.querySelector(".close-button");
 const previousButton = dialog.querySelector(".nav-button--previous");
 const nextButton = dialog.querySelector(".nav-button--next");
@@ -196,14 +189,6 @@ function setStatus(message) {
   setStatus.timeout = window.setTimeout(() => {
     orderStatus.textContent = "";
   }, 2200);
-}
-
-function updateShaderTitle() {
-  const preset = currentShaderIndex >= 0 ? shaderPresets[currentShaderIndex] : null;
-  if (!shaderTitle) return;
-
-  shaderTitle.textContent = dialog.open && preset ? preset.label : "";
-  shaderTitle.hidden = !dialog.open || !preset;
 }
 
 function clearSelection() {
@@ -424,7 +409,6 @@ function closeDialog() {
   disposeFullscreenShader();
   dialog.close();
   document.activeElement?.blur?.();
-  updateShaderTitle();
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
 }
@@ -465,7 +449,6 @@ dialog.addEventListener("click", (event) => {
 
 dialog.addEventListener("cancel", () => {
   disposeFullscreenShader();
-  updateShaderTitle();
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
 });
@@ -484,100 +467,100 @@ const commonShaderSizing = {
 
 const shaderPresets = [
   {
-    label: "Fluted Glass - Default",
-    fragment: flutedGlassFragmentShader,
-    speed: 0,
-    uniforms: (palette, image, noiseTexture) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_noiseTexture: noiseTexture,
-      u_colorBack: shaderColor(palette.paper),
-      u_colorShadow: shaderColor(palette.ink, 0.45),
-      u_colorHighlight: shaderColor(palette.paper, 0.82),
-      u_shadows: 0.28,
-      u_highlights: 0.16,
-      u_size: 0.75,
-      u_shape: GlassGridShapes.linesIrregular,
-      u_angle: 18,
-      u_distortionShape: GlassDistortionShapes.prism,
-      u_distortion: 0.54,
-      u_shift: 0.08,
-      u_stretch: 0.12,
-      u_blur: 0.05,
-      u_edges: 0.2,
-      u_marginLeft: 0,
-      u_marginRight: 0,
-      u_marginTop: 0,
-      u_marginBottom: 0,
-      u_grainMixer: 0.08,
-      u_grainOverlay: 0.06,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Fluted Glass - Abstract",
-    fragment: flutedGlassFragmentShader,
-    speed: 0,
-    uniforms: (palette, image, noiseTexture) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_noiseTexture: noiseTexture,
-      u_colorBack: shaderColor(palette.paper),
-      u_colorShadow: shaderColor(palette.ink, 0.52),
-      u_colorHighlight: shaderColor(mixColors(palette.paper, palette.ink, 0.18), 0.8),
-      u_shadows: 0.44,
-      u_highlights: 0.22,
-      u_size: 0.68,
-      u_shape: GlassGridShapes.pattern,
-      u_angle: 64,
-      u_distortionShape: GlassDistortionShapes.cascade,
-      u_distortion: 0.72,
-      u_shift: -0.16,
-      u_stretch: 0.32,
-      u_blur: 0.1,
-      u_edges: 0.34,
-      u_marginLeft: 0,
-      u_marginRight: 0,
-      u_marginTop: 0,
-      u_marginBottom: 0,
-      u_grainMixer: 0.18,
-      u_grainOverlay: 0.1,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Water - Slow-mo",
-    fragment: waterFragmentShader,
-    speed: 0.12,
+    label: "Gem Smoke - Fire",
+    perIcon: true,
+    logoTexture: "logo",
+    fragment: gemSmokeFragmentShader,
+    speed: 0.36,
     uniforms: (palette, image) => ({
       ...commonShaderSizing,
       u_image: image,
-      u_colorBack: shaderColor(palette.paper),
-      u_colorHighlight: shaderColor(palette.ink, 0.28),
-      u_highlights: 0.1,
-      u_layering: 0.36,
-      u_edges: 0.44,
-      u_waves: 0.24,
-      u_caustic: 0.12,
-      u_size: 1.08,
+      u_colorBack: shaderColor(palette.paper, 0),
+      u_colors: shaderColors(["#270a05", "#c42a12", "#ff8f21", "#ffe66f"]),
+      u_colorsCount: 4,
+      u_innerDistortion: 0.66,
+      u_outerDistortion: 0.28,
+      u_outerGlow: 0.34,
+      u_innerGlow: 0.86,
+      u_colorInner: shaderColor("#fff2a8", 0.18),
+      u_offset: 0.14,
+      u_angle: 286,
+      u_size: 0.66,
+      u_shape: GemSmokeShapes.none,
+      u_isImage: true,
     }),
     mipmaps: ["u_image"],
   },
   {
-    label: "Image Dithering - Natural",
-    fragment: imageDitheringFragmentShader,
-    speed: 0,
+    label: "Gem Smoke - Infrared",
+    perIcon: true,
+    logoTexture: "logo",
+    fragment: gemSmokeFragmentShader,
+    speed: 0.3,
     uniforms: (palette, image) => ({
       ...commonShaderSizing,
       u_image: image,
-      u_colorBack: shaderColor(palette.paper),
-      u_colorFront: shaderColor(palette.ink, 0.9),
-      u_colorHighlight: shaderColor(mixColors(palette.paper, palette.ink, 0.42), 0.84),
-      u_type: DitheringTypes.random,
-      u_pxSize: 4,
-      u_colorSteps: 4,
-      u_originalColors: false,
-      u_inverted: false,
+      u_colorBack: shaderColor(palette.paper, 0),
+      u_colors: shaderColors(["#050022", "#31007a", "#d01889", "#ff4020", "#ffd14f"]),
+      u_colorsCount: 5,
+      u_innerDistortion: 0.58,
+      u_outerDistortion: 0.26,
+      u_outerGlow: 0.32,
+      u_innerGlow: 0.82,
+      u_colorInner: shaderColor("#ff6a2a", 0.14),
+      u_offset: 0.04,
+      u_angle: 206,
+      u_size: 0.62,
+      u_shape: GemSmokeShapes.none,
+      u_isImage: true,
+    }),
+    mipmaps: ["u_image"],
+  },
+  {
+    label: "Liquid Metal - Noir",
+    perIcon: true,
+    logoTexture: "logo",
+    fragment: liquidMetalFragmentShader,
+    speed: 0.28,
+    uniforms: (palette, image) => ({
+      ...commonShaderSizing,
+      u_image: image,
+      u_colorBack: shaderColor(palette.paper, 0),
+      u_colorTint: shaderColor(mixColors(palette.ink, "#050505", 0.44), 0.86),
+      u_repetition: 3.4,
+      u_shiftRed: 0.02,
+      u_shiftBlue: -0.02,
+      u_contour: 0.72,
+      u_softness: 0.28,
+      u_distortion: 0.34,
+      u_angle: 72,
+      u_shape: LiquidMetalShapes.none,
+      u_isImage: true,
+    }),
+    mipmaps: ["u_image"],
+  },
+  {
+    label: "Heatmap - Default",
+    perIcon: true,
+    logoTexture: "heatmap",
+    fragment: heatmapFragmentShader,
+    speed: 0.34,
+    uniforms: (palette, image) => ({
+      ...commonShaderSizing,
+      u_image: image,
+      u_colorBack: shaderColor(palette.paper, 0),
+      u_colors: shaderColors([
+        mixColors(palette.paper, "#2e5bff", 0.7),
+        "#37d9ff",
+        "#fff466",
+        mixColors(palette.ink, "#ff3b20", 0.38),
+      ]),
+      u_colorsCount: 4,
+      u_contour: 0.62,
+      u_angle: 38,
+      u_noise: 0.16,
+      u_innerGlow: 0.68,
+      u_outerGlow: 0.26,
     }),
     mipmaps: ["u_image"],
   },
@@ -600,28 +583,6 @@ const shaderPresets = [
       u_grainMixer: 0.04,
       u_grainOverlay: 0.02,
       u_grainSize: 0.22,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Halftone Dots - Mosaic",
-    fragment: halftoneDotsFragmentShader,
-    speed: 0,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper),
-      u_colorFront: shaderColor(mixColors(palette.ink, palette.paper, 0.08)),
-      u_originalColors: false,
-      u_type: HalftoneDotsTypes.holes,
-      u_inverted: false,
-      u_grid: HalftoneDotsGrids.square,
-      u_size: 0.5,
-      u_radius: 1.56,
-      u_contrast: 0.58,
-      u_grainMixer: 0.2,
-      u_grainOverlay: 0.08,
-      u_grainSize: 0.62,
     }),
     mipmaps: ["u_image"],
   },
@@ -690,38 +651,6 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
   {
-    label: "Halftone CMYK - Newspaper",
-    fragment: halftoneCmykFragmentShader,
-    speed: 0,
-    uniforms: (palette, image, noiseTexture) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_noiseTexture: noiseTexture,
-      u_colorBack: shaderColor(mixColors(palette.paper, "#f1ead7", 0.36)),
-      u_colorC: shaderColor("#1f7fa3", 0.2),
-      u_colorM: shaderColor("#8b284b", 0.16),
-      u_colorY: shaderColor("#a9822b", 0.16),
-      u_colorK: shaderColor(palette.ink, 0.86),
-      u_size: 0.12,
-      u_gridNoise: 0.08,
-      u_type: HalftoneCmykTypes.dots,
-      u_softness: 0.38,
-      u_contrast: 1.42,
-      u_floodC: -0.12,
-      u_floodM: -0.12,
-      u_floodY: -0.1,
-      u_floodK: 0.1,
-      u_gainC: -0.08,
-      u_gainM: -0.08,
-      u_gainY: -0.08,
-      u_gainK: 0.34,
-      u_grainMixer: 0.18,
-      u_grainOverlay: 0.14,
-      u_grainSize: 0.74,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
     label: "Halftone CMYK - Vintage",
     fragment: halftoneCmykFragmentShader,
     speed: 0,
@@ -750,230 +679,6 @@ const shaderPresets = [
       u_grainMixer: 0.22,
       u_grainOverlay: 0.16,
       u_grainSize: 0.88,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Heatmap - Default",
-    perIcon: true,
-    logoTexture: "heatmap",
-    fragment: heatmapFragmentShader,
-    speed: 0.34,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colors: shaderColors([
-        mixColors(palette.paper, "#2e5bff", 0.7),
-        "#37d9ff",
-        "#fff466",
-        mixColors(palette.ink, "#ff3b20", 0.38),
-      ]),
-      u_colorsCount: 4,
-      u_contour: 0.62,
-      u_angle: 38,
-      u_noise: 0.16,
-      u_innerGlow: 0.68,
-      u_outerGlow: 0.26,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Heatmap - Sepia",
-    perIcon: true,
-    logoTexture: "heatmap",
-    fragment: heatmapFragmentShader,
-    speed: 0.22,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colors: shaderColors([
-        "#2b180f",
-        "#70401f",
-        "#b87834",
-        "#ead2a2",
-        mixColors(palette.paper, "#fff4d2", 0.64),
-      ]),
-      u_colorsCount: 5,
-      u_contour: 0.5,
-      u_angle: 22,
-      u_noise: 0.28,
-      u_innerGlow: 0.58,
-      u_outerGlow: 0.18,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Liquid Metal - Default",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: liquidMetalFragmentShader,
-    speed: 0.42,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colorTint: shaderColor(mixColors(palette.ink, "#b7c7d8", 0.38), 0.72),
-      u_repetition: 4.8,
-      u_shiftRed: 0.12,
-      u_shiftBlue: -0.1,
-      u_contour: 0.62,
-      u_softness: 0.42,
-      u_distortion: 0.48,
-      u_angle: 18,
-      u_shape: LiquidMetalShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Liquid Metal - Noir",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: liquidMetalFragmentShader,
-    speed: 0.28,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colorTint: shaderColor(mixColors(palette.ink, "#050505", 0.44), 0.86),
-      u_repetition: 3.4,
-      u_shiftRed: 0.02,
-      u_shiftBlue: -0.02,
-      u_contour: 0.72,
-      u_softness: 0.28,
-      u_distortion: 0.34,
-      u_angle: 72,
-      u_shape: LiquidMetalShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Liquid Metal - Stripes",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: liquidMetalFragmentShader,
-    speed: 0.58,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colorTint: shaderColor(mixColors(palette.ink, "#e5e5e5", 0.48), 0.76),
-      u_repetition: 8.2,
-      u_shiftRed: 0.26,
-      u_shiftBlue: -0.22,
-      u_contour: 0.5,
-      u_softness: 0.18,
-      u_distortion: 0.22,
-      u_angle: 124,
-      u_shape: LiquidMetalShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Gem Smoke - Default",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: gemSmokeFragmentShader,
-    speed: 0.28,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colors: shaderColors([
-        mixColors(palette.paper, "#76e4ff", 0.7),
-        "#9d80ff",
-        mixColors(palette.ink, "#ffffff", 0.28),
-      ]),
-      u_colorsCount: 3,
-      u_innerDistortion: 0.5,
-      u_outerDistortion: 0.2,
-      u_outerGlow: 0.26,
-      u_innerGlow: 0.78,
-      u_colorInner: shaderColor(palette.paper, 0.06),
-      u_offset: -0.05,
-      u_angle: 34,
-      u_size: 0.58,
-      u_shape: GemSmokeShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Gem Smoke - Fire",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: gemSmokeFragmentShader,
-    speed: 0.36,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colors: shaderColors(["#270a05", "#c42a12", "#ff8f21", "#ffe66f"]),
-      u_colorsCount: 4,
-      u_innerDistortion: 0.66,
-      u_outerDistortion: 0.28,
-      u_outerGlow: 0.34,
-      u_innerGlow: 0.86,
-      u_colorInner: shaderColor("#fff2a8", 0.18),
-      u_offset: 0.14,
-      u_angle: 286,
-      u_size: 0.66,
-      u_shape: GemSmokeShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Gem Smoke - Fluorescent",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: gemSmokeFragmentShader,
-    speed: 0.46,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colors: shaderColors(["#00ffb7", "#b7ff00", "#00b8ff", "#ff4dff"]),
-      u_colorsCount: 4,
-      u_innerDistortion: 0.74,
-      u_outerDistortion: 0.34,
-      u_outerGlow: 0.4,
-      u_innerGlow: 0.92,
-      u_colorInner: shaderColor("#ffffff", 0.12),
-      u_offset: -0.12,
-      u_angle: 118,
-      u_size: 0.54,
-      u_shape: GemSmokeShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Gem Smoke - Infrared",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: gemSmokeFragmentShader,
-    speed: 0.3,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colors: shaderColors(["#050022", "#31007a", "#d01889", "#ff4020", "#ffd14f"]),
-      u_colorsCount: 5,
-      u_innerDistortion: 0.58,
-      u_outerDistortion: 0.26,
-      u_outerGlow: 0.32,
-      u_innerGlow: 0.82,
-      u_colorInner: shaderColor("#ff6a2a", 0.14),
-      u_offset: 0.04,
-      u_angle: 206,
-      u_size: 0.62,
-      u_shape: GemSmokeShapes.none,
-      u_isImage: true,
     }),
     mipmaps: ["u_image"],
   },
@@ -1338,7 +1043,6 @@ async function mountFullscreenShader() {
   fullscreenShaderMount = null;
   fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
   fullscreenLogo.classList.remove("has-fullscreen-shader");
-  updateShaderTitle();
 
   if (!dialog.open || currentShaderIndex < 0) return;
 
@@ -1373,7 +1077,6 @@ async function mountFullscreenShader() {
       1600 * 1600,
       preset.mipmaps,
     );
-    updateShaderTitle();
   } catch (error) {
     layer.remove();
     fullscreenLogo.classList.remove("has-fullscreen-shader");
@@ -1479,7 +1182,7 @@ function syncPerIconShaders(preset, image, noiseTexture, token) {
   }
 }
 
-async function mountShader(index) {
+function clearShaderMounts() {
   shaderMount?.dispose();
   shaderMount = null;
   if (shaderLayer) {
@@ -1487,40 +1190,45 @@ async function mountShader(index) {
     shaderLayer.classList.remove("is-active");
   }
   disposePerIconShaders();
+}
+
+async function mountShader(index) {
+  clearShaderMounts();
 
   currentShaderIndex = ((index % shaderPresets.length) + shaderPresets.length) % shaderPresets.length;
-  const preset = shaderPresets[currentShaderIndex];
-  updateShaderTitle();
 
   if (dialog.open) {
     await mountFullscreenShader();
   } else {
     disposeFullscreenShader();
-    updateShaderTitle();
   }
 }
 
 function resetShaderView() {
   currentShaderIndex = -1;
   shaderToken += 1;
-  shaderMount?.dispose();
-  shaderMount = null;
+  clearShaderMounts();
   if (shaderLayer) {
-    shaderLayer.innerHTML = "";
-    shaderLayer.classList.remove("is-active");
     shaderLayer.style.webkitMaskImage = "";
     shaderLayer.style.maskImage = "";
   }
   disposeFullscreenShader();
-  disposePerIconShaders();
-  updateShaderTitle();
+}
+
+function setShaderCycleIndex(index) {
+  if (index < 0) {
+    resetShaderView();
+    return;
+  }
+
+  mountShader(index);
 }
 
 function cycleShader(direction) {
-  const nextIndex = currentShaderIndex < 0
-    ? (direction > 0 ? 0 : shaderPresets.length - 1)
-    : currentShaderIndex + direction;
-  mountShader(nextIndex);
+  const optionCount = shaderPresets.length + 1;
+  const currentOption = currentShaderIndex + 1;
+  const nextOption = ((currentOption + direction) % optionCount + optionCount) % optionCount;
+  setShaderCycleIndex(nextOption - 1);
 }
 
 function refreshShaderPalette() {

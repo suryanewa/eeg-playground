@@ -360,23 +360,6 @@ body.is-reordering .logo-button {
   place-items: center;
 }
 
-.shader-title {
-  position: fixed;
-  top: clamp(16px, 3vw, 34px);
-  left: 50%;
-  z-index: 4;
-  color: var(--editor-mark-color);
-  font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  letter-spacing: 0;
-  pointer-events: none;
-  text-transform: uppercase;
-  transform: translateX(-50%);
-}
-
-.shader-title[hidden] {
-  display: none;
-}
-
 .logo-dialog .fullscreen-logo {
   position: relative;
   display: grid;
