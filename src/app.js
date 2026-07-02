@@ -69,8 +69,6 @@ let accessPanel = null;
 let authForm = null;
 let authMessage = null;
 let clientBar = null;
-let clientEmail = null;
-let signOutButton = null;
 let adminPanel = null;
 let adminContent = null;
 let exportCsvButton = null;
@@ -169,13 +167,9 @@ function createAccessUi() {
   `;
 
   clientBar = document.createElement("aside");
-  clientBar.className = "client-bar";
-  clientBar.hidden = true;
+  clientBar.className = "client-status-region";
   clientBar.innerHTML = `
-    <span class="client-email" data-client-email></span>
-    <span class="client-status" data-client-status></span>
-    <a class="client-admin-link" href="/admin">Admin</a>
-    <button class="client-sign-out" type="button">Sign out</button>
+    <span data-client-status></span>
   `;
 
   adminPanel = document.createElement("section");
@@ -197,13 +191,10 @@ function createAccessUi() {
   authForm = accessPanel.querySelector("[data-auth-form]");
   authMessage = accessPanel.querySelector("[data-auth-message]");
   statusElement = clientBar.querySelector("[data-client-status]");
-  clientEmail = clientBar.querySelector("[data-client-email]");
-  signOutButton = clientBar.querySelector(".client-sign-out");
   adminContent = adminPanel.querySelector(".admin-content");
   exportCsvButton = adminPanel.querySelector(".admin-export");
 
   authForm.addEventListener("submit", handleAuthSubmit);
-  signOutButton.addEventListener("click", handleSignOut);
   exportCsvButton.addEventListener("click", exportAdminCsv);
 }
 
@@ -485,23 +476,15 @@ function syncAccessUi() {
   logoSheet.setAttribute("aria-hidden", String(locked));
 
   accessPanel.hidden = configured && signedIn;
-  clientBar.hidden = !configured || !signedIn;
   adminPanel.hidden = !configured || !signedIn || !isAdminRoute;
 
   if (!configured) {
     accessPanel.hidden = true;
-    clientBar.hidden = false;
-    clientEmail.textContent = "Local";
     statusElement.textContent = "Supabase config missing";
-    signOutButton.hidden = true;
-    clientBar.querySelector(".client-admin-link").hidden = true;
     return;
   }
 
   authForm.hidden = false;
-  signOutButton.hidden = false;
-  if (clientEmail) clientEmail.textContent = session?.user?.email ?? "";
-  clientBar.querySelector(".client-admin-link").hidden = !isAdmin();
 }
 
 function setVotingEnabled(enabled) {
@@ -565,11 +548,6 @@ async function handleAuthSubmit(event) {
   if (error) {
     authMessage.textContent = error.message;
   }
-}
-
-async function handleSignOut() {
-  if (!supabase) return;
-  await supabase.auth.signOut();
 }
 
 async function loadProfile() {

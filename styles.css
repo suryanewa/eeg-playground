@@ -659,7 +659,6 @@ body {
 }
 
 .access-form button,
-.client-sign-out,
 .admin-export {
   min-height: 38px;
   padding: 0 14px;
@@ -673,39 +672,13 @@ body {
   text-transform: uppercase;
 }
 
-.client-bar {
-  position: fixed;
-  top: clamp(12px, 2vw, 24px);
-  left: clamp(12px, 2vw, 24px);
-  z-index: 6;
-  display: flex;
-  max-width: calc(100vw - 24px);
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border: 1px solid var(--logo-ink);
-  background: var(--logo-bg);
-  color: var(--logo-ink);
-  font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  text-transform: uppercase;
-}
-
-.client-bar[hidden] {
-  display: none;
-}
-
-.client-email,
-.client-status {
+.client-status-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-  max-width: 34vw;
-  text-overflow: ellipsis;
+  clip: rect(0 0 0 0);
   white-space: nowrap;
-}
-
-.client-admin-link {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 .admin-panel {
@@ -979,16 +952,6 @@ body {
 
   .control-group dl > div {
     grid-template-columns: minmax(86px, auto) 1fr;
-  }
-
-  .client-bar {
-    right: 12px;
-    flex-wrap: wrap;
-  }
-
-  .client-email,
-  .client-status {
-    max-width: 58vw;
   }
 
   .admin-panel {
