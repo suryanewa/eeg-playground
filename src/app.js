@@ -40,11 +40,11 @@ const nextButton = dialog.querySelector(".nav-button--next");
 const logoOrder = [
   6, 9, 90, 13, 14, 16, 15, 96, 25, 67, 70, 71, 76,
   77, 78, 18, 12, 43, 17, 100, 37, 101, 38, 10, 11, 24, 26, 58, 80,
-  82, 86, 106, 1, 60, 21, 22, 27, 105, 61,
-  31, 36, 7, 8, 40, 41, 113, 114, 115, 116, 117, 118, 119, 79, 57, 62, 81, 83, 50, 97, 44, 45, 46, 47,
+  82, 86, 106, 1, 60, 21, 22, 27, 105, 127, 129, 61,
+  31, 36, 133, 134, 135, 136, 137, 138, 7, 8, 40, 41, 113, 114, 115, 116, 117, 118, 119, 79, 140, 139, 57, 62, 81, 83, 50, 97, 44, 45, 46, 47,
   48, 51, 52, 53, 54, 55, 56, 68, 69, 84, 85, 102, 49, 89, 91, 92,
   93, 94, 95, 103, 39, 122, 123, 124, 125, 126, 130, 120, 121, 3, 4, 5, 23, 65, 42, 63, 64, 73, 74, 87, 88,
-  108, 109, 110, 98, 111, 112, 72, 19, 20, 99, 2, 33, 59, 75,
+  108, 109, 110, 98, 111, 112, 72, 131, 132, 19, 20, 99, 2, 33, 59, 75,
 ];
 const logoCount = logoOrder.length;
 let currentLogoId = logoId(logoOrder[0]);
@@ -55,7 +55,9 @@ let suppressNextClick = false;
 let dragPreview = null;
 let gradientMode = false;
 let logoScale = 1;
-let currentPalette = { ink: "#111111", paper: "#ffffff", source: "Default" };
+const defaultPalette = { ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" };
+const invertedPalette = { ink: "#ffffff", paper: "#111111", ratio: 21, source: "Inverted" };
+let currentPalette = defaultPalette;
 let currentShaderIndex = -1;
 let shaderMount = null;
 let fullscreenShaderMount = null;
@@ -1860,12 +1862,18 @@ function applyPalette(palette) {
   refreshShaderPalette();
 }
 
+function toggleDefaultPalette() {
+  const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink
+    && currentPalette.paper.toLowerCase() === invertedPalette.paper;
+  applyPalette(isInverted ? defaultPalette : invertedPalette);
+}
+
 toggleGradientButton.addEventListener("click", () => {
   gradientMode = !gradientMode;
   toggleGradientButton.setAttribute("aria-pressed", String(gradientMode));
   applyPalette(gradientMode
     ? randomGradientPalette()
-    : { ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" });
+    : defaultPalette);
 });
 
 document.addEventListener("keydown", (event) => {
@@ -1893,7 +1901,7 @@ document.addEventListener("keydown", (event) => {
     resetShaderView();
     gradientMode = false;
     toggleGradientButton.setAttribute("aria-pressed", "false");
-    applyPalette({ ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" });
+    toggleDefaultPalette();
   }
 
   if (event.key === "+" || event.key === "=") {

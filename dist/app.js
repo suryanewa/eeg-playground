@@ -4966,9 +4966,17 @@ void main() {
     22,
     27,
     105,
+    127,
+    129,
     61,
     31,
     36,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
     7,
     8,
     40,
@@ -4981,6 +4989,8 @@ void main() {
     118,
     119,
     79,
+    140,
+    139,
     57,
     62,
     81,
@@ -5039,6 +5049,8 @@ void main() {
     111,
     112,
     72,
+    131,
+    132,
     19,
     20,
     99,
@@ -5056,7 +5068,9 @@ void main() {
   var dragPreview = null;
   var gradientMode = false;
   var logoScale = 1;
-  var currentPalette = { ink: "#111111", paper: "#ffffff", source: "Default" };
+  var defaultPalette = { ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" };
+  var invertedPalette = { ink: "#ffffff", paper: "#111111", ratio: 21, source: "Inverted" };
+  var currentPalette = defaultPalette;
   var currentShaderIndex = -1;
   var shaderMount = null;
   var fullscreenShaderMount = null;
@@ -6537,10 +6551,14 @@ void main() {
     document.documentElement.style.setProperty("--editor-mark-color", alphaColor(palette.ink, 0.36));
     refreshShaderPalette();
   }
+  function toggleDefaultPalette() {
+    const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink && currentPalette.paper.toLowerCase() === invertedPalette.paper;
+    applyPalette(isInverted ? defaultPalette : invertedPalette);
+  }
   toggleGradientButton.addEventListener("click", () => {
     gradientMode = !gradientMode;
     toggleGradientButton.setAttribute("aria-pressed", String(gradientMode));
-    applyPalette(gradientMode ? randomGradientPalette() : { ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" });
+    applyPalette(gradientMode ? randomGradientPalette() : defaultPalette);
   });
   document.addEventListener("keydown", (event) => {
     const target = event.target;
@@ -6563,7 +6581,7 @@ void main() {
       resetShaderView();
       gradientMode = false;
       toggleGradientButton.setAttribute("aria-pressed", "false");
-      applyPalette({ ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" });
+      toggleDefaultPalette();
     }
     if (event.key === "+" || event.key === "=") {
       event.preventDefault();
