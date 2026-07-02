@@ -2,6 +2,7 @@ import { colorToCSS, generateRandomColorRamp } from "fettepalette";
 import { generateColorRamp } from "rampensau";
 import { Poline } from "poline";
 import { rybHsl2rgb } from "rybitten";
+import { createClient } from "@supabase/supabase-js";
 import {
   GemSmokeShapes,
   HalftoneCmykTypes,
@@ -20,6 +21,7 @@ import {
 } from "@paper-design/shaders";
 
 const shaderLayer = document.querySelector("#shader-layer");
+const logoSheet = document.querySelector(".logo-sheet");
 const grid = document.querySelector("#logo-grid");
 const shuffleButton = document.querySelector("#shuffle-button");
 const settingsButton = document.querySelector("#settings-button");
@@ -33,6 +35,41 @@ const fullscreenLogo = document.querySelector("#fullscreen-logo");
 const closeButton = dialog.querySelector(".close-button");
 const previousButton = dialog.querySelector(".nav-button--previous");
 const nextButton = dialog.querySelector(".nav-button--next");
+const defaultProjectId = "00000000-0000-4000-8000-000000000001";
+const appConfig = window.EEG_SUPABASE_CONFIG ?? {};
+const routePath = window.location.pathname.replace(/\/+$/, "") || "/";
+const isAdminRoute = routePath === "/admin" || window.location.hash === "#admin";
+const projectId = new URLSearchParams(window.location.search).get("project")
+  || appConfig.projectId
+  || defaultProjectId;
+const supabaseUrl = String(appConfig.supabaseUrl || appConfig.url || "").trim();
+const supabasePublishableKey = String(
+  appConfig.supabasePublishableKey || appConfig.publishableKey || appConfig.anonKey || "",
+).trim();
+const supabase = supabaseUrl && supabasePublishableKey
+  ? createClient(supabaseUrl, supabasePublishableKey, {
+    auth: {
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      persistSession: true,
+    },
+  })
+  : null;
+let session = null;
+let currentProfile = null;
+let canVote = false;
+let clientVotes = new Map();
+let adminVoteRows = [];
+let statusElement = null;
+let accessPanel = null;
+let authForm = null;
+let authMessage = null;
+let clientBar = null;
+let clientEmail = null;
+let signOutButton = null;
+let adminPanel = null;
+let adminContent = null;
+let exportCsvButton = null;
 const logoOrder = [
   6, 9, 90, 13, 14, 16, 15, 96, 25, 67, 70, 71, 76,
   77, 78, 18, 12, 43, 17, 100, 37, 101, 38, 10, 11, 24, 26, 58, 80,
@@ -86,6 +123,82 @@ function logoPath(id) {
 
 function logoMarkup(id) {
   return window.LOGO_SVGS?.[logoId(id)] ?? "";
+}
+
+function isAdmin() {
+  return currentProfile?.role === "admin";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function createAccessUi() {
+  accessPanel = document.createElement("section");
+  accessPanel.className = "access-panel";
+  accessPanel.hidden = true;
+  accessPanel.innerHTML = `
+    <div class="access-card">
+      <p class="access-kicker">EEG Brand Review</p>
+      <h1 class="access-title">Client Login</h1>
+      <p class="access-copy" data-access-copy>Use the email and password created for this review.</p>
+      <form class="access-form" data-auth-form>
+        <label>
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+        <label>
+          <span>Password</span>
+          <input name="password" type="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+      <p class="access-message" data-auth-message role="status"></p>
+    </div>
+  `;
+
+  clientBar = document.createElement("aside");
+  clientBar.className = "client-bar";
+  clientBar.hidden = true;
+  clientBar.innerHTML = `
+    <span class="client-email" data-client-email></span>
+    <span class="client-status" data-client-status></span>
+    <a class="client-admin-link" href="/admin">Admin</a>
+    <button class="client-sign-out" type="button">Sign out</button>
+  `;
+
+  adminPanel = document.createElement("section");
+  adminPanel.className = "admin-panel";
+  adminPanel.hidden = true;
+  adminPanel.innerHTML = `
+    <div class="admin-panel-header">
+      <div>
+        <p class="admin-kicker">Admin</p>
+        <h2>Logo Rankings</h2>
+      </div>
+      <button class="admin-export" type="button">CSV</button>
+    </div>
+    <div class="admin-content"></div>
+  `;
+
+  document.body.prepend(accessPanel, clientBar, adminPanel);
+
+  authForm = accessPanel.querySelector("[data-auth-form]");
+  authMessage = accessPanel.querySelector("[data-auth-message]");
+  statusElement = clientBar.querySelector("[data-client-status]");
+  clientEmail = clientBar.querySelector("[data-client-email]");
+  signOutButton = clientBar.querySelector(".client-sign-out");
+  adminContent = adminPanel.querySelector(".admin-content");
+  exportCsvButton = adminPanel.querySelector(".admin-export");
+
+  authForm.addEventListener("submit", handleAuthSubmit);
+  signOutButton.addEventListener("click", handleSignOut);
+  exportCsvButton.addEventListener("click", exportAdminCsv);
 }
 
 function gridBaseColumns() {
@@ -292,11 +405,15 @@ logoOrder.forEach((id, position) => {
   const tile = document.createElement("figure");
   const button = document.createElement("button");
   const logo = document.createElement("span");
+  const voteControls = document.createElement("figcaption");
+  const upButton = document.createElement("button");
+  const downButton = document.createElement("button");
 
   tile.className = "logo-tile";
   tile.dataset.logoIndex = String(id);
   tile.dataset.logoId = logoId(id);
   tile.dataset.sortIndex = String(position);
+  tile.dataset.vote = "0";
   button.className = "logo-button";
   button.type = "button";
   button.setAttribute("aria-pressed", "false");
@@ -304,6 +421,19 @@ logoOrder.forEach((id, position) => {
   logo.className = "logo-art";
   logo.setAttribute("aria-hidden", "true");
   logo.innerHTML = logoMarkup(id);
+  voteControls.className = "vote-controls";
+  upButton.className = "vote-button vote-button--up";
+  upButton.type = "button";
+  upButton.disabled = true;
+  upButton.dataset.voteValue = "1";
+  upButton.setAttribute("aria-label", `Upvote EEG logo exploration ${logoId(id)}`);
+  upButton.textContent = "+";
+  downButton.className = "vote-button vote-button--down";
+  downButton.type = "button";
+  downButton.disabled = true;
+  downButton.dataset.voteValue = "-1";
+  downButton.setAttribute("aria-label", `Downvote EEG logo exploration ${logoId(id)}`);
+  downButton.textContent = "-";
 
   button.addEventListener("click", (event) => {
     if (event.shiftKey) {
@@ -317,8 +447,18 @@ logoOrder.forEach((id, position) => {
     openLogoDialog(id);
   });
 
+  [upButton, downButton].forEach((voteButton) => {
+    voteButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setLogoVote(logoId(id), Number(voteButton.dataset.voteValue));
+    });
+  });
+
   button.append(logo);
+  voteControls.append(upButton, downButton);
   tile.append(button);
+  tile.append(voteControls);
   grid.append(tile);
 });
 
@@ -326,7 +466,351 @@ function tileOrder() {
   return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
 }
 
-function setStatus() {
+function setStatus(message = "") {
+  if (statusElement) statusElement.textContent = message;
+}
+
+function syncAccessUi() {
+  if (!accessPanel) return;
+
+  const configured = Boolean(supabase);
+  const signedIn = Boolean(session?.user);
+  const locked = configured && !signedIn;
+  document.body.classList.toggle("is-auth-locked", locked);
+  logoSheet.setAttribute("aria-hidden", String(locked));
+
+  accessPanel.hidden = configured && signedIn;
+  clientBar.hidden = !configured || !signedIn;
+  adminPanel.hidden = !configured || !signedIn || !isAdminRoute;
+
+  if (!configured) {
+    accessPanel.hidden = true;
+    clientBar.hidden = false;
+    clientEmail.textContent = "Local";
+    statusElement.textContent = "Supabase config missing";
+    signOutButton.hidden = true;
+    clientBar.querySelector(".client-admin-link").hidden = true;
+    return;
+  }
+
+  authForm.hidden = false;
+  signOutButton.hidden = false;
+  if (clientEmail) clientEmail.textContent = session?.user?.email ?? "";
+  clientBar.querySelector(".client-admin-link").hidden = !isAdmin();
+}
+
+function setVotingEnabled(enabled) {
+  canVote = Boolean(enabled);
+  grid.querySelectorAll(".vote-button").forEach((button) => {
+    button.disabled = !canVote;
+  });
+}
+
+function applyVoteState() {
+  grid.querySelectorAll(".logo-tile").forEach((tile) => {
+    const vote = clientVotes.get(tile.dataset.logoId) ?? 0;
+    tile.dataset.vote = String(vote);
+    tile.classList.toggle("has-upvote", vote === 1);
+    tile.classList.toggle("has-downvote", vote === -1);
+    tile.querySelector(".vote-button--up")?.setAttribute("aria-pressed", String(vote === 1));
+    tile.querySelector(".vote-button--down")?.setAttribute("aria-pressed", String(vote === -1));
+  });
+}
+
+function voteSortGroup(tile) {
+  const vote = Number(tile.dataset.vote || "0");
+  if (vote === 1) return 0;
+  if (vote === -1) return 2;
+  return 1;
+}
+
+function sortTilesByVotes() {
+  const tiles = [...grid.querySelectorAll(".logo-tile")];
+  tiles.sort((left, right) => {
+    const groupDelta = voteSortGroup(left) - voteSortGroup(right);
+    if (groupDelta) return groupDelta;
+    return Number(left.dataset.sortIndex) - Number(right.dataset.sortIndex);
+  });
+
+  tiles.forEach((tile) => grid.append(tile));
+  scheduleLogoShaderMask();
+  schedulePerIconShaderSync();
+}
+
+function renderVotes() {
+  applyVoteState();
+  sortTilesByVotes();
+  const upvotes = [...clientVotes.values()].filter((vote) => vote === 1).length;
+  const downvotes = [...clientVotes.values()].filter((vote) => vote === -1).length;
+  setStatus(`${upvotes} up / ${downvotes} down`);
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  if (!supabase) return;
+
+  const formData = new FormData(authForm);
+  authMessage.textContent = "Signing in...";
+  const { error } = await supabase.auth.signInWithPassword({
+    email: String(formData.get("email") ?? "").trim(),
+    password: String(formData.get("password") ?? ""),
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+  }
+}
+
+async function handleSignOut() {
+  if (!supabase) return;
+  await supabase.auth.signOut();
+}
+
+async function loadProfile() {
+  if (!supabase || !session?.user) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id,email,role")
+    .eq("id", session.user.id)
+    .maybeSingle();
+
+  if (error) {
+    setStatus(error.message);
+    return null;
+  }
+
+  return data;
+}
+
+async function loadMembership() {
+  if (!supabase || !session?.user || isAdmin()) return Boolean(isAdmin());
+
+  const { data, error } = await supabase
+    .from("project_members")
+    .select("project_id,user_id")
+    .eq("project_id", projectId)
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+
+  if (error) {
+    setStatus(error.message);
+    return false;
+  }
+
+  return Boolean(data);
+}
+
+async function loadClientVotes() {
+  if (!supabase || !session?.user) return;
+
+  const { data, error } = await supabase
+    .from("logo_votes")
+    .select("logo_id,vote")
+    .eq("project_id", projectId)
+    .eq("user_id", session.user.id);
+
+  if (error) {
+    setStatus(error.message);
+    return;
+  }
+
+  clientVotes = new Map((data ?? []).map((row) => [row.logo_id, row.vote]));
+  renderVotes();
+}
+
+async function refreshClientState() {
+  currentProfile = await loadProfile();
+  syncAccessUi();
+
+  const member = await loadMembership();
+  setVotingEnabled(member);
+
+  if (!member && !isAdmin()) {
+    clientVotes = new Map();
+    renderVotes();
+    setStatus("Project access pending");
+    return;
+  }
+
+  await loadClientVotes();
+  if (isAdminRoute) await loadAdminResults();
+}
+
+async function setLogoVote(id, nextVote) {
+  if (!supabase || !session?.user || !canVote) return;
+
+  const currentVote = clientVotes.get(id) ?? 0;
+  const nextValue = currentVote === nextVote ? 0 : nextVote;
+
+  setVotingEnabled(false);
+  if (nextValue === 0) {
+    const { error } = await supabase
+      .from("logo_votes")
+      .delete()
+      .match({ project_id: projectId, user_id: session.user.id, logo_id: id });
+
+    if (error) {
+      setStatus(error.message);
+      setVotingEnabled(true);
+      return;
+    }
+    clientVotes.delete(id);
+  } else {
+    const { error } = await supabase
+      .from("logo_votes")
+      .upsert({
+        project_id: projectId,
+        user_id: session.user.id,
+        logo_id: id,
+        vote: nextValue,
+      }, { onConflict: "project_id,user_id,logo_id" });
+
+    if (error) {
+      setStatus(error.message);
+      setVotingEnabled(true);
+      return;
+    }
+    clientVotes.set(id, nextValue);
+  }
+
+  renderVotes();
+  setVotingEnabled(true);
+  if (isAdminRoute && isAdmin()) await loadAdminResults();
+}
+
+function summarizeAdminVotes(rows) {
+  const summaries = new Map(logoOrder.map((id) => [
+    logoId(id),
+    { logo_id: logoId(id), score: 0, upvotes: 0, downvotes: 0, clients: [] },
+  ]));
+
+  rows.forEach((row) => {
+    const id = row.logo_id;
+    const summary = summaries.get(id) ?? { logo_id: id, score: 0, upvotes: 0, downvotes: 0, clients: [] };
+    summary.score += row.vote;
+    if (row.vote === 1) summary.upvotes += 1;
+    if (row.vote === -1) summary.downvotes += 1;
+    summary.clients.push(`${row.email}: ${row.vote === 1 ? "up" : "down"}`);
+    summaries.set(id, summary);
+  });
+
+  return [...summaries.values()].sort((left, right) => {
+    if (right.score !== left.score) return right.score - left.score;
+    if (right.upvotes !== left.upvotes) return right.upvotes - left.upvotes;
+    return Number(left.logo_id) - Number(right.logo_id);
+  });
+}
+
+function renderAdminResults() {
+  if (!adminContent) return;
+
+  if (!isAdmin()) {
+    adminContent.innerHTML = `<p class="admin-empty">Admin access required.</p>`;
+    return;
+  }
+
+  const summaries = summarizeAdminVotes(adminVoteRows);
+  adminContent.innerHTML = `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Logo</th>
+          <th>Score</th>
+          <th>Up</th>
+          <th>Down</th>
+          <th>Clients</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${summaries.map((row) => `
+          <tr>
+            <td>${escapeHtml(row.logo_id)}</td>
+            <td>${row.score}</td>
+            <td>${row.upvotes}</td>
+            <td>${row.downvotes}</td>
+            <td>${escapeHtml(row.clients.join(", "))}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+async function loadAdminResults() {
+  if (!supabase || !isAdmin()) {
+    renderAdminResults();
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("logo_votes")
+    .select("logo_id,vote,user_id,updated_at,profiles(email)")
+    .eq("project_id", projectId);
+
+  if (error) {
+    adminContent.innerHTML = `<p class="admin-empty">${escapeHtml(error.message)}</p>`;
+    return;
+  }
+
+  adminVoteRows = (data ?? []).map((row) => ({
+    ...row,
+    email: row.profiles?.email ?? row.user_id,
+  }));
+  renderAdminResults();
+}
+
+function exportAdminCsv() {
+  if (!adminVoteRows.length) return;
+
+  const summaries = summarizeAdminVotes(adminVoteRows);
+  const lines = [
+    ["logo_id", "total_score", "upvotes", "downvotes", "client_votes"],
+    ...summaries.map((row) => [
+      row.logo_id,
+      row.score,
+      row.upvotes,
+      row.downvotes,
+      row.clients.join("; "),
+    ]),
+  ];
+  const csv = lines
+    .map((line) => line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
+    .join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "eeg-logo-rankings.csv";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+async function initializeClientAccess() {
+  createAccessUi();
+
+  if (!supabase) {
+    syncAccessUi();
+    return;
+  }
+
+  const { data } = await supabase.auth.getSession();
+  session = data.session;
+  syncAccessUi();
+
+  supabase.auth.onAuthStateChange((_event, nextSession) => {
+    session = nextSession;
+    currentProfile = null;
+    clientVotes = new Map();
+    setVotingEnabled(false);
+    syncAccessUi();
+    if (session) {
+      refreshClientState();
+    } else {
+      renderVotes();
+    }
+  });
+
+  if (session) await refreshClientState();
 }
 
 function closeFontPicker() {
@@ -373,8 +857,12 @@ function randomizeLogoOrder() {
 
   tiles.forEach((tile) => grid.append(tile));
   clearSelection();
-  scheduleLogoShaderMask();
-  schedulePerIconShaderSync();
+  if (clientVotes.size) {
+    renderVotes();
+  } else {
+    scheduleLogoShaderMask();
+    schedulePerIconShaderSync();
+  }
   setStatus("Randomized order");
 }
 
@@ -1814,3 +2302,5 @@ document.addEventListener("keydown", (event) => {
     resizeActiveLogoView(-0.1);
   }
 });
+
+initializeClientAccess();
