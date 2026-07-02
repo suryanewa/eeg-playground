@@ -23986,6 +23986,7 @@ void main() {
 
   // src/app.js
   var shaderLayer = document.querySelector("#shader-layer");
+  var favicon = document.querySelector("#favicon");
   var logoSheet = document.querySelector(".logo-sheet");
   var grid = document.querySelector("#logo-grid");
   var shuffleButton = document.querySelector("#shuffle-button");
@@ -24202,8 +24203,15 @@ void main() {
   function logoId(id) {
     return String(id).padStart(3, "0");
   }
+  function logoPath(id) {
+    return `assets/logos/logo-${logoId(id)}.svg`;
+  }
   function logoMarkup(id) {
     return window.LOGO_SVGS?.[logoId(id)] ?? "";
+  }
+  function updateFaviconForTopLogo() {
+    const topLogoId = grid.querySelector(".logo-tile")?.dataset.logoId ?? logoId(logoOrder[0]);
+    favicon?.setAttribute("href", logoPath(topLogoId));
   }
   function isAdmin() {
     return currentProfile?.role === "admin";
@@ -24480,6 +24488,7 @@ void main() {
     tile.append(voteControls);
     grid.append(tile);
   });
+  updateFaviconForTopLogo();
   function tileOrder() {
     return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
   }
@@ -24540,6 +24549,7 @@ void main() {
       return Number(left.dataset.sortIndex) - Number(right.dataset.sortIndex);
     });
     tiles.forEach((tile) => grid.append(tile));
+    updateFaviconForTopLogo();
     scheduleLogoShaderMask();
     schedulePerIconShaderSync();
   }
@@ -24790,6 +24800,7 @@ void main() {
       [tiles[index], tiles[swapIndex]] = [tiles[swapIndex], tiles[index]];
     }
     tiles.forEach((tile) => grid.append(tile));
+    updateFaviconForTopLogo();
     clearSelection();
     if (clientVotes.size) {
       renderVotes();

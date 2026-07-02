@@ -21,6 +21,7 @@ import {
 } from "@paper-design/shaders";
 
 const shaderLayer = document.querySelector("#shader-layer");
+const favicon = document.querySelector("#favicon");
 const logoSheet = document.querySelector(".logo-sheet");
 const grid = document.querySelector("#logo-grid");
 const shuffleButton = document.querySelector("#shuffle-button");
@@ -126,6 +127,11 @@ function logoPath(id) {
 
 function logoMarkup(id) {
   return window.LOGO_SVGS?.[logoId(id)] ?? "";
+}
+
+function updateFaviconForTopLogo() {
+  const topLogoId = grid.querySelector(".logo-tile")?.dataset.logoId ?? logoId(logoOrder[0]);
+  favicon?.setAttribute("href", logoPath(topLogoId));
 }
 
 function isAdmin() {
@@ -459,6 +465,7 @@ logoOrder.forEach((id, position) => {
   tile.append(voteControls);
   grid.append(tile);
 });
+updateFaviconForTopLogo();
 
 function tileOrder() {
   return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
@@ -531,6 +538,7 @@ function sortTilesByVotes() {
   });
 
   tiles.forEach((tile) => grid.append(tile));
+  updateFaviconForTopLogo();
   scheduleLogoShaderMask();
   schedulePerIconShaderSync();
 }
@@ -857,6 +865,7 @@ function randomizeLogoOrder() {
   }
 
   tiles.forEach((tile) => grid.append(tile));
+  updateFaviconForTopLogo();
   clearSelection();
   if (clientVotes.size) {
     renderVotes();
