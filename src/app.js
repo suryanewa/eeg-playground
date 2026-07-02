@@ -56,6 +56,8 @@ const defaultPalette = { ink: "#111111", paper: "#ffffff", ratio: 21, source: "D
 const invertedPalette = { ink: "#ffffff", paper: "#111111", ratio: 21, source: "Inverted" };
 let currentPalette = defaultPalette;
 let currentShaderIndex = -1;
+let selectedFont = settingsFontButton.textContent.trim();
+let lockupMode = false;
 let shaderMount = null;
 let fullscreenShaderMount = null;
 const perIconShaderMounts = new Map();
@@ -64,6 +66,20 @@ const perIconShaderPending = new Set();
 const minLogoScale = 0.5;
 const maxLogoScale = 1.5;
 let shaderToken = 0;
+const lockupText = "EEG";
+const lockupCanvas = document.createElement("canvas");
+const lockupFontFamilies = {
+  Helvetica: 'Helvetica, "Helvetica Neue", Arial, sans-serif',
+  Inter: 'Inter, "Inter Tight", Arial, sans-serif',
+  "Inter Tight": '"Inter Tight", Inter, Arial, sans-serif',
+  "Open Runde": '"Open Runde", "Arial Rounded MT Bold", Arial, sans-serif',
+  "Vercel Geist": '"Vercel Geist", Geist, Inter, Arial, sans-serif',
+  Gotham: 'Gotham, Montserrat, "Helvetica Neue", Arial, sans-serif',
+  "SF Pro": '"SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif',
+  "Google Sans": '"Google Sans", "Product Sans", Arial, sans-serif',
+  Manrope: 'Manrope, Inter, Arial, sans-serif',
+  Satoshi: 'Satoshi, Inter, Arial, sans-serif',
+};
 
 function logoId(id) {
   return String(id).padStart(3, "0");
@@ -107,7 +123,12 @@ function setGridLogoScale(nextScale) {
 function setFullscreenLogoScale(nextScale) {
   fullscreenLogoScale = clampLogoScale(nextScale);
   document.documentElement.style.setProperty("--fullscreen-logo-scale", String(fullscreenLogoScale));
-  if (dialog.open) mountFullscreenShader();
+  if (!dialog.open) return;
+  if (lockupMode) {
+    scheduleLockupLayout();
+  } else {
+    mountFullscreenShader();
+  }
 }
 
 function resizeActiveLogoView(delta) {
@@ -120,11 +141,135 @@ function resizeActiveLogoView(delta) {
 
 updateGridColumns();
 
+function selectedFontFamily() {
+  return lockupFontFamilies[selectedFont] ?? lockupFontFamilies.Helvetica;
+}
+
+function lockupMarkup(id) {
+  return `<div class="fullscreen-lockup" aria-hidden="true">
+    <span class="fullscreen-logo-art fullscreen-lockup-mark">${logoMarkup(id)}</span>
+    <span class="fullscreen-lockup-text">${lockupText}</span>
+  </div>`;
+}
+
+function fullscreenMarkup(id) {
+  return lockupMode
+    ? lockupMarkup(id)
+    : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(id)}</span>`;
+}
+
+function measureLockupText(fontSize, fontFamily) {
+  const context = lockupCanvas.getContext("2d");
+  context.font = `700 ${fontSize}px ${fontFamily}`;
+  const metrics = context.measureText(lockupText);
+  const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+  return {
+    width: metrics.width,
+    height: height || fontSize * 0.72,
+  };
+}
+
+function cropLockupSvgToArtwork() {
+  const svg = fullscreenLogo.querySelector(".fullscreen-lockup-mark svg");
+  if (!svg) return 1;
+
+  try {
+    const box = svg.getBBox();
+    if (box.width <= 0 || box.height <= 0) return 1;
+
+    const padding = Math.max(box.width, box.height) * 0.035;
+    const viewBoxWidth = box.width + padding * 2;
+    const viewBoxHeight = box.height + padding * 2;
+    svg.setAttribute("viewBox", [
+      box.x - padding,
+      box.y - padding,
+      viewBoxWidth,
+      viewBoxHeight,
+    ].map((value) => Number(value.toFixed(2))).join(" "));
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    return viewBoxWidth / viewBoxHeight;
+  } catch {
+    // Some SVG states cannot be measured immediately; the default viewBox still renders safely.
+    return 1;
+  }
+}
+
+function updateLockupLayout() {
+  if (!dialog.open || !lockupMode) return;
+
+  const markAspect = cropLockupSvgToArtwork();
+
+  const box = fullscreenLogo.getBoundingClientRect();
+  if (!box.width || !box.height) return;
+
+  const fontFamily = selectedFontFamily();
+  const maxWidth = box.width * 0.9;
+  const maxHeight = box.height * 0.62;
+  let fontSize = Math.min(maxHeight, maxWidth * 0.28);
+
+  for (let pass = 0; pass < 5; pass += 1) {
+    const textMetrics = measureLockupText(fontSize, fontFamily);
+    const markHeight = fontSize * 1.02;
+    const markWidth = markHeight * markAspect;
+    const gap = Math.min(84, Math.max(22, fontSize * 0.27));
+    const totalWidth = markWidth + gap + textMetrics.width;
+    const totalHeight = Math.max(markHeight, fontSize);
+    const scale = Math.min(1, maxWidth / totalWidth, maxHeight / totalHeight);
+
+    fontSize *= scale;
+  }
+
+  const textMetrics = measureLockupText(fontSize, fontFamily);
+  const markHeight = fontSize * 1.02;
+  const markWidth = markHeight * markAspect;
+  const gap = Math.min(84, Math.max(22, fontSize * 0.27));
+
+  document.documentElement.style.setProperty("--lockup-font-family", fontFamily);
+  document.documentElement.style.setProperty("--lockup-font-size", `${fontSize.toFixed(2)}px`);
+  document.documentElement.style.setProperty("--lockup-mark-height", `${markHeight.toFixed(2)}px`);
+  document.documentElement.style.setProperty("--lockup-mark-width", `${markWidth.toFixed(2)}px`);
+  document.documentElement.style.setProperty("--lockup-gap", `${gap.toFixed(2)}px`);
+}
+
+function scheduleLockupLayout() {
+  window.requestAnimationFrame(() => {
+    updateLockupLayout();
+    document.fonts?.ready?.then(updateLockupLayout);
+  });
+}
+
+function renderFullscreenLogo() {
+  fullscreenLogo.classList.toggle("is-lockup", lockupMode);
+  fullscreenLogo.innerHTML = fullscreenMarkup(currentLogoId);
+  fullscreenLogo.setAttribute(
+    "aria-label",
+    lockupMode
+      ? `EEG logo exploration ${currentLogoId} lockup with EEG text`
+      : `EEG logo exploration ${currentLogoId}`,
+  );
+
+  if (lockupMode) {
+    disposeFullscreenShader();
+    updateLockupLayout();
+    scheduleLockupLayout();
+  } else if (dialog.open) {
+    mountFullscreenShader();
+  }
+}
+
+function setLockupMode(enabled) {
+  lockupMode = enabled;
+  if (dialog.open) renderFullscreenLogo();
+}
+
+function toggleLockupMode() {
+  setLockupMode(!lockupMode);
+}
+
 function showLogoById(id) {
   currentLogoId = logoId(id);
-  fullscreenLogo.innerHTML = `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(id)}</span>`;
-  fullscreenLogo.setAttribute("aria-label", `EEG logo exploration ${currentLogoId}`);
-  if (dialog.open) mountFullscreenShader();
+  renderFullscreenLogo();
 }
 
 function showAdjacentLogo(offset) {
@@ -136,6 +281,7 @@ function showAdjacentLogo(offset) {
 
 function openLogoDialog(id) {
   document.activeElement?.blur?.();
+  lockupMode = false;
   showLogoById(id);
   dialog.showModal();
   dialog.focus({ preventScroll: true });
@@ -429,6 +575,8 @@ function closeDialog() {
   disposeFullscreenShader();
   dialog.close();
   document.activeElement?.blur?.();
+  lockupMode = false;
+  fullscreenLogo.classList.remove("is-lockup");
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
 }
@@ -452,6 +600,12 @@ nextButton.addEventListener("click", () => {
 });
 
 dialog.addEventListener("keydown", (event) => {
+  if (event.key === "Tab") {
+    event.preventDefault();
+    toggleLockupMode();
+    return;
+  }
+
   if (event.key === "ArrowLeft") {
     event.preventDefault();
     showAdjacentLogo(-1);
@@ -469,6 +623,8 @@ dialog.addEventListener("click", (event) => {
 
 dialog.addEventListener("cancel", () => {
   disposeFullscreenShader();
+  lockupMode = false;
+  fullscreenLogo.classList.remove("is-lockup");
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
 });
@@ -1064,7 +1220,7 @@ async function mountFullscreenShader() {
   fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
   fullscreenLogo.classList.remove("has-fullscreen-shader");
 
-  if (!dialog.open || currentShaderIndex < 0) return;
+  if (!dialog.open || lockupMode || currentShaderIndex < 0) return;
 
   const preset = shaderPresets[currentShaderIndex];
   const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
@@ -1267,6 +1423,7 @@ window.addEventListener("scroll", scheduleLogoShaderMask, { passive: true });
 window.addEventListener("resize", () => {
   updateGridColumns();
   scheduleLogoShaderMask();
+  if (dialog.open && lockupMode) scheduleLockupLayout();
 });
 window.addEventListener("scroll", schedulePerIconShaderSync, { passive: true });
 window.addEventListener("resize", schedulePerIconShaderSync);
@@ -1653,12 +1810,22 @@ settingsGradientToggle.addEventListener("change", () => {
 
 settingsFontButton.addEventListener("click", toggleFontPicker);
 
+function setSelectedFont(font) {
+  selectedFont = font;
+  settingsFontButton.textContent = font;
+  settingsFontOptionButtons.forEach((option) => {
+    option.setAttribute("aria-selected", String(option.dataset.font === font));
+  });
+
+  if (dialog.open && lockupMode) {
+    updateLockupLayout();
+    scheduleLockupLayout();
+  }
+}
+
 settingsFontOptionButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    settingsFontButton.textContent = button.dataset.font;
-    settingsFontOptionButtons.forEach((option) => {
-      option.setAttribute("aria-selected", String(option === button));
-    });
+    setSelectedFont(button.dataset.font);
     closeFontPicker();
   });
 });

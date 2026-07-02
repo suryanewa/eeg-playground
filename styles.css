@@ -5,6 +5,11 @@
   --grid-logo-scale: 1;
   --fullscreen-logo-scale: 1;
   --grid-columns: 8;
+  --lockup-font-family: Helvetica, Arial, sans-serif;
+  --lockup-font-size: 160px;
+  --lockup-gap: 44px;
+  --lockup-mark-height: 136px;
+  --lockup-mark-width: 136px;
   --editor-mark-color: rgb(17 17 17 / 36%);
   color-scheme: light;
   background: var(--logo-bg-paint);
@@ -323,6 +328,41 @@ body.is-reordering .logo-button {
   height: min(86vw, 86vh);
   overflow: hidden;
   background: var(--logo-bg-paint);
+}
+
+.logo-dialog .fullscreen-logo.is-lockup {
+  width: min(92vw, 1120px);
+  height: min(72vh, 520px);
+  overflow: visible;
+}
+
+.fullscreen-lockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: var(--lockup-gap);
+  transform: scale(var(--fullscreen-logo-scale));
+  transform-origin: center;
+}
+
+.fullscreen-lockup .fullscreen-logo-art {
+  flex: 0 0 var(--lockup-mark-width);
+  width: var(--lockup-mark-width);
+  height: var(--lockup-mark-height);
+  transform: none;
+}
+
+.fullscreen-lockup-text {
+  flex: 0 1 auto;
+  color: var(--logo-ink);
+  font-family: var(--lockup-font-family);
+  font-size: var(--lockup-font-size);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .close-button {
