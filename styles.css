@@ -39,6 +39,8 @@ body {
   background: transparent;
   -webkit-mask-position: 0 0;
   mask-position: 0 0;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-size: 100vw 100vh;
@@ -57,11 +59,6 @@ body {
 .logo-sheet {
   position: relative;
   z-index: 1;
-}
-
-body.is-reordering {
-  cursor: grabbing;
-  user-select: none;
 }
 
 .logo-sheet {
@@ -100,23 +97,13 @@ body.is-reordering {
   transform: translateX(-50%);
 }
 
-.logo-tile.is-dragging {
-  opacity: 0.18;
-  z-index: 2;
-}
-
-.logo-tile.is-selected::before,
-.logo-tile.is-drop-target::before {
+.logo-tile.is-selected::before {
   position: absolute;
   z-index: 4;
   inset: 6px;
   border: 2px solid var(--editor-mark-color);
   content: "";
   pointer-events: none;
-}
-
-.logo-tile.is-drop-target::before {
-  border-width: 1px;
 }
 
 .logo-button {
@@ -132,7 +119,6 @@ body.is-reordering {
   background: transparent;
   cursor: zoom-in;
   overflow: hidden;
-  touch-action: none;
 }
 
 .logo-shader-layer {
@@ -159,46 +145,6 @@ body.is-reordering {
   z-index: 0 !important;
   width: 100% !important;
   height: 100% !important;
-}
-
-body.is-reordering .logo-button {
-  cursor: grabbing;
-}
-
-.drag-preview {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 20;
-  background: var(--logo-bg-paint);
-  box-shadow: 0 14px 34px rgb(0 0 0 / 12%);
-  opacity: 0.96;
-  pointer-events: none;
-  will-change: transform;
-}
-
-.drag-preview .logo-tile {
-  width: 100%;
-  height: 100%;
-}
-
-.drag-preview::after {
-  position: absolute;
-  right: 6px;
-  bottom: 6px;
-  display: none;
-  min-width: 20px;
-  height: 20px;
-  place-items: center;
-  padding: 0 5px;
-  background: var(--editor-mark-color);
-  color: var(--logo-bg);
-  content: attr(data-count);
-  font: 700 11px/20px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}
-
-.drag-preview[data-count]::after {
-  display: grid;
 }
 
 .logo-button:focus-visible {
@@ -581,7 +527,7 @@ body.is-reordering .logo-button {
 
 .utility-button {
   display: grid;
-  width: 57px;
+  width: 45px;
   height: 57px;
   place-items: center;
   padding: 0;

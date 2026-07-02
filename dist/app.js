@@ -4163,11 +4163,6 @@ void main() {
   ];
   var logoCount = logoOrder.length;
   var currentLogoId = logoId(logoOrder[0]);
-  var draggedTile = null;
-  var draggedTiles = [];
-  var pointerDrag = null;
-  var suppressNextClick = false;
-  var dragPreview = null;
   var gradientMode = false;
   var gridLogoScale = 1;
   var fullscreenLogoScale = 1;
@@ -4383,11 +4378,6 @@ void main() {
     logo.setAttribute("aria-hidden", "true");
     logo.innerHTML = logoMarkup(id);
     button.addEventListener("click", (event) => {
-      if (suppressNextClick) {
-        event.preventDefault();
-        suppressNextClick = false;
-        return;
-      }
       if (event.shiftKey) {
         event.preventDefault();
         tile.classList.toggle("is-selected");
@@ -4434,147 +4424,6 @@ void main() {
     });
     setStatus("Selection cleared");
   }
-  function insertionAnchorFromPreview(x, y2) {
-    const stationaryTiles = [...grid.querySelectorAll(".logo-tile:not(.is-dragging)")];
-    const firstTile = stationaryTiles[0] ?? draggedTiles[0];
-    if (!firstTile || !dragPreview) return null;
-    const gridBox = grid.getBoundingClientRect();
-    const tileBox = firstTile.getBoundingClientRect();
-    const tileWidth = tileBox.width;
-    const tileHeight = tileBox.height;
-    const previewWidth = Number(dragPreview.dataset.width);
-    const previewHeight = Number(dragPreview.dataset.height);
-    const preview = {
-      left: x - previewWidth / 2,
-      right: x + previewWidth / 2,
-      top: y2 - previewHeight / 2,
-      bottom: y2 + previewHeight / 2
-    };
-    const dx = x - pointerDrag.lastX;
-    const dy = y2 - pointerDrag.lastY;
-    const edgeBias = 0.22;
-    const useHorizontalEdge = Math.abs(dx) >= Math.abs(dy);
-    const useVerticalEdge = Math.abs(dy) > Math.abs(dx);
-    const slotX = useHorizontalEdge ? dx >= 0 ? preview.right - tileWidth * edgeBias : preview.left + tileWidth * edgeBias : x;
-    const slotY = useVerticalEdge ? dy >= 0 ? preview.bottom - tileHeight * edgeBias : preview.top + tileHeight * edgeBias : y2;
-    const columns = Math.max(1, Math.round(gridBox.width / tileWidth));
-    const rows = Math.ceil((stationaryTiles.length + draggedTiles.length) / columns);
-    const column = Math.max(0, Math.min(columns - 1, Math.floor((slotX - gridBox.left) / tileWidth)));
-    const row = Math.max(0, Math.min(rows - 1, Math.floor((slotY - gridBox.top) / tileHeight)));
-    const insertionIndex = Math.max(0, Math.min(stationaryTiles.length, row * columns + column));
-    return stationaryTiles[insertionIndex] ?? null;
-  }
-  function updateDragPreview(x, y2) {
-    if (!dragPreview) return;
-    const width = Number(dragPreview.dataset.width);
-    const height = Number(dragPreview.dataset.height);
-    dragPreview.style.transform = `translate3d(${x - width / 2}px, ${y2 - height / 2}px, 0)`;
-  }
-  function createDragPreview(tile, x, y2) {
-    const box = tile.getBoundingClientRect();
-    const clone = tile.cloneNode(true);
-    dragPreview = document.createElement("div");
-    clone.classList.remove("is-dragging", "is-drop-target");
-    clone.querySelector(".logo-button")?.setAttribute("tabindex", "-1");
-    dragPreview.className = "drag-preview";
-    dragPreview.dataset.width = String(box.width);
-    dragPreview.dataset.height = String(box.height);
-    dragPreview.style.width = `${box.width}px`;
-    dragPreview.style.height = `${box.height}px`;
-    if (draggedTiles.length > 1) {
-      dragPreview.dataset.count = String(draggedTiles.length);
-    }
-    dragPreview.append(clone);
-    document.body.append(dragPreview);
-    updateDragPreview(x, y2);
-  }
-  function removeDragPreview() {
-    dragPreview?.remove();
-    dragPreview = null;
-  }
-  function startReorderDrag(tile, x, y2) {
-    draggedTile = tile;
-    draggedTiles = tile.classList.contains("is-selected") ? [...grid.querySelectorAll(".logo-tile.is-selected")] : [tile];
-    draggedTiles.forEach((selectedTile) => selectedTile.classList.add("is-dragging"));
-    document.body.classList.add("is-reordering");
-    createDragPreview(tile, x, y2);
-  }
-  function moveDraggedTiles(x, y2) {
-    if (!draggedTile) return;
-    const anchor = insertionAnchorFromPreview(x, y2);
-    grid.querySelectorAll(".is-drop-target").forEach((tile) => tile.classList.remove("is-drop-target"));
-    if (anchor) {
-      anchor.classList.add("is-drop-target");
-      draggedTiles.forEach((tile) => grid.insertBefore(tile, anchor));
-    } else {
-      draggedTiles.forEach((tile) => grid.append(tile));
-    }
-    scheduleLogoShaderMask();
-    schedulePerIconShaderSync();
-  }
-  function finishReorderDrag() {
-    draggedTiles.forEach((tile) => tile.classList.remove("is-dragging"));
-    grid.querySelectorAll(".is-drop-target").forEach((tile) => tile.classList.remove("is-drop-target"));
-    document.body.classList.remove("is-reordering");
-    removeDragPreview();
-    draggedTile = null;
-    draggedTiles = [];
-    scheduleLogoShaderMask();
-    schedulePerIconShaderSync();
-  }
-  grid.addEventListener("pointerdown", (event) => {
-    const tile = event.target.closest(".logo-tile");
-    if (!tile || event.button !== 0 || event.shiftKey || dialog.open) return;
-    if (!tile.classList.contains("is-selected")) {
-      clearSelection();
-    }
-    pointerDrag = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      lastX: event.clientX,
-      lastY: event.clientY,
-      tile,
-      started: false
-    };
-    tile.setPointerCapture(event.pointerId);
-  });
-  grid.addEventListener("pointermove", (event) => {
-    if (!pointerDrag || event.pointerId !== pointerDrag.pointerId) return;
-    const distance2 = Math.hypot(event.clientX - pointerDrag.startX, event.clientY - pointerDrag.startY);
-    if (!pointerDrag.started && distance2 > 6) {
-      pointerDrag.started = true;
-      suppressNextClick = true;
-      startReorderDrag(pointerDrag.tile, event.clientX, event.clientY);
-    }
-    if (pointerDrag.started) {
-      event.preventDefault();
-      updateDragPreview(event.clientX, event.clientY);
-      moveDraggedTiles(event.clientX, event.clientY);
-      pointerDrag.lastX = event.clientX;
-      pointerDrag.lastY = event.clientY;
-    }
-  });
-  function endPointerDrag(event) {
-    if (!pointerDrag || event.pointerId !== pointerDrag.pointerId) return;
-    if (pointerDrag.started) {
-      event.preventDefault();
-      finishReorderDrag();
-      window.setTimeout(() => {
-        suppressNextClick = false;
-      }, 0);
-    } else if (event.type === "pointerup" && !event.shiftKey) {
-      event.preventDefault();
-      suppressNextClick = true;
-      openLogoDialog(pointerDrag.tile.dataset.logoId);
-      window.setTimeout(() => {
-        suppressNextClick = false;
-      }, 0);
-    }
-    pointerDrag = null;
-  }
-  grid.addEventListener("pointerup", endPointerDrag);
-  grid.addEventListener("pointercancel", endPointerDrag);
   function randomizeLogoOrder() {
     const tiles = [...grid.querySelectorAll(".logo-tile")];
     for (let index = tiles.length - 1; index > 0; index -= 1) {
@@ -5057,7 +4906,7 @@ void main() {
       fontSize: parseFloat(textStyle.fontSize) || parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--lockup-font-size")) || 160
     };
   }
-  function lockupMaskSvg(front = "white", back = "black") {
+  function lockupMaskSvg(front = "white", back = "transparent") {
     const geometry = lockupGeometry();
     if (!geometry) return "";
     const iconScaleX = geometry.markWidth / geometry.viewWidth;
@@ -5156,30 +5005,34 @@ void main() {
     }
     return source;
   }
-  async function lightweightTextureFromImage(image, type) {
-    const size = 192;
+  async function lightweightTextureFromImage(image, type, { preserveAspect = false } = {}) {
+    const baseSize = 192;
+    const maxSize = 512;
+    const aspect = image.naturalWidth > 0 && image.naturalHeight > 0 ? image.naturalWidth / image.naturalHeight : 1;
+    const width = preserveAspect ? Math.max(1, Math.round(aspect >= 1 ? maxSize : maxSize * aspect)) : baseSize;
+    const height = preserveAspect ? Math.max(1, Math.round(aspect >= 1 ? maxSize / aspect : maxSize)) : baseSize;
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) throw new Error("Failed to create logo texture context");
-    canvas.width = size;
-    canvas.height = size;
-    ctx.clearRect(0, 0, size, size);
-    ctx.drawImage(image, 0, 0, size, size);
-    const sourcePixels = ctx.getImageData(0, 0, size, size);
-    const alpha = new Float32Array(size * size);
+    canvas.width = width;
+    canvas.height = height;
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(image, 0, 0, width, height);
+    const sourcePixels = ctx.getImageData(0, 0, width, height);
+    const alpha = new Float32Array(width * height);
     for (let i2 = 0; i2 < alpha.length; i2 += 1) {
       alpha[i2] = sourcePixels.data[i2 * 4 + 3] / 255;
     }
-    const texture = ctx.createImageData(size, size);
+    const texture = ctx.createImageData(width, height);
     const output = texture.data;
     if (type === "heatmap") {
       const inverse = new Float32Array(alpha.length);
       for (let i2 = 0; i2 < alpha.length; i2 += 1) {
         inverse[i2] = 1 - alpha[i2];
       }
-      const contour = boxBlur(inverse, size, size, 2, 1);
-      const outerBlur = boxBlur(inverse, size, size, 18, 2);
-      const innerBlur = boxBlur(inverse, size, size, 6, 2);
+      const contour = boxBlur(inverse, width, height, 2, 1);
+      const outerBlur = boxBlur(inverse, width, height, 18, 2);
+      const innerBlur = boxBlur(inverse, width, height, 6, 2);
       for (let i2 = 0; i2 < alpha.length; i2 += 1) {
         const px = i2 * 4;
         output[px] = contour[i2] * 255;
@@ -5188,7 +5041,7 @@ void main() {
         output[px + 3] = 255;
       }
     } else {
-      const softMask = boxBlur(alpha, size, size, 10, 2);
+      const softMask = boxBlur(alpha, width, height, 10, 2);
       for (let i2 = 0; i2 < alpha.length; i2 += 1) {
         const px = i2 * 4;
         output[px] = (1 - softMask[i2]) * 255;
@@ -5208,7 +5061,7 @@ void main() {
   async function lightweightLockupTexture(type) {
     const image = await sourceLockupImage();
     if (!image) return null;
-    return lightweightTextureFromImage(image, type);
+    return lightweightTextureFromImage(image, type, { preserveAspect: true });
   }
   async function fullscreenShaderImage(preset) {
     const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
