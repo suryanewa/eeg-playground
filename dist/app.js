@@ -4020,6 +4020,12 @@ void main() {
   var copyOrderButton = document.querySelector("#copy-order");
   var resetOrderButton = document.querySelector("#reset-order");
   var toggleGradientButton = document.querySelector("#toggle-gradient");
+  var settingsButton = document.querySelector("#settings-button");
+  var settingsPopover = document.querySelector("#settings-popover");
+  var settingsGradientToggle = document.querySelector("#settings-gradient");
+  var settingsFontButton = document.querySelector("#settings-font-button");
+  var settingsFontOptions = document.querySelector("#settings-font-options");
+  var settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
   var orderStatus = document.querySelector("#order-status");
   var dialog = document.querySelector("#logo-dialog");
   var fullscreenLogo = document.querySelector("#fullscreen-logo");
@@ -4283,6 +4289,25 @@ void main() {
       orderStatus.textContent = "";
     }, 2200);
   }
+  function closeFontPicker() {
+    settingsFontOptions.hidden = true;
+    settingsFontButton.setAttribute("aria-expanded", "false");
+  }
+  function toggleFontPicker() {
+    const nextOpen = settingsFontOptions.hidden;
+    settingsFontOptions.hidden = !nextOpen;
+    settingsFontButton.setAttribute("aria-expanded", String(nextOpen));
+  }
+  function closeSettingsPopover() {
+    closeFontPicker();
+    settingsPopover.hidden = true;
+    settingsButton.setAttribute("aria-expanded", "false");
+  }
+  function toggleSettingsPopover() {
+    const nextOpen = settingsPopover.hidden;
+    settingsPopover.hidden = !nextOpen;
+    settingsButton.setAttribute("aria-expanded", String(nextOpen));
+  }
   function clearSelection() {
     const selectedTiles = grid.querySelectorAll(".logo-tile.is-selected");
     if (!selectedTiles.length) return;
@@ -4451,6 +4476,9 @@ void main() {
     setStatus("Reset order");
   });
   document.addEventListener("pointerdown", (event) => {
+    if (!settingsPopover.hidden && !event.target.closest(".utility-dock")) {
+      closeSettingsPopover();
+    }
     if (event.shiftKey) return;
     if (dialog.open || event.target.closest(".reorder-toolbar")) return;
     if (event.target.closest(".logo-tile.is-selected")) return;
@@ -5403,13 +5431,36 @@ void main() {
     const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink && currentPalette.paper.toLowerCase() === invertedPalette.paper;
     applyPalette(isInverted ? defaultPalette : invertedPalette);
   }
-  toggleGradientButton.addEventListener("click", () => {
-    gradientMode = !gradientMode;
+  function setGradientMode(enabled) {
+    gradientMode = enabled;
     toggleGradientButton.setAttribute("aria-pressed", String(gradientMode));
+    settingsGradientToggle.checked = gradientMode;
     applyPalette(gradientMode ? randomGradientPalette() : defaultPalette);
+  }
+  toggleGradientButton.addEventListener("click", () => {
+    setGradientMode(!gradientMode);
+  });
+  settingsButton.addEventListener("click", toggleSettingsPopover);
+  settingsGradientToggle.addEventListener("change", () => {
+    setGradientMode(settingsGradientToggle.checked);
+  });
+  settingsFontButton.addEventListener("click", toggleFontPicker);
+  settingsFontOptionButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      settingsFontButton.textContent = button.dataset.font;
+      settingsFontOptionButtons.forEach((option) => {
+        option.setAttribute("aria-selected", String(option === button));
+      });
+      closeFontPicker();
+    });
   });
   document.addEventListener("keydown", (event) => {
     const target = event.target;
+    if (event.key === "Escape" && !settingsPopover.hidden) {
+      event.preventDefault();
+      closeSettingsPopover();
+      return;
+    }
     const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
     if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.code === "Space") {
@@ -5429,6 +5480,7 @@ void main() {
       resetShaderView();
       gradientMode = false;
       toggleGradientButton.setAttribute("aria-pressed", "false");
+      settingsGradientToggle.checked = false;
       toggleDefaultPalette();
     }
     if (event.key === "+" || event.key === "=") {

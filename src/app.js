@@ -24,6 +24,12 @@ const grid = document.querySelector("#logo-grid");
 const copyOrderButton = document.querySelector("#copy-order");
 const resetOrderButton = document.querySelector("#reset-order");
 const toggleGradientButton = document.querySelector("#toggle-gradient");
+const settingsButton = document.querySelector("#settings-button");
+const settingsPopover = document.querySelector("#settings-popover");
+const settingsGradientToggle = document.querySelector("#settings-gradient");
+const settingsFontButton = document.querySelector("#settings-font-button");
+const settingsFontOptions = document.querySelector("#settings-font-options");
+const settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
 const orderStatus = document.querySelector("#order-status");
 const dialog = document.querySelector("#logo-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
@@ -189,6 +195,29 @@ function setStatus(message) {
   setStatus.timeout = window.setTimeout(() => {
     orderStatus.textContent = "";
   }, 2200);
+}
+
+function closeFontPicker() {
+  settingsFontOptions.hidden = true;
+  settingsFontButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleFontPicker() {
+  const nextOpen = settingsFontOptions.hidden;
+  settingsFontOptions.hidden = !nextOpen;
+  settingsFontButton.setAttribute("aria-expanded", String(nextOpen));
+}
+
+function closeSettingsPopover() {
+  closeFontPicker();
+  settingsPopover.hidden = true;
+  settingsButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleSettingsPopover() {
+  const nextOpen = settingsPopover.hidden;
+  settingsPopover.hidden = !nextOpen;
+  settingsButton.setAttribute("aria-expanded", String(nextOpen));
 }
 
 function clearSelection() {
@@ -398,6 +427,10 @@ resetOrderButton.addEventListener("click", () => {
 });
 
 document.addEventListener("pointerdown", (event) => {
+  if (!settingsPopover.hidden && !event.target.closest(".utility-dock")) {
+    closeSettingsPopover();
+  }
+
   if (event.shiftKey) return;
   if (dialog.open || event.target.closest(".reorder-toolbar")) return;
   if (event.target.closest(".logo-tile.is-selected")) return;
@@ -1617,16 +1650,45 @@ function toggleDefaultPalette() {
   applyPalette(isInverted ? defaultPalette : invertedPalette);
 }
 
-toggleGradientButton.addEventListener("click", () => {
-  gradientMode = !gradientMode;
+function setGradientMode(enabled) {
+  gradientMode = enabled;
   toggleGradientButton.setAttribute("aria-pressed", String(gradientMode));
+  settingsGradientToggle.checked = gradientMode;
   applyPalette(gradientMode
     ? randomGradientPalette()
     : defaultPalette);
+}
+
+toggleGradientButton.addEventListener("click", () => {
+  setGradientMode(!gradientMode);
+});
+
+settingsButton.addEventListener("click", toggleSettingsPopover);
+
+settingsGradientToggle.addEventListener("change", () => {
+  setGradientMode(settingsGradientToggle.checked);
+});
+
+settingsFontButton.addEventListener("click", toggleFontPicker);
+
+settingsFontOptionButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    settingsFontButton.textContent = button.dataset.font;
+    settingsFontOptionButtons.forEach((option) => {
+      option.setAttribute("aria-selected", String(option === button));
+    });
+    closeFontPicker();
+  });
 });
 
 document.addEventListener("keydown", (event) => {
   const target = event.target;
+  if (event.key === "Escape" && !settingsPopover.hidden) {
+    event.preventDefault();
+    closeSettingsPopover();
+    return;
+  }
+
   const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
   if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
 
@@ -1650,6 +1712,7 @@ document.addEventListener("keydown", (event) => {
     resetShaderView();
     gradientMode = false;
     toggleGradientButton.setAttribute("aria-pressed", "false");
+    settingsGradientToggle.checked = false;
     toggleDefaultPalette();
   }
 
