@@ -54,7 +54,8 @@ let pointerDrag = null;
 let suppressNextClick = false;
 let dragPreview = null;
 let gradientMode = false;
-let logoScale = 1;
+let gridLogoScale = 1;
+let fullscreenLogoScale = 1;
 const defaultPalette = { ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" };
 const invertedPalette = { ink: "#ffffff", paper: "#111111", ratio: 21, source: "Inverted" };
 let currentPalette = defaultPalette;
@@ -64,6 +65,8 @@ let fullscreenShaderMount = null;
 const perIconShaderMounts = new Map();
 const perIconLogoImageCache = new Map();
 const perIconShaderPending = new Set();
+const minLogoScale = 0.5;
+const maxLogoScale = 1.5;
 let shaderToken = 0;
 
 function logoId(id) {
@@ -78,13 +81,48 @@ function logoMarkup(id) {
   return window.LOGO_SVGS?.[logoId(id)] ?? "";
 }
 
-function setLogoScale(nextScale) {
-  logoScale = Math.min(1.5, Math.max(0.55, Math.round(nextScale * 100) / 100));
-  document.documentElement.style.setProperty("--logo-scale", String(logoScale));
-  if (dialog.open) mountFullscreenShader();
-  scheduleLogoShaderMask();
-  setStatus(`Logo size ${Math.round(logoScale * 100)}%`);
+function gridBaseColumns() {
+  return window.matchMedia("(max-width: 720px)").matches ? 4 : 8;
 }
+
+function gridColumnsForScale(scale) {
+  const baseColumns = gridBaseColumns();
+  const maxColumns = baseColumns <= 4 ? 11 : 15;
+  const progress = (Math.min(maxLogoScale, Math.max(minLogoScale, scale)) - minLogoScale)
+    / (maxLogoScale - minLogoScale);
+  return Math.max(1, Math.round(maxColumns - progress * (maxColumns - 1)));
+}
+
+function updateGridColumns() {
+  document.documentElement.style.setProperty("--grid-columns", String(gridColumnsForScale(gridLogoScale)));
+}
+
+function clampLogoScale(nextScale) {
+  return Math.min(maxLogoScale, Math.max(minLogoScale, Math.round(nextScale * 100) / 100));
+}
+
+function setGridLogoScale(nextScale) {
+  gridLogoScale = clampLogoScale(nextScale);
+  document.documentElement.style.setProperty("--grid-logo-scale", String(gridLogoScale));
+  updateGridColumns();
+  scheduleLogoShaderMask();
+}
+
+function setFullscreenLogoScale(nextScale) {
+  fullscreenLogoScale = clampLogoScale(nextScale);
+  document.documentElement.style.setProperty("--fullscreen-logo-scale", String(fullscreenLogoScale));
+  if (dialog.open) mountFullscreenShader();
+}
+
+function resizeActiveLogoView(delta) {
+  if (dialog.open) {
+    setFullscreenLogoScale(fullscreenLogoScale + delta);
+  } else {
+    setGridLogoScale(gridLogoScale + delta);
+  }
+}
+
+updateGridColumns();
 
 function showLogoById(id) {
   currentLogoId = logoId(id);
@@ -1498,7 +1536,10 @@ window.addEventListener("beforeunload", () => {
 });
 
 window.addEventListener("scroll", scheduleLogoShaderMask, { passive: true });
-window.addEventListener("resize", scheduleLogoShaderMask);
+window.addEventListener("resize", () => {
+  updateGridColumns();
+  scheduleLogoShaderMask();
+});
 window.addEventListener("scroll", schedulePerIconShaderSync, { passive: true });
 window.addEventListener("resize", schedulePerIconShaderSync);
 
@@ -1906,11 +1947,11 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key === "+" || event.key === "=") {
     event.preventDefault();
-    setLogoScale(logoScale + 0.1);
+    resizeActiveLogoView(0.1);
   }
 
   if (event.key === "-" || event.key === "_") {
     event.preventDefault();
-    setLogoScale(logoScale - 0.1);
+    resizeActiveLogoView(-0.1);
   }
 });

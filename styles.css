@@ -2,7 +2,9 @@
   --logo-bg: #fff;
   --logo-bg-paint: var(--logo-bg);
   --logo-ink: #111;
-  --logo-scale: 1;
+  --grid-logo-scale: 1;
+  --fullscreen-logo-scale: 1;
+  --grid-columns: 8;
   --editor-mark-color: rgb(17 17 17 / 36%);
   color-scheme: light;
   background: var(--logo-bg-paint);
@@ -111,7 +113,7 @@ body.is-reordering {
 
 .logo-grid {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
   gap: 0;
   background: transparent;
 }
@@ -130,6 +132,7 @@ body.is-reordering {
   z-index: 4;
   top: 18px;
   left: 50%;
+  display: none;
   color: var(--editor-mark-color);
   content: attr(data-logo-id);
   font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -185,6 +188,8 @@ body.is-reordering {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   pointer-events: none;
+  transform: scale(var(--grid-logo-scale));
+  transform-origin: center;
 }
 
 .logo-shader-layer canvas {
@@ -260,8 +265,8 @@ body.is-reordering .logo-button {
   position: relative;
   z-index: 1;
   pointer-events: none;
-  width: calc(100% * var(--logo-scale));
-  height: calc(100% * var(--logo-scale));
+  transform: scale(var(--grid-logo-scale));
+  transform-origin: center;
 }
 
 .logo-tile.has-logo-shader .logo-art {
@@ -272,8 +277,8 @@ body.is-reordering .logo-button {
   position: relative;
   z-index: 1;
   pointer-events: none;
-  width: calc(100% * var(--logo-scale));
-  height: calc(100% * var(--logo-scale));
+  transform: scale(var(--fullscreen-logo-scale));
+  transform-origin: center;
 }
 
 .fullscreen-logo.has-fullscreen-shader .fullscreen-logo-art {
@@ -293,6 +298,8 @@ body.is-reordering .logo-button {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   pointer-events: none;
+  transform: scale(var(--fullscreen-logo-scale));
+  transform-origin: center;
 }
 
 .fullscreen-shader-layer canvas {
@@ -462,7 +469,7 @@ body.is-reordering .logo-button {
   }
 
   .logo-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    --grid-columns: 4;
   }
 
   .logo-dialog .fullscreen-logo {
