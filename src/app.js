@@ -144,9 +144,6 @@ function createAccessUi() {
   accessPanel.hidden = true;
   accessPanel.innerHTML = `
     <div class="access-card">
-      <p class="access-kicker">EEG Brand Review</p>
-      <h1 class="access-title">Client Login</h1>
-      <p class="access-copy" data-access-copy>Use the email and password created for this review.</p>
       <form class="access-form" data-auth-form>
         <label>
           <span>Email</span>
