@@ -127,9 +127,46 @@ function logoMarkup(id) {
   return window.LOGO_SVGS?.[logoId(id)] ?? "";
 }
 
+function logoFaviconHref(id) {
+  const markup = logoMarkup(id);
+  if (!markup) return logoPath(id);
+
+  const ink = parseColor(currentPalette.ink);
+  const paper = parseColor(currentPalette.paper);
+  const colorStyle = `
+    <style>
+      svg > path,
+      svg > polygon,
+      svg > polyline,
+      svg > rect,
+      svg > circle,
+      svg > ellipse,
+      svg > g path,
+      svg > g polygon,
+      svg > g polyline,
+      svg > g rect,
+      svg > g circle,
+      svg > g ellipse {
+        fill: ${ink} !important;
+      }
+
+      svg > line,
+      svg > g line {
+        stroke: ${ink} !important;
+      }
+
+      svg > g .cls-5 {
+        fill: ${paper} !important;
+      }
+    </style>
+  `;
+  const faviconMarkup = markup.replace(/<svg\b([^>]*)>/, `<svg$1>${colorStyle}`);
+  return `data:image/svg+xml,${encodeURIComponent(faviconMarkup)}`;
+}
+
 function updateFaviconForTopLogo() {
   const topLogoId = grid.querySelector(".logo-tile")?.dataset.logoId ?? logoId(logoOrder[0]);
-  favicon?.setAttribute("href", logoPath(topLogoId));
+  favicon?.setAttribute("href", logoFaviconHref(topLogoId));
 }
 
 function isAdmin() {
@@ -2207,6 +2244,7 @@ function applyPalette(palette) {
     document.documentElement.style.setProperty("--logo-bg-paint", palette.paper);
   }
   document.documentElement.style.setProperty("--editor-mark-color", alphaColor(palette.ink, 0.36));
+  updateFaviconForTopLogo();
   refreshShaderPalette();
 }
 
