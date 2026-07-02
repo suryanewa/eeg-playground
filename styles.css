@@ -165,9 +165,7 @@ body {
 }
 
 .logo-tile:hover .vote-controls,
-.logo-tile:focus-within .vote-controls,
-.logo-tile.has-upvote .vote-controls,
-.logo-tile.has-downvote .vote-controls {
+.logo-tile:focus-within .vote-controls {
   opacity: 1;
 }
 
@@ -205,11 +203,6 @@ body {
 .vote-button[disabled] {
   cursor: not-allowed;
   opacity: 0.35;
-}
-
-.vote-button[aria-pressed="true"] {
-  background: var(--logo-ink);
-  color: var(--logo-bg);
 }
 
 .vote-button:focus-visible {
