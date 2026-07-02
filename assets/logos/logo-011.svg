@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        mask: url(#mask);
+      }
+
+      .cls-3 {
+        fill: #030302;
+      }
+
+      .cls-4 {
+        isolation: isolate;
+      }
+
+      .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        mix-blend-mode: overlay;
+      }
+
+      .cls-7 {
+        fill: #282826;
+      }
+    </style>
+    <mask id="mask" x="14660.17" y="13707.54" width="232.64" height="232.64" maskUnits="userSpaceOnUse">
+      <g id="cs_mask_1_star-8" data-name="cs mask 1 star-8">
+        <path class="cls-5" d="M14776.49,13707.54c14.45,72.56,43.34,101.73,116.32,116.32-73,14.59-101.88,43.76-116.32,116.32-14.45-72.56-43.34-101.75-116.32-116.32,73-14.59,101.88-43.76,116.32-116.32Z"/>
+      </g>
+    </mask>
+  </defs>
+  <g transform="translate(-197.267 -10471.602) scale(0.832464)">
+    <g>
+        <polygon points="795.52 13035.53 795.52 13564.06 1246.89 13564.06 1246.89 13691.03 668.55 13691.03 668.55 12908.57 1246.89 12908.57 1246.89 13035.53 795.52 13035.53"/>
+        <polygon points="1246.89 13121.21 1246.89 13472.19 895.94 13472.19 895.94 13345.22 1119.95 13345.22 1119.95 13248.18 895.94 13248.18 895.94 13121.21 1246.89 13121.21"/>
+      </g>
+  </g>
+</svg>

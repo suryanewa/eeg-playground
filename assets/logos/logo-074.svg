@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        mask: url(#mask);
+      }
+
+      .cls-3 {
+        fill: #030302;
+      }
+
+      .cls-4 {
+        isolation: isolate;
+      }
+
+      .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        mix-blend-mode: overlay;
+      }
+
+      .cls-7 {
+        fill: #282826;
+      }
+    </style>
+    <mask id="mask" x="14660.17" y="13707.54" width="232.64" height="232.64" maskUnits="userSpaceOnUse">
+      <g id="cs_mask_1_star-8" data-name="cs mask 1 star-8">
+        <path class="cls-5" d="M14776.49,13707.54c14.45,72.56,43.34,101.73,116.32,116.32-73,14.59-101.88,43.76-116.32,116.32-14.45-72.56-43.34-101.75-116.32-116.32,73-14.59,101.88-43.76,116.32-116.32Z"/>
+      </g>
+    </mask>
+  </defs>
+  <g transform="translate(-14710.181 -1117.708) scale(1.065824)">
+    <path d="M14565.8,1742.48l-152.9-17.19-51.92,229.43-46.93-229.55-150.56,19.72c39.05-44.42,87.65-79.44,127.72-122.79l69.77-353.57,4.91,8.64,71.04,348.57,128.87,116.73Z"/>
+  </g>
+</svg>

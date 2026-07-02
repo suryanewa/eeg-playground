@@ -1,0 +1,21 @@
+{
+  "name": "eeg-brand-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "logos-data.js",
+  "scripts": {
+    "build": "esbuild src/app.js --bundle --format=iife --outfile=dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@paper-design/shaders": "^0.0.76",
+    "esbuild": "^0.28.1",
+    "fettepalette": "^3.3.0",
+    "poline": "^0.13.1",
+    "rampensau": "^2.4.0",
+    "rybitten": "^1.2.0"
+  }
+}

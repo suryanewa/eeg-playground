@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        mask: url(#mask);
+      }
+
+      .cls-3 {
+        fill: #030302;
+      }
+
+      .cls-4 {
+        isolation: isolate;
+      }
+
+      .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        mix-blend-mode: overlay;
+      }
+
+      .cls-7 {
+        fill: #282826;
+      }
+    </style>
+    <mask id="mask" x="14660.17" y="13707.54" width="232.64" height="232.64" maskUnits="userSpaceOnUse">
+      <g id="cs_mask_1_star-8" data-name="cs mask 1 star-8">
+        <path class="cls-5" d="M14776.49,13707.54c14.45,72.56,43.34,101.73,116.32,116.32-73,14.59-101.88,43.76-116.32,116.32-14.45-72.56-43.34-101.75-116.32-116.32,73-14.59,101.88-43.76,116.32-116.32Z"/>
+      </g>
+    </mask>
+  </defs>
+  <g transform="translate(-6886.477 -3620.957) scale(0.999348)">
+    <g>
+        <polygon points="7770.39 3942.37 7770.39 4355.42 7677.96 4449.59 7677.96 4036.53 7676.23 4034.8 7264.33 4034.8 7358.49 3942.37 7770.39 3942.37"/>
+        <rect x="7212.33" y="4411.46" width="402.08" height="93.59"/>
+        <polygon points="7614.41 4346.76 7212.33 4346.76 7212.33 4253.17 7612.68 4253.17 7614.41 4254.9 7614.41 4346.76"/>
+        <rect x="7212.33" y="4099.5" width="402.08" height="91.28"/>
+      </g>
+  </g>
+</svg>

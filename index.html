@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EEG Branding Explorations</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="shader-layer" id="shader-layer" aria-hidden="true"></div>
+    <main class="logo-sheet" aria-label="EEG branding explorations">
+      <div class="reorder-toolbar" aria-label="Reorder controls">
+        <button class="toolbar-button" id="copy-order" type="button">Copy order</button>
+        <button class="toolbar-button" id="reset-order" type="button">Reset</button>
+        <button class="toolbar-button" id="toggle-gradient" type="button" aria-pressed="false">Gradient</button>
+        <output class="order-status" id="order-status" aria-live="polite"></output>
+      </div>
+      <section class="logo-grid" id="logo-grid" aria-label="Individual EEG logo SVGs"></section>
+    </main>
+    <dialog class="logo-dialog" id="logo-dialog" aria-label="Selected logo preview" tabindex="-1">
+      <button class="close-button" type="button" aria-label="Close fullscreen logo">
+        <span aria-hidden="true"></span>
+      </button>
+      <button class="nav-button nav-button--previous" type="button" aria-label="Previous logo">
+        <span aria-hidden="true"></span>
+      </button>
+      <div class="fullscreen-logo" id="fullscreen-logo" role="img" aria-label=""></div>
+      <button class="nav-button nav-button--next" type="button" aria-label="Next logo">
+        <span aria-hidden="true"></span>
+      </button>
+    </dialog>
+    <script src="logos-data.js"></script>
+    <script src="dist/app.js"></script>
+  </body>
+</html>
