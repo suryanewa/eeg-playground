@@ -795,14 +795,17 @@ async function initializeClientAccess() {
   session = data.session;
   syncAccessUi();
 
-  supabase.auth.onAuthStateChange((_event, nextSession) => {
+  supabase.auth.onAuthStateChange((event, nextSession) => {
+    const wasSignedOut = !session;
     session = nextSession;
     currentProfile = null;
     clientVotes = new Map();
     setVotingEnabled(false);
     syncAccessUi();
     if (session) {
-      refreshClientState();
+      refreshClientState().then(() => {
+        if (event === "SIGNED_IN" && wasSignedOut) openInfoDialog();
+      });
     } else {
       renderVotes();
     }
@@ -891,6 +894,7 @@ function closeDialog() {
 closeButton.addEventListener("click", closeDialog);
 
 function openInfoDialog() {
+  if (infoDialog.open) return;
   closeSettingsPopover();
   infoDialog.showModal();
   infoButton.setAttribute("aria-expanded", "true");

@@ -372,7 +372,6 @@ body {
   gap: 18px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--logo-ink);
 }
 
 .control-group {
@@ -917,6 +916,9 @@ body {
   display: block;
   width: 33px;
   height: 33px;
+  border-radius: 50%;
+  background: var(--logo-bg-paint);
+  background-color: var(--logo-bg);
   fill: currentColor;
 }
 

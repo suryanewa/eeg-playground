@@ -24738,14 +24738,17 @@ void main() {
     const { data } = await supabase.auth.getSession();
     session = data.session;
     syncAccessUi();
-    supabase.auth.onAuthStateChange((_event, nextSession) => {
+    supabase.auth.onAuthStateChange((event, nextSession) => {
+      const wasSignedOut = !session;
       session = nextSession;
       currentProfile = null;
       clientVotes = /* @__PURE__ */ new Map();
       setVotingEnabled(false);
       syncAccessUi();
       if (session) {
-        refreshClientState();
+        refreshClientState().then(() => {
+          if (event === "SIGNED_IN" && wasSignedOut) openInfoDialog();
+        });
       } else {
         renderVotes();
       }
@@ -24817,6 +24820,7 @@ void main() {
   }
   closeButton.addEventListener("click", closeDialog);
   function openInfoDialog() {
+    if (infoDialog.open) return;
     closeSettingsPopover();
     infoDialog.showModal();
     infoButton.setAttribute("aria-expanded", "true");
