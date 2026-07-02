@@ -245,6 +245,10 @@ body.is-reordering .logo-button {
   opacity: 0;
 }
 
+.fullscreen-logo.has-fullscreen-shader .fullscreen-lockup-text {
+  opacity: 0;
+}
+
 .fullscreen-shader-layer {
   position: absolute;
   inset: 0;
@@ -260,6 +264,10 @@ body.is-reordering .logo-button {
   pointer-events: none;
   transform: scale(var(--fullscreen-logo-scale));
   transform-origin: center;
+}
+
+.fullscreen-logo.is-lockup .fullscreen-shader-layer {
+  transform: none;
 }
 
 .fullscreen-shader-layer canvas {

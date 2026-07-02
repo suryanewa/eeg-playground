@@ -235,7 +235,11 @@ function updateLockupLayout() {
 function scheduleLockupLayout() {
   window.requestAnimationFrame(() => {
     updateLockupLayout();
-    document.fonts?.ready?.then(updateLockupLayout);
+    if (dialog.open && lockupMode && currentShaderIndex >= 0) mountFullscreenShader();
+    document.fonts?.ready?.then(() => {
+      updateLockupLayout();
+      if (dialog.open && lockupMode && currentShaderIndex >= 0) mountFullscreenShader();
+    });
   });
 }
 
@@ -253,6 +257,7 @@ function renderFullscreenLogo() {
     disposeFullscreenShader();
     updateLockupLayout();
     scheduleLockupLayout();
+    if (currentShaderIndex >= 0) mountFullscreenShader();
   } else if (dialog.open) {
     mountFullscreenShader();
   }
@@ -1045,6 +1050,85 @@ function logoSourceUrlFromSvg(svg) {
   return `data:image/svg+xml,${encodeURIComponent(sourceSvg)}`;
 }
 
+function escapeSvgText(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function escapeSvgAttribute(value) {
+  return escapeSvgText(value).replaceAll('"', "&quot;");
+}
+
+function lockupGeometry() {
+  const mark = fullscreenLogo.querySelector(".fullscreen-lockup-mark");
+  const svg = mark?.querySelector("svg");
+  const text = fullscreenLogo.querySelector(".fullscreen-lockup-text");
+  if (!svg || !text) return null;
+
+  const fullBox = fullscreenLogo.getBoundingClientRect();
+  const markBox = mark.getBoundingClientRect();
+  const textBox = text.getBoundingClientRect();
+  const textStyle = getComputedStyle(text);
+  if (!fullBox.width || !fullBox.height || !markBox.width || !markBox.height || !textBox.width || !textBox.height) {
+    return null;
+  }
+
+  const viewBox = (svg.getAttribute("viewBox") ?? "0 0 1200 1200").split(/\s+/).map(Number);
+  const [viewX = 0, viewY = 0, viewWidth = 1200, viewHeight = 1200] = viewBox;
+
+  return {
+    fullWidth: fullBox.width,
+    fullHeight: fullBox.height,
+    svg,
+    viewX,
+    viewY,
+    viewWidth,
+    viewHeight,
+    markX: markBox.left - fullBox.left,
+    markY: markBox.top - fullBox.top,
+    markWidth: markBox.width,
+    markHeight: markBox.height,
+    textX: textBox.left - fullBox.left + textBox.width / 2,
+    textY: textBox.top - fullBox.top + textBox.height / 2,
+    fontFamily: textStyle.fontFamily,
+    fontSize: parseFloat(textStyle.fontSize) || parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--lockup-font-size")) || 160,
+  };
+}
+
+function lockupMaskSvg(front = "white", back = "black") {
+  const geometry = lockupGeometry();
+  if (!geometry) return "";
+
+  const iconScaleX = geometry.markWidth / geometry.viewWidth;
+  const iconScaleY = geometry.markHeight / geometry.viewHeight;
+  const iconTransform = `translate(${geometry.markX.toFixed(2)} ${geometry.markY.toFixed(2)}) scale(${iconScaleX.toFixed(6)} ${iconScaleY.toFixed(6)}) translate(${-geometry.viewX.toFixed(2)} ${-geometry.viewY.toFixed(2)})`;
+  const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+  const safeText = escapeSvgText(lockupText);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${geometry.fullWidth}" height="${geometry.fullHeight}" viewBox="0 0 ${geometry.fullWidth} ${geometry.fullHeight}">
+    <style>
+      .lockup-mask :is(path, polygon, polyline, rect, circle, ellipse) { fill: ${front} !important; stroke: ${front} !important; opacity: 1 !important; }
+      .lockup-mask line { stroke: ${front} !important; opacity: 1 !important; }
+      .lockup-mask .cls-5 { fill: ${back} !important; stroke: ${back} !important; opacity: 1 !important; }
+    </style>
+    <rect width="100%" height="100%" fill="${back}"/>
+    <g class="lockup-mask" transform="${iconTransform}">${geometry.svg.innerHTML}</g>
+    <text x="${geometry.textX.toFixed(2)}" y="${geometry.textY.toFixed(2)}" fill="${front}" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="700" text-anchor="middle" dominant-baseline="central">${safeText}</text>
+  </svg>`;
+}
+
+function lockupMaskUrl() {
+  const maskSvg = lockupMaskSvg();
+  return maskSvg ? `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")` : "";
+}
+
+function lockupSourceUrl() {
+  const sourceSvg = lockupMaskSvg("black", "transparent");
+  return sourceSvg ? `data:image/svg+xml,${encodeURIComponent(sourceSvg)}` : "";
+}
+
 function imageFromBlob(blob) {
   const url = URL.createObjectURL(blob);
   const image = new Image();
@@ -1074,18 +1158,28 @@ function canvasToImage(canvas) {
   });
 }
 
+function imageFromDataUrl(dataUrl, errorMessage = "Failed to load image") {
+  const image = new Image();
+
+  return new Promise((resolve, reject) => {
+    image.addEventListener("load", () => resolve(image), { once: true });
+    image.addEventListener("error", () => reject(new Error(errorMessage)), { once: true });
+    image.src = dataUrl;
+  });
+}
+
 function sourceLogoImage(tile) {
   return sourceLogoImageFromSvg(tile.querySelector(".logo-art svg"));
 }
 
 function sourceLogoImageFromSvg(svg) {
-  const image = new Image();
+  return imageFromDataUrl(logoSourceUrlFromSvg(svg), "Failed to load logo SVG texture");
+}
 
-  return new Promise((resolve, reject) => {
-    image.addEventListener("load", () => resolve(image), { once: true });
-    image.addEventListener("error", () => reject(new Error("Failed to load logo SVG texture")), { once: true });
-    image.src = logoSourceUrlFromSvg(svg);
-  });
+function sourceLockupImage() {
+  const url = lockupSourceUrl();
+  if (!url) return Promise.resolve(null);
+  return imageFromDataUrl(url, "Failed to load lockup SVG texture");
 }
 
 function boxBlur(values, width, height, radius, passes = 1) {
@@ -1124,9 +1218,7 @@ function boxBlur(values, width, height, radius, passes = 1) {
   return source;
 }
 
-async function lightweightLogoTexture(sourceElement, type) {
-  const svg = sourceElement?.matches?.("svg") ? sourceElement : sourceElement?.querySelector?.("svg");
-  const image = await sourceLogoImageFromSvg(svg);
+async function lightweightTextureFromImage(image, type) {
   const size = 192;
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -1179,6 +1271,18 @@ async function lightweightLogoTexture(sourceElement, type) {
   return canvasToImage(canvas);
 }
 
+async function lightweightLogoTexture(sourceElement, type) {
+  const svg = sourceElement?.matches?.("svg") ? sourceElement : sourceElement?.querySelector?.("svg");
+  const image = await sourceLogoImageFromSvg(svg);
+  return lightweightTextureFromImage(image, type);
+}
+
+async function lightweightLockupTexture(type) {
+  const image = await sourceLockupImage();
+  if (!image) return null;
+  return lightweightTextureFromImage(image, type);
+}
+
 async function processedLogoImage(tile, preset) {
   if (!preset.logoTexture) return null;
 
@@ -1196,6 +1300,10 @@ async function fullscreenShaderImage(preset) {
 
   if (!preset.logoTexture) {
     return paletteTextureImage(currentPalette);
+  }
+
+  if (lockupMode) {
+    return lightweightLockupTexture(preset.logoTexture);
   }
 
   const cacheKey = `${preset.logoTexture}:${currentLogoId}`;
@@ -1220,7 +1328,7 @@ async function mountFullscreenShader() {
   fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
   fullscreenLogo.classList.remove("has-fullscreen-shader");
 
-  if (!dialog.open || lockupMode || currentShaderIndex < 0) return;
+  if (!dialog.open || currentShaderIndex < 0) return;
 
   const preset = shaderPresets[currentShaderIndex];
   const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
@@ -1235,7 +1343,8 @@ async function mountFullscreenShader() {
 
   const layer = document.createElement("div");
   layer.className = "fullscreen-shader-layer";
-  const mask = logoMaskUrlFromSvg(svg);
+  const mask = lockupMode ? lockupMaskUrl() : logoMaskUrlFromSvg(svg);
+  if (!mask) return;
   layer.style.webkitMaskImage = mask;
   layer.style.maskImage = mask;
   fullscreenLogo.append(layer);
