@@ -16,40 +16,6 @@ if (!input) {
 const source = fs.readFileSync(input, "utf8");
 
 const defs = source.match(/<defs[\s\S]*?<\/defs>/)?.[0] || "";
-const layerOpen = source.match(/<g\b[^>]*\bid="Layer_1"[^>]*>/);
-if (!layerOpen) {
-  throw new Error("Could not find Layer_1 in the SVG.");
-}
-
-const layerStart = layerOpen.index + layerOpen[0].length;
-let cursor = layerStart;
-let depth = 1;
-let layerEnd = -1;
-const tagRe = /<\/?g\b[^>]*>|<[^>]+\/>|<[^>]+>/g;
-tagRe.lastIndex = layerStart;
-
-while (true) {
-  const match = tagRe.exec(source);
-  if (!match) break;
-  const tag = match[0];
-  if (tag.startsWith("</g")) {
-    depth -= 1;
-    if (depth === 0) {
-      layerEnd = match.index;
-      break;
-    }
-  } else if (tag.startsWith("<g") && !tag.endsWith("/>")) {
-    depth += 1;
-  }
-  cursor = tagRe.lastIndex;
-}
-
-if (layerEnd < 0) {
-  throw new Error("Could not find the end of Layer_1.");
-}
-
-const layerInner = source.slice(layerStart, layerEnd);
-
 function svgInner(xml) {
   const open = xml.match(/<svg\b[^>]*>/);
   if (!open) throw new Error("Replacement file is not an SVG.");
@@ -57,6 +23,38 @@ function svgInner(xml) {
   const end = xml.lastIndexOf("</svg>");
   if (end < 0) throw new Error("Replacement SVG has no closing </svg>.");
   return xml.slice(start, end);
+}
+
+function layerInner(xml) {
+  const layerOpen = xml.match(/<g\b[^>]*\bid="Layer_1"[^>]*>/);
+  if (!layerOpen) return svgInner(xml);
+
+  const layerStart = layerOpen.index + layerOpen[0].length;
+  let depth = 1;
+  let layerEnd = -1;
+  const tagRe = /<\/?g\b[^>]*>|<[^>]+\/>|<[^>]+>/g;
+  tagRe.lastIndex = layerStart;
+
+  while (true) {
+    const match = tagRe.exec(xml);
+    if (!match) break;
+    const tag = match[0];
+    if (tag.startsWith("</g")) {
+      depth -= 1;
+      if (depth === 0) {
+        layerEnd = match.index;
+        break;
+      }
+    } else if (tag.startsWith("<g") && !tag.endsWith("/>")) {
+      depth += 1;
+    }
+  }
+
+  if (layerEnd < 0) {
+    throw new Error("Could not find the end of Layer_1.");
+  }
+
+  return xml.slice(layerStart, layerEnd);
 }
 
 function directChildren(xml) {
@@ -278,7 +276,7 @@ function bbox(xml) {
   return box;
 }
 
-const logos = directChildren(layerInner)
+const logos = directChildren(layerInner(source))
   .map((xml, index) => ({ xml: xml.trim(), index, box: bbox(xml) }))
   .filter((logo) => Number.isFinite(logo.box.minX))
   .map((logo) => ({

@@ -4923,6 +4923,7 @@ void main() {
   var orderStatus = document.querySelector("#order-status");
   var dialog = document.querySelector("#logo-dialog");
   var fullscreenLogo = document.querySelector("#fullscreen-logo");
+  var shaderTitle = document.querySelector("#shader-title");
   var closeButton = dialog.querySelector(".close-button");
   var previousButton = dialog.querySelector(".nav-button--previous");
   var nextButton = dialog.querySelector(".nav-button--next");
@@ -4932,13 +4933,10 @@ void main() {
     90,
     13,
     14,
-    66,
     16,
     15,
     96,
     25,
-    34,
-    35,
     67,
     70,
     71,
@@ -4961,19 +4959,13 @@ void main() {
     80,
     82,
     86,
-    107,
     106,
     1,
     60,
     21,
     22,
     27,
-    32,
-    28,
-    29,
-    104,
     105,
-    30,
     61,
     31,
     36,
@@ -4981,6 +4973,13 @@ void main() {
     8,
     40,
     41,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
     79,
     57,
     62,
@@ -5013,6 +5012,14 @@ void main() {
     95,
     103,
     39,
+    122,
+    123,
+    124,
+    125,
+    126,
+    130,
+    120,
+    121,
     3,
     4,
     5,
@@ -5023,9 +5030,14 @@ void main() {
     64,
     73,
     74,
-    98,
     87,
     88,
+    108,
+    109,
+    110,
+    98,
+    111,
+    112,
     72,
     19,
     20,
@@ -5043,6 +5055,7 @@ void main() {
   var suppressNextClick = false;
   var dragPreview = null;
   var gradientMode = false;
+  var logoScale = 1;
   var currentPalette = { ink: "#111111", paper: "#ffffff", source: "Default" };
   var currentShaderIndex = -1;
   var shaderMount = null;
@@ -5056,6 +5069,13 @@ void main() {
   }
   function logoMarkup(id) {
     return window.LOGO_SVGS?.[logoId(id)] ?? "";
+  }
+  function setLogoScale(nextScale) {
+    logoScale = Math.min(1.5, Math.max(0.55, Math.round(nextScale * 100) / 100));
+    document.documentElement.style.setProperty("--logo-scale", String(logoScale));
+    if (dialog.open) mountFullscreenShader();
+    scheduleLogoShaderMask();
+    setStatus(`Logo size ${Math.round(logoScale * 100)}%`);
   }
   function showLogoById(id) {
     currentLogoId = logoId(id);
@@ -5119,6 +5139,12 @@ void main() {
     setStatus.timeout = window.setTimeout(() => {
       orderStatus.textContent = "";
     }, 2200);
+  }
+  function updateShaderTitle() {
+    const preset = currentShaderIndex >= 0 ? shaderPresets[currentShaderIndex] : null;
+    if (!shaderTitle) return;
+    shaderTitle.textContent = dialog.open && preset ? preset.label : "";
+    shaderTitle.hidden = !dialog.open || !preset;
   }
   function clearSelection() {
     const selectedTiles = grid.querySelectorAll(".logo-tile.is-selected");
@@ -5297,6 +5323,7 @@ void main() {
     disposeFullscreenShader();
     dialog.close();
     document.activeElement?.blur?.();
+    updateShaderTitle();
     fullscreenLogo.innerHTML = "";
     fullscreenLogo.setAttribute("aria-label", "");
   }
@@ -5329,6 +5356,7 @@ void main() {
   });
   dialog.addEventListener("cancel", () => {
     disposeFullscreenShader();
+    updateShaderTitle();
     fullscreenLogo.innerHTML = "";
     fullscreenLogo.setAttribute("aria-label", "");
   });
@@ -6118,6 +6146,7 @@ void main() {
     fullscreenShaderMount = null;
     fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
     fullscreenLogo.classList.remove("has-fullscreen-shader");
+    updateShaderTitle();
     if (!dialog.open || currentShaderIndex < 0) return;
     const preset = shaderPresets[currentShaderIndex];
     const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
@@ -6147,7 +6176,7 @@ void main() {
         1600 * 1600,
         preset.mipmaps
       );
-      setStatus(preset.label);
+      updateShaderTitle();
     } catch (error) {
       layer.remove();
       fullscreenLogo.classList.remove("has-fullscreen-shader");
@@ -6177,11 +6206,12 @@ void main() {
     disposePerIconShaders();
     currentShaderIndex = (index % shaderPresets.length + shaderPresets.length) % shaderPresets.length;
     const preset = shaderPresets[currentShaderIndex];
+    updateShaderTitle();
     if (dialog.open) {
       await mountFullscreenShader();
     } else {
       disposeFullscreenShader();
-      setStatus(`${preset.label} selected`);
+      updateShaderTitle();
     }
   }
   function resetShaderView() {
@@ -6197,6 +6227,7 @@ void main() {
     }
     disposeFullscreenShader();
     disposePerIconShaders();
+    updateShaderTitle();
   }
   function cycleShader(direction) {
     const nextIndex = currentShaderIndex < 0 ? direction > 0 ? 0 : shaderPresets.length - 1 : currentShaderIndex + direction;
@@ -6533,6 +6564,14 @@ void main() {
       gradientMode = false;
       toggleGradientButton.setAttribute("aria-pressed", "false");
       applyPalette({ ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" });
+    }
+    if (event.key === "+" || event.key === "=") {
+      event.preventDefault();
+      setLogoScale(logoScale + 0.1);
+    }
+    if (event.key === "-" || event.key === "_") {
+      event.preventDefault();
+      setLogoScale(logoScale - 0.1);
     }
   });
 })();

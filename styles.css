@@ -2,6 +2,7 @@
   --logo-bg: #fff;
   --logo-bg-paint: var(--logo-bg);
   --logo-ink: #111;
+  --logo-scale: 1;
   --editor-mark-color: rgb(17 17 17 / 36%);
   color-scheme: light;
   background: var(--logo-bg-paint);
@@ -167,6 +168,7 @@ body.is-reordering {
   appearance: none;
   background: transparent;
   cursor: zoom-in;
+  overflow: hidden;
   touch-action: none;
 }
 
@@ -258,6 +260,8 @@ body.is-reordering .logo-button {
   position: relative;
   z-index: 1;
   pointer-events: none;
+  width: calc(100% * var(--logo-scale));
+  height: calc(100% * var(--logo-scale));
 }
 
 .logo-tile.has-logo-shader .logo-art {
@@ -268,6 +272,8 @@ body.is-reordering .logo-button {
   position: relative;
   z-index: 1;
   pointer-events: none;
+  width: calc(100% * var(--logo-scale));
+  height: calc(100% * var(--logo-scale));
 }
 
 .fullscreen-logo.has-fullscreen-shader .fullscreen-logo-art {
@@ -345,6 +351,23 @@ body.is-reordering .logo-button {
 .logo-dialog[open] {
   display: grid;
   place-items: center;
+}
+
+.shader-title {
+  position: fixed;
+  top: clamp(16px, 3vw, 34px);
+  left: 50%;
+  z-index: 4;
+  color: var(--editor-mark-color);
+  font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0;
+  pointer-events: none;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.shader-title[hidden] {
+  display: none;
 }
 
 .logo-dialog .fullscreen-logo {
