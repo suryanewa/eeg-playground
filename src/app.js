@@ -133,8 +133,15 @@ function logoFaviconHref(id) {
 
   const ink = parseColor(currentPalette.ink);
   const paper = parseColor(currentPalette.paper);
+  const faviconScale = 1.22;
   const colorStyle = `
     <style>
+      .favicon-mark {
+        transform: scale(${faviconScale});
+        transform-box: view-box;
+        transform-origin: center;
+      }
+
       svg > path,
       svg > polygon,
       svg > polyline,
@@ -160,7 +167,9 @@ function logoFaviconHref(id) {
       }
     </style>
   `;
-  const faviconMarkup = markup.replace(/<svg\b([^>]*)>/, `<svg$1>${colorStyle}`);
+  const faviconMarkup = markup
+    .replace(/<svg\b([^>]*)>/, `<svg$1>${colorStyle}<g class="favicon-mark">`)
+    .replace(/<\/svg>\s*$/, "</g></svg>");
   return `data:image/svg+xml,${encodeURIComponent(faviconMarkup)}`;
 }
 
