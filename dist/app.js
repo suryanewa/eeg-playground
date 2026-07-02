@@ -23989,6 +23989,7 @@ void main() {
   var logoSheet = document.querySelector(".logo-sheet");
   var grid = document.querySelector("#logo-grid");
   var shuffleButton = document.querySelector("#shuffle-button");
+  var infoButton = document.querySelector("#info-button");
   var settingsButton = document.querySelector("#settings-button");
   var settingsPopover = document.querySelector("#settings-popover");
   var settingsGradientToggle = document.querySelector("#settings-gradient");
@@ -23996,8 +23997,10 @@ void main() {
   var settingsFontOptions = document.querySelector("#settings-font-options");
   var settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
   var dialog = document.querySelector("#logo-dialog");
+  var infoDialog = document.querySelector("#info-dialog");
   var fullscreenLogo = document.querySelector("#fullscreen-logo");
   var closeButton = dialog.querySelector(".close-button");
+  var infoCloseButton = infoDialog.querySelector(".info-close-button");
   var previousButton = dialog.querySelector(".nav-button--previous");
   var nextButton = dialog.querySelector(".nav-button--next");
   var defaultProjectId = "00000000-0000-4000-8000-000000000001";
@@ -24449,13 +24452,11 @@ void main() {
     upButton.disabled = true;
     upButton.dataset.voteValue = "1";
     upButton.setAttribute("aria-label", `Upvote EEG logo exploration ${logoId(id)}`);
-    upButton.textContent = "+";
     downButton.className = "vote-button vote-button--down";
     downButton.type = "button";
     downButton.disabled = true;
     downButton.dataset.voteValue = "-1";
     downButton.setAttribute("aria-label", `Downvote EEG logo exploration ${logoId(id)}`);
-    downButton.textContent = "-";
     button.addEventListener("click", (event) => {
       if (event.shiftKey) {
         event.preventDefault();
@@ -24815,6 +24816,25 @@ void main() {
     fullscreenLogo.setAttribute("aria-label", "");
   }
   closeButton.addEventListener("click", closeDialog);
+  function openInfoDialog() {
+    closeSettingsPopover();
+    infoDialog.showModal();
+    infoButton.setAttribute("aria-expanded", "true");
+    infoCloseButton.focus({ preventScroll: true });
+  }
+  function closeInfoDialog() {
+    infoDialog.close();
+    infoButton.setAttribute("aria-expanded", "false");
+    infoButton.focus({ preventScroll: true });
+  }
+  infoButton.addEventListener("click", openInfoDialog);
+  infoCloseButton.addEventListener("click", closeInfoDialog);
+  infoDialog.addEventListener("click", (event) => {
+    if (event.target === infoDialog) closeInfoDialog();
+  });
+  infoDialog.addEventListener("close", () => {
+    infoButton.setAttribute("aria-expanded", "false");
+  });
   [closeButton, previousButton, nextButton].forEach((button) => {
     button.addEventListener("pointerdown", (event) => {
       event.preventDefault();
@@ -25885,6 +25905,7 @@ void main() {
       closeSettingsPopover();
       return;
     }
+    if (infoDialog.open) return;
     const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
     if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.code === "Space") {

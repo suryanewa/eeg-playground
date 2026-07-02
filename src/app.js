@@ -24,6 +24,7 @@ const shaderLayer = document.querySelector("#shader-layer");
 const logoSheet = document.querySelector(".logo-sheet");
 const grid = document.querySelector("#logo-grid");
 const shuffleButton = document.querySelector("#shuffle-button");
+const infoButton = document.querySelector("#info-button");
 const settingsButton = document.querySelector("#settings-button");
 const settingsPopover = document.querySelector("#settings-popover");
 const settingsGradientToggle = document.querySelector("#settings-gradient");
@@ -31,8 +32,10 @@ const settingsFontButton = document.querySelector("#settings-font-button");
 const settingsFontOptions = document.querySelector("#settings-font-options");
 const settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
 const dialog = document.querySelector("#logo-dialog");
+const infoDialog = document.querySelector("#info-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
 const closeButton = dialog.querySelector(".close-button");
+const infoCloseButton = infoDialog.querySelector(".info-close-button");
 const previousButton = dialog.querySelector(".nav-button--previous");
 const nextButton = dialog.querySelector(".nav-button--next");
 const defaultProjectId = "00000000-0000-4000-8000-000000000001";
@@ -424,13 +427,11 @@ logoOrder.forEach((id, position) => {
   upButton.disabled = true;
   upButton.dataset.voteValue = "1";
   upButton.setAttribute("aria-label", `Upvote EEG logo exploration ${logoId(id)}`);
-  upButton.textContent = "+";
   downButton.className = "vote-button vote-button--down";
   downButton.type = "button";
   downButton.disabled = true;
   downButton.dataset.voteValue = "-1";
   downButton.setAttribute("aria-label", `Downvote EEG logo exploration ${logoId(id)}`);
-  downButton.textContent = "-";
 
   button.addEventListener("click", (event) => {
     if (event.shiftKey) {
@@ -888,6 +889,30 @@ function closeDialog() {
 }
 
 closeButton.addEventListener("click", closeDialog);
+
+function openInfoDialog() {
+  closeSettingsPopover();
+  infoDialog.showModal();
+  infoButton.setAttribute("aria-expanded", "true");
+  infoCloseButton.focus({ preventScroll: true });
+}
+
+function closeInfoDialog() {
+  infoDialog.close();
+  infoButton.setAttribute("aria-expanded", "false");
+  infoButton.focus({ preventScroll: true });
+}
+
+infoButton.addEventListener("click", openInfoDialog);
+infoCloseButton.addEventListener("click", closeInfoDialog);
+
+infoDialog.addEventListener("click", (event) => {
+  if (event.target === infoDialog) closeInfoDialog();
+});
+
+infoDialog.addEventListener("close", () => {
+  infoButton.setAttribute("aria-expanded", "false");
+});
 
 [closeButton, previousButton, nextButton].forEach((button) => {
   button.addEventListener("pointerdown", (event) => {
@@ -2257,6 +2282,8 @@ document.addEventListener("keydown", (event) => {
     closeSettingsPopover();
     return;
   }
+
+  if (infoDialog.open) return;
 
   const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
   if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
