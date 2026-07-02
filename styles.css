@@ -239,6 +239,12 @@ body.is-reordering .logo-button {
   outline-offset: -2px;
 }
 
+.logo-dialog:focus,
+.logo-dialog :focus,
+.logo-dialog :focus-visible {
+  outline: none;
+}
+
 .logo-art,
 .fullscreen-logo,
 .fullscreen-logo-art {
@@ -420,12 +426,6 @@ body.is-reordering .logo-button {
 
 .nav-button--next span {
   transform: translateX(-3px) rotate(45deg);
-}
-
-.close-button:focus-visible,
-.nav-button:focus-visible {
-  outline: 2px solid var(--logo-ink);
-  outline-offset: 2px;
 }
 
 @media (max-width: 720px) {

@@ -89,6 +89,7 @@ function showAdjacentLogo(offset) {
 }
 
 function openLogoDialog(id) {
+  document.activeElement?.blur?.();
   showLogoById(id);
   dialog.showModal();
   dialog.focus({ preventScroll: true });
@@ -364,6 +365,7 @@ document.addEventListener("pointerdown", (event) => {
 function closeDialog() {
   disposeFullscreenShader();
   dialog.close();
+  document.activeElement?.blur?.();
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
 }
@@ -1436,6 +1438,21 @@ async function mountShader(index) {
   }
 }
 
+function resetShaderView() {
+  currentShaderIndex = -1;
+  shaderToken += 1;
+  shaderMount?.dispose();
+  shaderMount = null;
+  if (shaderLayer) {
+    shaderLayer.innerHTML = "";
+    shaderLayer.classList.remove("is-active");
+    shaderLayer.style.webkitMaskImage = "";
+    shaderLayer.style.maskImage = "";
+  }
+  disposeFullscreenShader();
+  disposePerIconShaders();
+}
+
 function cycleShader(direction) {
   const nextIndex = currentShaderIndex < 0
     ? (direction > 0 ? 0 : shaderPresets.length - 1)
@@ -1850,6 +1867,7 @@ document.addEventListener("keydown", (event) => {
 
   if (event.code === "Enter") {
     event.preventDefault();
+    resetShaderView();
     gradientMode = false;
     toggleGradientButton.setAttribute("aria-pressed", "false");
     applyPalette({ ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" });
