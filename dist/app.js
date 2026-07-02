@@ -24212,15 +24212,14 @@ void main() {
     if (!markup) return logoPath(id);
     const ink = parseColor(currentPalette.ink);
     const paper = parseColor(currentPalette.paper);
-    const faviconScale = 1.22;
+    const faviconScale = 2.4;
+    const viewBox = markup.match(/\bviewBox="([^"]+)"/i)?.[1]?.trim().split(/\s+/).map(Number);
+    const [minX, minY, width, height] = viewBox?.length === 4 && viewBox.every(Number.isFinite) ? viewBox : [0, 0, 1200, 1200];
+    const translateX = minX + width * (1 - faviconScale) / 2;
+    const translateY = minY + height * (1 - faviconScale) / 2;
+    const faviconTransform = `translate(${translateX} ${translateY}) scale(${faviconScale})`;
     const colorStyle = `
     <style>
-      .favicon-mark {
-        transform: scale(${faviconScale});
-        transform-box: view-box;
-        transform-origin: center;
-      }
-
       svg > path,
       svg > polygon,
       svg > polyline,
@@ -24246,7 +24245,7 @@ void main() {
       }
     </style>
   `;
-    const faviconMarkup = markup.replace(/<svg\b([^>]*)>/, `<svg$1>${colorStyle}<g class="favicon-mark">`).replace(/<\/svg>\s*$/, "</g></svg>");
+    const faviconMarkup = markup.replace(/<svg\b([^>]*)>/, `<svg$1>${colorStyle}<g class="favicon-mark" transform="${faviconTransform}">`).replace(/<\/svg>\s*$/, "</g></svg>");
     return `data:image/svg+xml,${encodeURIComponent(faviconMarkup)}`;
   }
   function updateFaviconForTopLogo() {
