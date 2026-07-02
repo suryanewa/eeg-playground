@@ -21,16 +21,13 @@ import {
 
 const shaderLayer = document.querySelector("#shader-layer");
 const grid = document.querySelector("#logo-grid");
-const copyOrderButton = document.querySelector("#copy-order");
-const resetOrderButton = document.querySelector("#reset-order");
-const toggleGradientButton = document.querySelector("#toggle-gradient");
+const shuffleButton = document.querySelector("#shuffle-button");
 const settingsButton = document.querySelector("#settings-button");
 const settingsPopover = document.querySelector("#settings-popover");
 const settingsGradientToggle = document.querySelector("#settings-gradient");
 const settingsFontButton = document.querySelector("#settings-font-button");
 const settingsFontOptions = document.querySelector("#settings-font-options");
 const settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
-const orderStatus = document.querySelector("#order-status");
 const dialog = document.querySelector("#logo-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
 const closeButton = dialog.querySelector(".close-button");
@@ -189,12 +186,7 @@ function tileOrder() {
   return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
 }
 
-function setStatus(message) {
-  orderStatus.textContent = message;
-  window.clearTimeout(setStatus.timeout);
-  setStatus.timeout = window.setTimeout(() => {
-    orderStatus.textContent = "";
-  }, 2200);
+function setStatus() {
 }
 
 function closeFontPicker() {
@@ -404,27 +396,22 @@ function endPointerDrag(event) {
 grid.addEventListener("pointerup", endPointerDrag);
 grid.addEventListener("pointercancel", endPointerDrag);
 
-copyOrderButton.addEventListener("click", async () => {
-  const order = tileOrder().join(", ");
+function randomizeLogoOrder() {
+  const tiles = [...grid.querySelectorAll(".logo-tile")];
 
-  try {
-    await navigator.clipboard.writeText(order);
-    setStatus("Copied order");
-  } catch {
-    window.prompt("Copy this order:", order);
-    setStatus("Copy manually");
+  for (let index = tiles.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [tiles[index], tiles[swapIndex]] = [tiles[swapIndex], tiles[index]];
   }
-});
 
-resetOrderButton.addEventListener("click", () => {
-  [...grid.querySelectorAll(".logo-tile")]
-    .sort((a, b) => Number(a.dataset.sortIndex) - Number(b.dataset.sortIndex))
-    .forEach((tile) => grid.append(tile));
+  tiles.forEach((tile) => grid.append(tile));
   clearSelection();
   scheduleLogoShaderMask();
   schedulePerIconShaderSync();
-  setStatus("Reset order");
-});
+  setStatus("Randomized order");
+}
+
+shuffleButton.addEventListener("click", randomizeLogoOrder);
 
 document.addEventListener("pointerdown", (event) => {
   if (!settingsPopover.hidden && !event.target.closest(".utility-dock")) {
@@ -432,7 +419,7 @@ document.addEventListener("pointerdown", (event) => {
   }
 
   if (event.shiftKey) return;
-  if (dialog.open || event.target.closest(".reorder-toolbar")) return;
+  if (dialog.open) return;
   if (event.target.closest(".logo-tile.is-selected")) return;
 
   clearSelection();
@@ -1652,16 +1639,11 @@ function toggleDefaultPalette() {
 
 function setGradientMode(enabled) {
   gradientMode = enabled;
-  toggleGradientButton.setAttribute("aria-pressed", String(gradientMode));
   settingsGradientToggle.checked = gradientMode;
   applyPalette(gradientMode
     ? randomGradientPalette()
     : defaultPalette);
 }
-
-toggleGradientButton.addEventListener("click", () => {
-  setGradientMode(!gradientMode);
-});
 
 settingsButton.addEventListener("click", toggleSettingsPopover);
 
@@ -1711,9 +1693,13 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     resetShaderView();
     gradientMode = false;
-    toggleGradientButton.setAttribute("aria-pressed", "false");
     settingsGradientToggle.checked = false;
     toggleDefaultPalette();
+  }
+
+  if (event.key.toLowerCase() === "r") {
+    event.preventDefault();
+    randomizeLogoOrder();
   }
 
   if (event.key === "+" || event.key === "=") {

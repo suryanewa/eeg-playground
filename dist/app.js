@@ -4017,16 +4017,13 @@ void main() {
   // src/app.js
   var shaderLayer = document.querySelector("#shader-layer");
   var grid = document.querySelector("#logo-grid");
-  var copyOrderButton = document.querySelector("#copy-order");
-  var resetOrderButton = document.querySelector("#reset-order");
-  var toggleGradientButton = document.querySelector("#toggle-gradient");
+  var shuffleButton = document.querySelector("#shuffle-button");
   var settingsButton = document.querySelector("#settings-button");
   var settingsPopover = document.querySelector("#settings-popover");
   var settingsGradientToggle = document.querySelector("#settings-gradient");
   var settingsFontButton = document.querySelector("#settings-font-button");
   var settingsFontOptions = document.querySelector("#settings-font-options");
   var settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
-  var orderStatus = document.querySelector("#order-status");
   var dialog = document.querySelector("#logo-dialog");
   var fullscreenLogo = document.querySelector("#fullscreen-logo");
   var closeButton = dialog.querySelector(".close-button");
@@ -4282,12 +4279,7 @@ void main() {
   function tileOrder() {
     return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
   }
-  function setStatus(message) {
-    orderStatus.textContent = message;
-    window.clearTimeout(setStatus.timeout);
-    setStatus.timeout = window.setTimeout(() => {
-      orderStatus.textContent = "";
-    }, 2200);
+  function setStatus() {
   }
   function closeFontPicker() {
     settingsFontOptions.hidden = true;
@@ -4458,29 +4450,25 @@ void main() {
   }
   grid.addEventListener("pointerup", endPointerDrag);
   grid.addEventListener("pointercancel", endPointerDrag);
-  copyOrderButton.addEventListener("click", async () => {
-    const order = tileOrder().join(", ");
-    try {
-      await navigator.clipboard.writeText(order);
-      setStatus("Copied order");
-    } catch {
-      window.prompt("Copy this order:", order);
-      setStatus("Copy manually");
+  function randomizeLogoOrder() {
+    const tiles = [...grid.querySelectorAll(".logo-tile")];
+    for (let index = tiles.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [tiles[index], tiles[swapIndex]] = [tiles[swapIndex], tiles[index]];
     }
-  });
-  resetOrderButton.addEventListener("click", () => {
-    [...grid.querySelectorAll(".logo-tile")].sort((a2, b2) => Number(a2.dataset.sortIndex) - Number(b2.dataset.sortIndex)).forEach((tile) => grid.append(tile));
+    tiles.forEach((tile) => grid.append(tile));
     clearSelection();
     scheduleLogoShaderMask();
     schedulePerIconShaderSync();
-    setStatus("Reset order");
-  });
+    setStatus("Randomized order");
+  }
+  shuffleButton.addEventListener("click", randomizeLogoOrder);
   document.addEventListener("pointerdown", (event) => {
     if (!settingsPopover.hidden && !event.target.closest(".utility-dock")) {
       closeSettingsPopover();
     }
     if (event.shiftKey) return;
-    if (dialog.open || event.target.closest(".reorder-toolbar")) return;
+    if (dialog.open) return;
     if (event.target.closest(".logo-tile.is-selected")) return;
     clearSelection();
   });
@@ -5433,13 +5421,9 @@ void main() {
   }
   function setGradientMode(enabled) {
     gradientMode = enabled;
-    toggleGradientButton.setAttribute("aria-pressed", String(gradientMode));
     settingsGradientToggle.checked = gradientMode;
     applyPalette(gradientMode ? randomGradientPalette() : defaultPalette);
   }
-  toggleGradientButton.addEventListener("click", () => {
-    setGradientMode(!gradientMode);
-  });
   settingsButton.addEventListener("click", toggleSettingsPopover);
   settingsGradientToggle.addEventListener("change", () => {
     setGradientMode(settingsGradientToggle.checked);
@@ -5479,9 +5463,12 @@ void main() {
       event.preventDefault();
       resetShaderView();
       gradientMode = false;
-      toggleGradientButton.setAttribute("aria-pressed", "false");
       settingsGradientToggle.checked = false;
       toggleDefaultPalette();
+    }
+    if (event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      randomizeLogoOrder();
     }
     if (event.key === "+" || event.key === "=") {
       event.preventDefault();
