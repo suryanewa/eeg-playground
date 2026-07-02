@@ -342,7 +342,6 @@ body {
 .info-dialog {
   width: min(720px, calc(100vw - 28px));
   max-width: none;
-  max-height: min(760px, calc(100vh - 28px));
   padding: 0;
   border: 1px solid var(--logo-ink);
   background: var(--logo-bg);
@@ -358,26 +357,76 @@ body {
 }
 
 .info-content {
-  max-height: min(760px, calc(100vh - 28px));
-  overflow: auto;
   padding: clamp(22px, 4vw, 42px);
   padding-right: clamp(46px, 7vw, 68px);
   font: 500 15px/1.55 Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 
 .info-content p {
-  margin: 0 0 16px;
+  margin: 8px 0;
 }
 
-.info-content ul {
+.control-guide {
   display: grid;
-  gap: 7px;
-  margin: 0;
-  padding-left: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--logo-ink);
 }
 
-.info-content li {
-  padding-left: 2px;
+.control-group {
+  min-width: 0;
+}
+
+.control-group h2 {
+  margin: 0 0 10px;
+  font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.control-group dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.control-group dl > div {
+  display: grid;
+  grid-template-columns: minmax(74px, auto) 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.control-group dt,
+.control-group dd {
+  margin: 0;
+}
+
+.control-group dt {
+  display: flex;
+  min-width: 0;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.control-group dd {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.control-key {
+  display: inline-grid;
+  min-width: 24px;
+  min-height: 24px;
+  place-items: center;
+  padding: 0 7px;
+  border: 1px solid var(--logo-ink);
+  background: var(--logo-bg);
+  color: var(--logo-ink);
+  font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase;
 }
 
 .info-close-button {
@@ -919,6 +968,15 @@ body {
     width: 22px;
     height: 22px;
     font-size: 14px;
+  }
+
+  .control-guide {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .control-group dl > div {
+    grid-template-columns: minmax(86px, auto) 1fr;
   }
 
   .client-bar {
