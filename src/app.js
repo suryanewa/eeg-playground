@@ -505,30 +505,30 @@ function applyVoteState() {
   });
 }
 
-function voteSortGroup(tile) {
-  const vote = Number(tile.dataset.vote || "0");
-  if (vote === 1) return 0;
-  if (vote === -1) return 2;
-  return 1;
-}
-
-function sortTilesByVotes() {
-  const tiles = [...grid.querySelectorAll(".logo-tile")];
-  tiles.sort((left, right) => {
-    const groupDelta = voteSortGroup(left) - voteSortGroup(right);
-    if (groupDelta) return groupDelta;
-    return Number(left.dataset.sortIndex) - Number(right.dataset.sortIndex);
-  });
-
-  tiles.forEach((tile) => grid.append(tile));
+function syncLogoGridPresentation() {
   updateFaviconForTopLogo();
   scheduleLogoShaderMask();
   schedulePerIconShaderSync();
 }
 
+function moveLogoTile(id, direction) {
+  const tile = [...grid.querySelectorAll(".logo-tile")].find((candidate) => candidate.dataset.logoId === id);
+  if (!tile) return;
+
+  if (direction > 0) {
+    const previousTile = tile.previousElementSibling;
+    if (previousTile) grid.insertBefore(tile, previousTile);
+  } else if (direction < 0) {
+    const nextTile = tile.nextElementSibling;
+    if (nextTile) grid.insertBefore(nextTile, tile);
+  }
+
+  syncLogoGridPresentation();
+}
+
 function renderVotes() {
   applyVoteState();
-  sortTilesByVotes();
+  syncLogoGridPresentation();
   const upvotes = [...clientVotes.values()].filter((vote) => vote === 1).length;
   const downvotes = [...clientVotes.values()].filter((vote) => vote === -1).length;
   setStatus(`${upvotes} up / ${downvotes} down`);
@@ -624,40 +624,26 @@ async function refreshClientState() {
 async function setLogoVote(id, nextVote) {
   if (!supabase || !session?.user || !canVote) return;
 
-  const currentVote = clientVotes.get(id) ?? 0;
-  const nextValue = currentVote === nextVote ? 0 : nextVote;
+  const nextValue = nextVote;
 
   setVotingEnabled(false);
-  if (nextValue === 0) {
-    const { error } = await supabase
-      .from("logo_votes")
-      .delete()
-      .match({ project_id: projectId, user_id: session.user.id, logo_id: id });
+  const { error } = await supabase
+    .from("logo_votes")
+    .upsert({
+      project_id: projectId,
+      user_id: session.user.id,
+      logo_id: id,
+      vote: nextValue,
+    }, { onConflict: "project_id,user_id,logo_id" });
 
-    if (error) {
-      setStatus(error.message);
-      setVotingEnabled(true);
-      return;
-    }
-    clientVotes.delete(id);
-  } else {
-    const { error } = await supabase
-      .from("logo_votes")
-      .upsert({
-        project_id: projectId,
-        user_id: session.user.id,
-        logo_id: id,
-        vote: nextValue,
-      }, { onConflict: "project_id,user_id,logo_id" });
-
-    if (error) {
-      setStatus(error.message);
-      setVotingEnabled(true);
-      return;
-    }
-    clientVotes.set(id, nextValue);
+  if (error) {
+    setStatus(error.message);
+    setVotingEnabled(true);
+    return;
   }
 
+  clientVotes.set(id, nextValue);
+  moveLogoTile(id, nextValue);
   renderVotes();
   setVotingEnabled(true);
   if (isAdminRoute && isAdmin()) await loadAdminResults();
