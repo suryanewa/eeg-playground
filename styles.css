@@ -912,6 +912,15 @@ body {
     --grid-columns: 1;
   }
 
+  .utility-dock {
+    flex-direction: column;
+  }
+
+  .settings-popover {
+    right: calc(100% + 8px);
+    bottom: 0;
+  }
+
   .logo-dialog .fullscreen-logo {
     width: min(92vw, 84vh);
     height: min(92vw, 84vh);
