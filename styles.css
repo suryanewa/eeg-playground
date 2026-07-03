@@ -964,7 +964,10 @@ body {
   }
 
   .utility-dock {
+    top: 50%;
+    bottom: auto;
     flex-direction: column;
+    transform: translateY(-50%);
   }
 
   .settings-popover {
