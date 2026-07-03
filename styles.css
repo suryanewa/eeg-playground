@@ -904,6 +904,10 @@ body {
     padding: 12px;
   }
 
+  .logo-dialog {
+    touch-action: pan-y;
+  }
+
   .logo-grid {
     --grid-columns: 4;
   }
