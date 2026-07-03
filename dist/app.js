@@ -24511,6 +24511,11 @@ void main() {
         setStatus(`${grid.querySelectorAll(".is-selected").length} selected`);
         return;
       }
+      if (mobileDialogMedia.matches) {
+        event.preventDefault();
+        applyPalette(randomPalette());
+        return;
+      }
       openLogoDialog(id);
     });
     [upButton, downButton].forEach((voteButton) => {

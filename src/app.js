@@ -495,6 +495,12 @@ logoOrder.forEach((id, position) => {
       return;
     }
 
+    if (mobileDialogMedia.matches) {
+      event.preventDefault();
+      applyPalette(randomPalette());
+      return;
+    }
+
     openLogoDialog(id);
   });
 
