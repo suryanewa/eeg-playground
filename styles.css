@@ -909,7 +909,7 @@ body {
   }
 
   .logo-grid {
-    --grid-columns: 4;
+    --grid-columns: 1;
   }
 
   .logo-dialog .fullscreen-logo {
