@@ -979,6 +979,39 @@ function navigateExpandedLogoFromX(clientX) {
   dialog.focus({ preventScroll: true });
 }
 
+function isPointInExpandedLogoArtwork(clientX, clientY) {
+  const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
+  if (!svg) return false;
+
+  try {
+    const box = svg.getBBox();
+    const matrix = svg.getScreenCTM();
+    if (!matrix || box.width <= 0 || box.height <= 0) return false;
+
+    const corners = [
+      new DOMPoint(box.x, box.y),
+      new DOMPoint(box.x + box.width, box.y),
+      new DOMPoint(box.x, box.y + box.height),
+      new DOMPoint(box.x + box.width, box.y + box.height),
+    ].map((point) => point.matrixTransform(matrix));
+    const bounds = corners.reduce((acc, point) => ({
+      left: Math.min(acc.left, point.x),
+      right: Math.max(acc.right, point.x),
+      top: Math.min(acc.top, point.y),
+      bottom: Math.max(acc.bottom, point.y),
+    }), { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity });
+    const touchPadding = 12;
+
+    return clientX >= bounds.left - touchPadding
+      && clientX <= bounds.right + touchPadding
+      && clientY >= bounds.top - touchPadding
+      && clientY <= bounds.bottom + touchPadding;
+  } catch {
+    const box = svg.getBoundingClientRect();
+    return clientX >= box.left && clientX <= box.right && clientY >= box.top && clientY <= box.bottom;
+  }
+}
+
 dialog.addEventListener("pointerdown", (event) => {
   if (!mobileDialogMedia.matches || !dialog.open || !event.isPrimary) return;
   if (isDialogControlTarget(event.target)) return;
@@ -1006,6 +1039,12 @@ dialog.addEventListener("pointerup", (event) => {
 
   if (isTap) {
     suppressNextDialogClick = true;
+    if (isPointInExpandedLogoArtwork(event.clientX, event.clientY)) {
+      applyPalette(randomPalette());
+      dialog.focus({ preventScroll: true });
+      return;
+    }
+
     navigateExpandedLogoFromX(event.clientX);
     return;
   }
