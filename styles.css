@@ -385,13 +385,15 @@ body {
   text-transform: uppercase;
 }
 
-.control-group dl {
+.control-group dl,
+.mobile-control-list {
   display: grid;
   gap: 8px;
   margin: 0;
 }
 
-.control-group dl > div {
+.control-group dl > div,
+.mobile-control-list > div {
   display: grid;
   grid-template-columns: minmax(74px, auto) 1fr;
   gap: 10px;
@@ -399,18 +401,22 @@ body {
 }
 
 .control-group dt,
-.control-group dd {
+.control-group dd,
+.mobile-control-list dt,
+.mobile-control-list dd {
   margin: 0;
 }
 
-.control-group dt {
+.control-group dt,
+.mobile-control-list dt {
   display: flex;
   min-width: 0;
   gap: 4px;
   flex-wrap: wrap;
 }
 
-.control-group dd {
+.control-group dd,
+.mobile-control-list dd {
   font-size: 13px;
   line-height: 1.25;
 }
@@ -1024,7 +1030,8 @@ body {
     display: grid;
   }
 
-  .control-group dl > div {
+  .control-group dl > div,
+  .mobile-control-list > div {
     grid-template-columns: minmax(86px, auto) 1fr;
   }
 
