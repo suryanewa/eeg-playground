@@ -101,11 +101,6 @@ const minLogoScale = 0.5;
 const maxLogoScale = 1.5;
 let shaderToken = 0;
 const mobileDialogMedia = window.matchMedia("(max-width: 720px)");
-const mobileDialogTapTravel = 10;
-const mobileDialogSwipeDistance = 45;
-const mobileDialogSwipeDrift = 70;
-let mobileDialogGesture = null;
-let suppressNextDialogClick = false;
 const lockupText = "EEG";
 const lockupCanvas = document.createElement("canvas");
 const lockupFontFamilies = {
@@ -969,99 +964,6 @@ nextButton.addEventListener("click", () => {
   dialog.focus({ preventScroll: true });
 });
 
-function isDialogControlTarget(target) {
-  return Boolean(target.closest("button, a, input, select, textarea, [role='button']"));
-}
-
-function navigateExpandedLogoFromX(clientX) {
-  const direction = clientX < window.innerWidth / 2 ? -1 : 1;
-  showAdjacentLogo(direction);
-  dialog.focus({ preventScroll: true });
-}
-
-function isPointInExpandedLogoArtwork(clientX, clientY) {
-  const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
-  if (!svg) return false;
-
-  try {
-    const box = svg.getBBox();
-    const matrix = svg.getScreenCTM();
-    if (!matrix || box.width <= 0 || box.height <= 0) return false;
-
-    const corners = [
-      new DOMPoint(box.x, box.y),
-      new DOMPoint(box.x + box.width, box.y),
-      new DOMPoint(box.x, box.y + box.height),
-      new DOMPoint(box.x + box.width, box.y + box.height),
-    ].map((point) => point.matrixTransform(matrix));
-    const bounds = corners.reduce((acc, point) => ({
-      left: Math.min(acc.left, point.x),
-      right: Math.max(acc.right, point.x),
-      top: Math.min(acc.top, point.y),
-      bottom: Math.max(acc.bottom, point.y),
-    }), { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity });
-    const touchPadding = 12;
-
-    return clientX >= bounds.left - touchPadding
-      && clientX <= bounds.right + touchPadding
-      && clientY >= bounds.top - touchPadding
-      && clientY <= bounds.bottom + touchPadding;
-  } catch {
-    const box = svg.getBoundingClientRect();
-    return clientX >= box.left && clientX <= box.right && clientY >= box.top && clientY <= box.bottom;
-  }
-}
-
-dialog.addEventListener("pointerdown", (event) => {
-  if (!mobileDialogMedia.matches || !dialog.open || !event.isPrimary) return;
-  if (isDialogControlTarget(event.target)) return;
-
-  mobileDialogGesture = {
-    pointerId: event.pointerId,
-    startX: event.clientX,
-    startY: event.clientY,
-  };
-  dialog.setPointerCapture?.(event.pointerId);
-});
-
-dialog.addEventListener("pointerup", (event) => {
-  if (!mobileDialogGesture || event.pointerId !== mobileDialogGesture.pointerId) return;
-
-  const deltaX = event.clientX - mobileDialogGesture.startX;
-  const deltaY = event.clientY - mobileDialogGesture.startY;
-  const absX = Math.abs(deltaX);
-  const absY = Math.abs(deltaY);
-  const isTap = absX <= mobileDialogTapTravel && absY <= mobileDialogTapTravel;
-  const isSwipe = absX >= mobileDialogSwipeDistance && absY <= mobileDialogSwipeDrift && absX > absY;
-
-  mobileDialogGesture = null;
-  dialog.releasePointerCapture?.(event.pointerId);
-
-  if (isTap) {
-    suppressNextDialogClick = true;
-    if (isPointInExpandedLogoArtwork(event.clientX, event.clientY)) {
-      applyPalette(randomPalette());
-      dialog.focus({ preventScroll: true });
-      return;
-    }
-
-    navigateExpandedLogoFromX(event.clientX);
-    return;
-  }
-
-  if (isSwipe) {
-    suppressNextDialogClick = true;
-    showAdjacentLogo(deltaX < 0 ? 1 : -1);
-    dialog.focus({ preventScroll: true });
-  }
-});
-
-dialog.addEventListener("pointercancel", (event) => {
-  if (mobileDialogGesture?.pointerId === event.pointerId) {
-    mobileDialogGesture = null;
-  }
-});
-
 dialog.addEventListener("keydown", (event) => {
   if (event.key === "Tab") {
     event.preventDefault();
@@ -1081,11 +983,6 @@ dialog.addEventListener("keydown", (event) => {
 });
 
 dialog.addEventListener("click", (event) => {
-  if (suppressNextDialogClick) {
-    suppressNextDialogClick = false;
-    return;
-  }
-
   if (event.target === dialog) closeDialog();
 });
 
