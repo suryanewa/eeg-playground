@@ -932,14 +932,29 @@ body {
   }
 
   .vote-controls {
-    bottom: 5px;
+    bottom: 10px;
+    gap: 12px;
     opacity: 1;
   }
 
   .vote-button {
-    width: 22px;
-    height: 22px;
-    font-size: 14px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .vote-button::before {
+    width: 14px;
+    height: 14px;
+    border-top-width: 3px;
+    border-left-width: 3px;
+  }
+
+  .vote-button--up::before {
+    transform: translateY(3px) rotate(45deg);
+  }
+
+  .vote-button--down::before {
+    transform: translateY(-3px) rotate(225deg);
   }
 
   .control-guide {
