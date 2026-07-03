@@ -101,6 +101,7 @@ const minLogoScale = 0.5;
 const maxLogoScale = 1.5;
 let shaderToken = 0;
 const mobileDialogMedia = window.matchMedia("(max-width: 720px)");
+let mobilePaletteTapCount = 0;
 const lockupText = "EEG";
 const lockupCanvas = document.createElement("canvas");
 const lockupFontFamilies = {
@@ -492,7 +493,7 @@ logoOrder.forEach((id, position) => {
 
     if (mobileDialogMedia.matches) {
       event.preventDefault();
-      applyPalette(randomPalette());
+      applyMobilePaletteTap();
       return;
     }
 
@@ -2272,6 +2273,19 @@ function toggleDefaultPalette() {
   const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink
     && currentPalette.paper.toLowerCase() === invertedPalette.paper;
   applyPalette(isInverted ? defaultPalette : invertedPalette);
+}
+
+function applyMobilePaletteTap() {
+  mobilePaletteTapCount = (mobilePaletteTapCount + 1) % 4;
+
+  if (mobilePaletteTapCount === 0) {
+    gradientMode = false;
+    settingsGradientToggle.checked = false;
+    toggleDefaultPalette();
+    return;
+  }
+
+  applyPalette(randomPalette());
 }
 
 function setGradientMode(enabled) {

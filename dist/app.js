@@ -24185,6 +24185,7 @@ void main() {
   var maxLogoScale = 1.5;
   var shaderToken = 0;
   var mobileDialogMedia = window.matchMedia("(max-width: 720px)");
+  var mobilePaletteTapCount = 0;
   var lockupText = "EEG";
   var lockupCanvas = document.createElement("canvas");
   var lockupFontFamilies = {
@@ -24508,7 +24509,7 @@ void main() {
       }
       if (mobileDialogMedia.matches) {
         event.preventDefault();
-        applyPalette(randomPalette());
+        applyMobilePaletteTap();
         return;
       }
       openLogoDialog(id);
@@ -25901,6 +25902,16 @@ void main() {
   function toggleDefaultPalette() {
     const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink && currentPalette.paper.toLowerCase() === invertedPalette.paper;
     applyPalette(isInverted ? defaultPalette : invertedPalette);
+  }
+  function applyMobilePaletteTap() {
+    mobilePaletteTapCount = (mobilePaletteTapCount + 1) % 4;
+    if (mobilePaletteTapCount === 0) {
+      gradientMode = false;
+      settingsGradientToggle.checked = false;
+      toggleDefaultPalette();
+      return;
+    }
+    applyPalette(randomPalette());
   }
   function setGradientMode(enabled) {
     gradientMode = enabled;
