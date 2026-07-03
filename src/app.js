@@ -826,14 +826,14 @@ async function initializeClientAccess() {
   supabase.auth.onAuthStateChange((event, nextSession) => {
     const wasSignedOut = !session;
     session = nextSession;
+    const shouldOpenInfo = event === "SIGNED_IN" && wasSignedOut && Boolean(session);
     currentProfile = null;
     clientVotes = new Map();
     setVotingEnabled(false);
+    if (shouldOpenInfo) openInfoDialog();
     syncAccessUi();
     if (session) {
-      refreshClientState().then(() => {
-        if (event === "SIGNED_IN" && wasSignedOut) openInfoDialog();
-      });
+      refreshClientState();
     } else {
       renderVotes();
     }
