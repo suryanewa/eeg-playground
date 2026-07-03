@@ -2358,12 +2358,12 @@ function toggleDefaultPalette() {
 }
 
 function applyMobilePaletteTap() {
-  mobilePaletteTapCount = (mobilePaletteTapCount + 1) % 4;
+  mobilePaletteTapCount = (mobilePaletteTapCount + 1) % 5;
 
-  if (mobilePaletteTapCount === 0) {
+  if (mobilePaletteTapCount === 4 || mobilePaletteTapCount === 0) {
     gradientMode = false;
     settingsGradientToggle.checked = false;
-    toggleDefaultPalette();
+    applyPalette(mobilePaletteTapCount === 4 ? defaultPalette : invertedPalette);
     return;
   }
 
