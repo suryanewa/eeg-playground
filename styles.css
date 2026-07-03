@@ -935,15 +935,15 @@ body {
     height: 100%;
     align-items: center;
     justify-content: center;
-    gap: clamp(18px, 5vw, 34px);
+    gap: clamp(12px, 4vw, 24px);
     color: var(--logo-ink);
   }
 
   .grid-lockup-mark {
     display: grid;
-    flex: 0 0 clamp(96px, 31vw, 148px);
-    width: clamp(96px, 31vw, 148px);
-    height: clamp(96px, 31vw, 148px);
+    flex: 0 0 clamp(132px, 43vw, 210px);
+    width: clamp(132px, 43vw, 210px);
+    height: clamp(132px, 43vw, 210px);
     place-items: center;
   }
 
@@ -957,7 +957,7 @@ body {
     flex: 0 1 auto;
     color: var(--logo-ink);
     font-family: var(--lockup-font-family);
-    font-size: clamp(76px, 26vw, 150px);
+    font-size: clamp(62px, 20vw, 104px);
     font-weight: 700;
     letter-spacing: 0;
     line-height: 1;
