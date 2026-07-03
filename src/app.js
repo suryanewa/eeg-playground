@@ -102,6 +102,11 @@ const maxLogoScale = 1.5;
 let shaderToken = 0;
 const mobileDialogMedia = window.matchMedia("(max-width: 720px)");
 let mobilePaletteTapCount = 0;
+const mobileLogoSwipeDistance = 44;
+const mobileLogoSwipeDrift = 70;
+let mobileLogoSwipe = null;
+let mobileGridLockupMode = false;
+let suppressNextMobileLogoClick = false;
 const lockupText = "EEG";
 const lockupCanvas = document.createElement("canvas");
 const lockupFontFamilies = {
@@ -309,6 +314,34 @@ function lockupMarkup(id) {
   </div>`;
 }
 
+function gridLockupMarkup(id) {
+  return `<span class="grid-lockup" aria-hidden="true">
+    <span class="grid-lockup-mark">${logoMarkup(id)}</span>
+    <span class="grid-lockup-text">${lockupText}</span>
+  </span>`;
+}
+
+function renderGridLogoTile(tile) {
+  const logo = tile.querySelector(".logo-art");
+  if (!logo) return;
+
+  const showLockup = mobileGridLockupMode && mobileDialogMedia.matches;
+  logo.classList.toggle("is-grid-lockup", showLockup);
+  logo.innerHTML = showLockup ? gridLockupMarkup(tile.dataset.logoId) : logoMarkup(tile.dataset.logoId);
+}
+
+function renderGridLogos() {
+  grid.querySelectorAll(".logo-tile").forEach(renderGridLogoTile);
+  if (mobileGridLockupMode) disposePerIconShaders();
+  syncLogoGridPresentation();
+}
+
+function toggleMobileGridLockups() {
+  mobileGridLockupMode = !mobileGridLockupMode;
+  document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
+  renderGridLogos();
+}
+
 function fullscreenMarkup(id) {
   return lockupMode
     ? lockupMarkup(id)
@@ -482,7 +515,45 @@ logoOrder.forEach((id, position) => {
   downButton.dataset.voteValue = "-1";
   downButton.setAttribute("aria-label", `Downvote EEG logo exploration ${logoId(id)}`);
 
+  button.addEventListener("pointerdown", (event) => {
+    if (!mobileDialogMedia.matches || !event.isPrimary) return;
+
+    mobileLogoSwipe = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+  });
+
+  button.addEventListener("pointerup", (event) => {
+    if (!mobileLogoSwipe || event.pointerId !== mobileLogoSwipe.pointerId) return;
+
+    const deltaX = event.clientX - mobileLogoSwipe.startX;
+    const deltaY = event.clientY - mobileLogoSwipe.startY;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    mobileLogoSwipe = null;
+
+    if (absX >= mobileLogoSwipeDistance && absY <= mobileLogoSwipeDrift && absX > absY) {
+      suppressNextMobileLogoClick = true;
+      event.preventDefault();
+      toggleMobileGridLockups();
+    }
+  });
+
+  button.addEventListener("pointercancel", (event) => {
+    if (mobileLogoSwipe?.pointerId === event.pointerId) {
+      mobileLogoSwipe = null;
+    }
+  });
+
   button.addEventListener("click", (event) => {
+    if (suppressNextMobileLogoClick) {
+      suppressNextMobileLogoClick = false;
+      event.preventDefault();
+      return;
+    }
+
     if (event.shiftKey) {
       event.preventDefault();
       tile.classList.toggle("is-selected");
@@ -515,6 +586,13 @@ logoOrder.forEach((id, position) => {
   grid.append(tile);
 });
 updateFaviconForTopLogo();
+
+mobileDialogMedia.addEventListener("change", (event) => {
+  if (!event.matches && mobileGridLockupMode) {
+    mobileGridLockupMode = false;
+  }
+  renderGridLogos();
+});
 
 function tileOrder() {
   return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
@@ -1813,6 +1891,10 @@ async function mountTileShader(tile, preset, image, noiseTexture, token) {
 
 function syncPerIconShaders(preset, image, noiseTexture, token) {
   if (token !== shaderToken) return;
+  if (mobileGridLockupMode && mobileDialogMedia.matches) {
+    disposePerIconShaders();
+    return;
+  }
 
   const liveTiles = new Set(visibleTiles());
   [...perIconShaderMounts.keys()].forEach((tile) => {

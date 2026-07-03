@@ -24186,6 +24186,11 @@ void main() {
   var shaderToken = 0;
   var mobileDialogMedia = window.matchMedia("(max-width: 720px)");
   var mobilePaletteTapCount = 0;
+  var mobileLogoSwipeDistance = 44;
+  var mobileLogoSwipeDrift = 70;
+  var mobileLogoSwipe = null;
+  var mobileGridLockupMode = false;
+  var suppressNextMobileLogoClick = false;
   var lockupText = "EEG";
   var lockupCanvas = document.createElement("canvas");
   var lockupFontFamilies = {
@@ -24355,6 +24360,29 @@ void main() {
     <span class="fullscreen-lockup-text">${lockupText}</span>
   </div>`;
   }
+  function gridLockupMarkup(id) {
+    return `<span class="grid-lockup" aria-hidden="true">
+    <span class="grid-lockup-mark">${logoMarkup(id)}</span>
+    <span class="grid-lockup-text">${lockupText}</span>
+  </span>`;
+  }
+  function renderGridLogoTile(tile) {
+    const logo = tile.querySelector(".logo-art");
+    if (!logo) return;
+    const showLockup = mobileGridLockupMode && mobileDialogMedia.matches;
+    logo.classList.toggle("is-grid-lockup", showLockup);
+    logo.innerHTML = showLockup ? gridLockupMarkup(tile.dataset.logoId) : logoMarkup(tile.dataset.logoId);
+  }
+  function renderGridLogos() {
+    grid.querySelectorAll(".logo-tile").forEach(renderGridLogoTile);
+    if (mobileGridLockupMode) disposePerIconShaders();
+    syncLogoGridPresentation();
+  }
+  function toggleMobileGridLockups() {
+    mobileGridLockupMode = !mobileGridLockupMode;
+    document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
+    renderGridLogos();
+  }
   function fullscreenMarkup(id) {
     return lockupMode ? lockupMarkup(id) : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(id)}</span>`;
   }
@@ -24499,7 +24527,38 @@ void main() {
     downButton.disabled = true;
     downButton.dataset.voteValue = "-1";
     downButton.setAttribute("aria-label", `Downvote EEG logo exploration ${logoId(id)}`);
+    button.addEventListener("pointerdown", (event) => {
+      if (!mobileDialogMedia.matches || !event.isPrimary) return;
+      mobileLogoSwipe = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY
+      };
+    });
+    button.addEventListener("pointerup", (event) => {
+      if (!mobileLogoSwipe || event.pointerId !== mobileLogoSwipe.pointerId) return;
+      const deltaX = event.clientX - mobileLogoSwipe.startX;
+      const deltaY = event.clientY - mobileLogoSwipe.startY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+      mobileLogoSwipe = null;
+      if (absX >= mobileLogoSwipeDistance && absY <= mobileLogoSwipeDrift && absX > absY) {
+        suppressNextMobileLogoClick = true;
+        event.preventDefault();
+        toggleMobileGridLockups();
+      }
+    });
+    button.addEventListener("pointercancel", (event) => {
+      if (mobileLogoSwipe?.pointerId === event.pointerId) {
+        mobileLogoSwipe = null;
+      }
+    });
     button.addEventListener("click", (event) => {
+      if (suppressNextMobileLogoClick) {
+        suppressNextMobileLogoClick = false;
+        event.preventDefault();
+        return;
+      }
       if (event.shiftKey) {
         event.preventDefault();
         tile.classList.toggle("is-selected");
@@ -24528,6 +24587,12 @@ void main() {
     grid.append(tile);
   });
   updateFaviconForTopLogo();
+  mobileDialogMedia.addEventListener("change", (event) => {
+    if (!event.matches && mobileGridLockupMode) {
+      mobileGridLockupMode = false;
+    }
+    renderGridLogos();
+  });
   function tileOrder() {
     return [...grid.querySelectorAll(".logo-tile")].map((tile) => tile.dataset.logoId);
   }

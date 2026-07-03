@@ -290,17 +290,20 @@ body {
 }
 
 .logo-art > svg > g :is(path, polygon, polyline, rect, circle, ellipse),
-.fullscreen-logo-art > svg > g :is(path, polygon, polyline, rect, circle, ellipse) {
+.fullscreen-logo-art > svg > g :is(path, polygon, polyline, rect, circle, ellipse),
+.grid-lockup-mark > svg > g :is(path, polygon, polyline, rect, circle, ellipse) {
   fill: var(--logo-ink);
 }
 
 .logo-art > svg > g :is(line),
-.fullscreen-logo-art > svg > g :is(line) {
+.fullscreen-logo-art > svg > g :is(line),
+.grid-lockup-mark > svg > g :is(line) {
   stroke: var(--logo-ink);
 }
 
 .logo-art > svg > g .cls-5,
-.fullscreen-logo-art > svg > g .cls-5 {
+.fullscreen-logo-art > svg > g .cls-5,
+.grid-lockup-mark > svg > g .cls-5 {
   fill: var(--logo-bg);
 }
 
@@ -914,6 +917,44 @@ body {
 
   .logo-grid {
     --grid-columns: 1;
+  }
+
+  .logo-art.is-grid-lockup {
+    transform: none;
+  }
+
+  .grid-lockup {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 5vw, 34px);
+    color: var(--logo-ink);
+  }
+
+  .grid-lockup-mark {
+    display: grid;
+    flex: 0 0 clamp(96px, 31vw, 148px);
+    width: clamp(96px, 31vw, 148px);
+    height: clamp(96px, 31vw, 148px);
+    place-items: center;
+  }
+
+  .grid-lockup-mark svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .grid-lockup-text {
+    flex: 0 1 auto;
+    color: var(--logo-ink);
+    font-family: var(--lockup-font-family);
+    font-size: clamp(76px, 26vw, 150px);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
   }
 
   .utility-dock {
