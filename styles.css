@@ -367,6 +367,10 @@ body {
   padding-top: 20px;
 }
 
+.control-guide--mobile {
+  display: none;
+}
+
 .control-group {
   min-width: 0;
 }
@@ -969,6 +973,14 @@ body {
   .control-guide {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .control-guide--desktop {
+    display: none;
+  }
+
+  .control-guide--mobile {
+    display: grid;
   }
 
   .control-group dl > div {
