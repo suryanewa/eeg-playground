@@ -925,6 +925,14 @@ body {
     --grid-columns: 1;
   }
 
+  .logo-button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .logo-button:active {
+    background: transparent;
+  }
+
   .logo-art.is-grid-lockup {
     transform: none;
   }
