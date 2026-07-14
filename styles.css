@@ -316,9 +316,61 @@ body {
 }
 
 .color-swatch {
+  position: relative;
+  display: grid;
   min-width: 0;
   width: 100%;
   height: 100%;
+  place-items: center;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.color-swatch.is-adjusting {
+  z-index: 6;
+}
+
+.color-swatch-label {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 24px);
+  max-width: calc(100% - 24px);
+  min-width: 0;
+  box-sizing: border-box;
+  color: var(--color-swatch-label, #000000);
+  font: 600 clamp(14px, 1.6vw, 20px)/1.15 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  pointer-events: none;
+  text-align: center;
+}
+
+.color-swatch-title {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.92em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.color-swatch-hex {
+  font-size: 1.08em;
+  letter-spacing: 0.04em;
+  pointer-events: auto;
+  cursor: text;
+  white-space: nowrap;
+}
+
+.color-swatch-hex:focus {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+.color-swatch:hover .color-swatch-label,
+.color-swatch.is-adjusting .color-swatch-label {
+  display: flex;
 }
 
 .logo-tile {

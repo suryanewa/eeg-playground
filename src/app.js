@@ -129,6 +129,10 @@ const colorRowPool = new Map();
 let colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
 let colorGridScrollRaf = 0;
 let colorGridListenersBound = false;
+const colorNameApi = "https://api.color.pizza/v1/";
+const colorNameCache = new Map();
+const colorNameInflight = new Map();
+let colorDragSession = null;
 const brandContentGap = 72;
 
 function contentTopInset(tile, content) {
@@ -713,25 +717,388 @@ function positionColorRow(row, index, rowHeight, rowStride) {
   row.style.height = `${rowHeight}px`;
 }
 
+function contrastLabelColor(background) {
+  const hex = parseColor(background);
+  return contrastRatio("#000000", hex) >= contrastRatio("#ffffff", hex) ? "#000000" : "#ffffff";
+}
+
+function formatHexColor(color) {
+  return parseColor(color).toUpperCase();
+}
+
+function colorNameKey(color) {
+  return parseColor(color).toLowerCase();
+}
+
+function applyColorNameToSwatch(swatch) {
+  const key = swatch.dataset.colorHex;
+  const title = swatch.querySelector(".color-swatch-title");
+  if (!key || !title) return;
+  const name = colorNameCache.get(key);
+  if (name) title.textContent = name;
+}
+
+function updateSwatchesForColor(key) {
+  const name = colorNameCache.get(key);
+  if (!name) return;
+  colorGrid.querySelectorAll(".color-swatch").forEach((swatch) => {
+    if (swatch.dataset.colorHex === key) applyColorNameToSwatch(swatch);
+  });
+}
+
+async function fetchColorNames(colors) {
+  const keys = [...new Set(colors.map(colorNameKey))].filter((key) => !colorNameCache.has(key));
+  if (!keys.length) return;
+
+  for (let index = 0; index < keys.length; index += 100) {
+    const chunk = keys.slice(index, index + 100);
+    const batchKey = chunk.join(",");
+    if (colorNameInflight.has(batchKey)) {
+      await colorNameInflight.get(batchKey);
+      continue;
+    }
+
+    const promise = (async () => {
+      try {
+        const values = chunk.map((key) => key.replace("#", "")).join(",");
+        const response = await fetch(`${colorNameApi}?values=${encodeURIComponent(values)}`, {
+          headers: {
+            Accept: "application/json",
+            "X-Referrer": "eeg-brand-playground",
+          },
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        for (const entry of data.colors ?? []) {
+          const key = colorNameKey(entry.requestedHex ?? entry.hex);
+          if (entry.name) {
+            colorNameCache.set(key, entry.name);
+            updateSwatchesForColor(key);
+          }
+        }
+      } finally {
+        colorNameInflight.delete(batchKey);
+      }
+    })();
+
+    colorNameInflight.set(batchKey, promise);
+    await promise;
+  }
+}
+
+function ensureColorNames(colors) {
+  return fetchColorNames(colors).catch(() => undefined);
+}
+
+function prefetchVisibleColorNames(startIndex, endIndex) {
+  const colors = [];
+  for (let index = startIndex; index < endIndex; index += 1) {
+    const combination = colorCombinations[index];
+    if (combination) colors.push(...combination.colors);
+  }
+  ensureColorNames(colors);
+}
+
+function normalizeHexInput(value) {
+  const text = String(value).trim().replace(/^#/, "");
+  if (/^[0-9a-fA-F]{3}$/.test(text)) {
+    return `#${text.split("").map((char) => char + char).join("")}`.toLowerCase();
+  }
+  if (/^[0-9a-fA-F]{6}$/.test(text)) {
+    return `#${text}`.toLowerCase();
+  }
+  return null;
+}
+
+function rgbToHsv(rgb) {
+  const channels = rgb.map((value) => value / 255);
+  const max = Math.max(...channels);
+  const min = Math.min(...channels);
+  const delta = max - min;
+  let hue = 0;
+
+  if (delta !== 0) {
+    if (max === channels[0]) hue = ((channels[1] - channels[2]) / delta + (channels[1] < channels[2] ? 6 : 0)) / 6;
+    else if (max === channels[1]) hue = ((channels[2] - channels[0]) / delta + 2) / 6;
+    else hue = ((channels[0] - channels[1]) / delta + 4) / 6;
+  }
+
+  return {
+    h: hue * 360,
+    s: max === 0 ? 0 : delta / max,
+    v: max,
+  };
+}
+
+function hsvToHex(h, s, v) {
+  const hue = ((h % 360) + 360) % 360;
+  const sat = clamp(s);
+  const val = clamp(v);
+  const chroma = val * sat;
+  const x = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = val - chroma;
+  let rgb = [0, 0, 0];
+
+  if (hue < 60) rgb = [chroma, x, 0];
+  else if (hue < 120) rgb = [x, chroma, 0];
+  else if (hue < 180) rgb = [0, chroma, x];
+  else if (hue < 240) rgb = [0, x, chroma];
+  else if (hue < 300) rgb = [x, 0, chroma];
+  else rgb = [chroma, 0, x];
+
+  return rgbToHex(rgb.map((channel) => (channel + m) * 255));
+}
+
+function previewSwatchColor(swatch, color) {
+  const normalized = parseColor(color);
+  swatch.style.background = normalized;
+  swatch.style.setProperty("--color-swatch-label", contrastLabelColor(normalized));
+}
+
+function updateSwatchDragPreview(session, color) {
+  const normalized = parseColor(color);
+  session.draftColor = normalized;
+  session.hex.textContent = formatHexColor(normalized);
+  previewSwatchColor(session.swatch, normalized);
+
+  window.clearTimeout(session.nameTimer);
+  session.nameTimer = window.setTimeout(() => {
+    ensureColorNames([normalized]).then(() => {
+      if (colorDragSession !== session) return;
+      session.title.textContent = colorNameCache.get(colorNameKey(normalized)) ?? "";
+    });
+  }, 120);
+}
+
+function syncSwatchFromPointer(session, clientX, clientY) {
+  const rect = session.swatch.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return;
+  session.s = clamp((clientX - rect.left) / rect.width);
+  session.v = clamp(1 - (clientY - rect.top) / rect.height);
+  updateSwatchDragPreview(session, hsvToHex(session.h, session.s, session.v));
+}
+
+function finishColorDrag(commit = true) {
+  if (!colorDragSession) return;
+
+  const session = colorDragSession;
+  window.clearTimeout(session.nameTimer);
+  document.removeEventListener("keydown", session.onKey, true);
+  window.removeEventListener("scroll", session.onScroll, true);
+
+  if (session.swatch.hasPointerCapture(session.pointerId)) {
+    session.swatch.releasePointerCapture(session.pointerId);
+  }
+
+  if (commit) {
+    applySwatchColor(session.swatch, session.row, session.swatchIndex, session.draftColor);
+  } else {
+    previewSwatchColor(session.swatch, session.originalColor);
+    session.hex.textContent = formatHexColor(session.originalColor);
+    applyColorNameToSwatch(session.swatch);
+  }
+
+  session.swatch.classList.remove("is-adjusting");
+  colorDragSession = null;
+}
+
+function bindSwatchDragAdjust(swatch, row, swatchIndex) {
+  swatch.style.touchAction = "none";
+
+  swatch.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    if (event.target.closest(".color-swatch-hex")) return;
+    if (colorDragSession) finishColorDrag(true);
+
+    event.preventDefault();
+    event.stopPropagation();
+    setSwatchHexEditable(swatch.querySelector(".color-swatch-hex"), false);
+    swatch.querySelector(".color-swatch-hex")?.blur();
+    window.getSelection()?.removeAllRanges();
+
+    const originalColor = swatch.dataset.colorHex;
+    const { h, s, v } = rgbToHsv(hexToRgb(originalColor));
+    const session = {
+      swatch,
+      row,
+      swatchIndex,
+      title: swatch.querySelector(".color-swatch-title"),
+      hex: swatch.querySelector(".color-swatch-hex"),
+      originalColor,
+      draftColor: originalColor,
+      h,
+      s,
+      v,
+      pointerId: event.pointerId,
+      nameTimer: 0,
+      onKey(event) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          finishColorDrag(false);
+        }
+      },
+      onScroll() {
+        finishColorDrag(true);
+      },
+    };
+
+    swatch.classList.add("is-adjusting");
+    swatch.setPointerCapture(event.pointerId);
+    colorDragSession = session;
+    syncSwatchFromPointer(session, event.clientX, event.clientY);
+
+    document.addEventListener("keydown", session.onKey, true);
+    window.addEventListener("scroll", session.onScroll, true);
+  });
+
+  swatch.addEventListener("pointermove", (event) => {
+    if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
+    syncSwatchFromPointer(colorDragSession, event.clientX, event.clientY);
+  });
+
+  swatch.addEventListener("pointerup", (event) => {
+    if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
+    finishColorDrag(true);
+  });
+
+  swatch.addEventListener("pointercancel", (event) => {
+    if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
+    finishColorDrag(false);
+  });
+}
+
+function applySwatchColor(swatch, row, swatchIndex, color) {
+  const normalized = parseColor(color);
+  const rowIndex = Number(row.dataset.colorIndex);
+  const combination = colorCombinations[rowIndex];
+
+  swatch.dataset.colorHex = colorNameKey(normalized);
+  swatch.style.background = normalized;
+  swatch.style.setProperty("--color-swatch-label", contrastLabelColor(normalized));
+
+  const hex = swatch.querySelector(".color-swatch-hex");
+  if (hex) hex.textContent = formatHexColor(normalized);
+
+  if (combination?.colors?.[swatchIndex] !== undefined) {
+    combination.colors[swatchIndex] = normalized;
+    row.setAttribute(
+      "aria-label",
+      `${combination.source} combination ${combination.colors.join(", ")}`,
+    );
+  }
+
+  const title = swatch.querySelector(".color-swatch-title");
+  if (title) title.textContent = "";
+  applyColorNameToSwatch(swatch);
+  ensureColorNames([normalized]);
+}
+
+function setSwatchHexEditable(hex, editable) {
+  if (!hex) return;
+  hex.contentEditable = editable ? "true" : "false";
+}
+
+function bindSwatchHexEditor(hex, swatch, row, swatchIndex) {
+  setSwatchHexEditable(hex, false);
+  hex.spellcheck = false;
+  hex.setAttribute("role", "textbox");
+  hex.setAttribute("aria-label", "Edit hex color");
+
+  hex.addEventListener("mousedown", (event) => {
+    if (swatch.classList.contains("is-adjusting")) {
+      event.preventDefault();
+      return;
+    }
+    event.stopPropagation();
+    setSwatchHexEditable(hex, true);
+  });
+  hex.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+  hex.addEventListener("keydown", (event) => {
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      hex.blur();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      hex.textContent = formatHexColor(swatch.dataset.colorHex);
+      hex.blur();
+    }
+  });
+  hex.addEventListener("blur", () => {
+    setSwatchHexEditable(hex, false);
+    const current = swatch.dataset.colorHex;
+    const next = normalizeHexInput(hex.textContent);
+    if (next) {
+      applySwatchColor(swatch, row, swatchIndex, next);
+    } else {
+      hex.textContent = formatHexColor(current);
+    }
+  });
+  hex.addEventListener("focus", () => {
+    if (hex.contentEditable !== "true") {
+      hex.blur();
+      return;
+    }
+    requestAnimationFrame(() => {
+      const range = document.createRange();
+      range.selectNodeContents(hex);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    });
+  });
+}
+
 function createColorRow(combination, index, rowHeight, rowStride) {
-  const row = document.createElement("button");
+  const row = document.createElement("div");
   row.className = "color-row";
-  row.type = "button";
+  row.setAttribute("role", "button");
+  row.tabIndex = 0;
   row.dataset.colorIndex = String(index);
   row.setAttribute(
     "aria-label",
     `${combination.source} combination ${combination.colors.join(", ")}`,
   );
 
-  combination.colors.forEach((color) => {
+  combination.colors.forEach((color, swatchIndex) => {
     const swatch = document.createElement("span");
+    const label = document.createElement("span");
+    const title = document.createElement("span");
+    const hex = document.createElement("span");
+    const normalized = parseColor(color);
+
     swatch.className = "color-swatch";
-    swatch.style.background = color;
+    swatch.dataset.colorHex = colorNameKey(normalized);
+    swatch.style.background = normalized;
+    swatch.style.setProperty("--color-swatch-label", contrastLabelColor(normalized));
+
+    label.className = "color-swatch-label";
+    title.className = "color-swatch-title";
+    hex.className = "color-swatch-hex";
+    hex.textContent = formatHexColor(normalized);
+
+    label.append(title, hex);
+    swatch.append(label);
+    applyColorNameToSwatch(swatch);
+    bindSwatchHexEditor(hex, swatch, row, swatchIndex);
+    bindSwatchDragAdjust(swatch, row, swatchIndex);
+    swatch.addEventListener("mouseenter", () => {
+      ensureColorNames([swatch.dataset.colorHex]);
+    });
     row.append(swatch);
   });
 
   row.addEventListener("click", () => {
     setStatus(`${combination.source} combination`);
+  });
+  row.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setStatus(`${combination.source} combination`);
+    }
   });
 
   positionColorRow(row, index, rowHeight, rowStride);
@@ -741,6 +1108,10 @@ function createColorRow(combination, index, rowHeight, rowStride) {
 function updateColorGridWindow(force = false) {
   if (colorGrid.hidden || activeBrandTab !== "Colors") return;
   if (!colorCombinations.length) return;
+
+  if (colorDragSession && !document.body.contains(colorDragSession.swatch)) {
+    colorDragSession = null;
+  }
 
   const metrics = measureColorGridMetrics();
   if (metrics.rowHeight <= 0) return;
@@ -792,6 +1163,7 @@ function updateColorGridWindow(force = false) {
     rowHeight: metrics.rowHeight,
     rowStride: metrics.rowStride,
   };
+  prefetchVisibleColorNames(startIndex, endIndex);
 }
 
 function scheduleColorGridWindow() {

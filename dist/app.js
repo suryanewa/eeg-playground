@@ -24555,6 +24555,10 @@ void main() {
   var colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
   var colorGridScrollRaf = 0;
   var colorGridListenersBound = false;
+  var colorNameApi = "https://api.color.pizza/v1/";
+  var colorNameCache = /* @__PURE__ */ new Map();
+  var colorNameInflight = /* @__PURE__ */ new Map();
+  var colorDragSession = null;
   var brandContentGap = 72;
   function contentTopInset(tile, content) {
     if (!tile || !content) return 0;
@@ -25028,23 +25032,339 @@ void main() {
     row.style.top = `${index * rowStride}px`;
     row.style.height = `${rowHeight}px`;
   }
+  function contrastLabelColor(background) {
+    const hex = parseColor(background);
+    return contrastRatio("#000000", hex) >= contrastRatio("#ffffff", hex) ? "#000000" : "#ffffff";
+  }
+  function formatHexColor(color) {
+    return parseColor(color).toUpperCase();
+  }
+  function colorNameKey(color) {
+    return parseColor(color).toLowerCase();
+  }
+  function applyColorNameToSwatch(swatch) {
+    const key = swatch.dataset.colorHex;
+    const title = swatch.querySelector(".color-swatch-title");
+    if (!key || !title) return;
+    const name = colorNameCache.get(key);
+    if (name) title.textContent = name;
+  }
+  function updateSwatchesForColor(key) {
+    const name = colorNameCache.get(key);
+    if (!name) return;
+    colorGrid.querySelectorAll(".color-swatch").forEach((swatch) => {
+      if (swatch.dataset.colorHex === key) applyColorNameToSwatch(swatch);
+    });
+  }
+  async function fetchColorNames(colors) {
+    const keys = [...new Set(colors.map(colorNameKey))].filter((key) => !colorNameCache.has(key));
+    if (!keys.length) return;
+    for (let index = 0; index < keys.length; index += 100) {
+      const chunk = keys.slice(index, index + 100);
+      const batchKey = chunk.join(",");
+      if (colorNameInflight.has(batchKey)) {
+        await colorNameInflight.get(batchKey);
+        continue;
+      }
+      const promise = (async () => {
+        try {
+          const values = chunk.map((key) => key.replace("#", "")).join(",");
+          const response = await fetch(`${colorNameApi}?values=${encodeURIComponent(values)}`, {
+            headers: {
+              Accept: "application/json",
+              "X-Referrer": "eeg-brand-playground"
+            }
+          });
+          if (!response.ok) return;
+          const data = await response.json();
+          for (const entry of data.colors ?? []) {
+            const key = colorNameKey(entry.requestedHex ?? entry.hex);
+            if (entry.name) {
+              colorNameCache.set(key, entry.name);
+              updateSwatchesForColor(key);
+            }
+          }
+        } finally {
+          colorNameInflight.delete(batchKey);
+        }
+      })();
+      colorNameInflight.set(batchKey, promise);
+      await promise;
+    }
+  }
+  function ensureColorNames(colors) {
+    return fetchColorNames(colors).catch(() => void 0);
+  }
+  function prefetchVisibleColorNames(startIndex, endIndex) {
+    const colors = [];
+    for (let index = startIndex; index < endIndex; index += 1) {
+      const combination = colorCombinations[index];
+      if (combination) colors.push(...combination.colors);
+    }
+    ensureColorNames(colors);
+  }
+  function normalizeHexInput(value) {
+    const text = String(value).trim().replace(/^#/, "");
+    if (/^[0-9a-fA-F]{3}$/.test(text)) {
+      return `#${text.split("").map((char) => char + char).join("")}`.toLowerCase();
+    }
+    if (/^[0-9a-fA-F]{6}$/.test(text)) {
+      return `#${text}`.toLowerCase();
+    }
+    return null;
+  }
+  function rgbToHsv(rgb) {
+    const channels = rgb.map((value) => value / 255);
+    const max = Math.max(...channels);
+    const min = Math.min(...channels);
+    const delta = max - min;
+    let hue = 0;
+    if (delta !== 0) {
+      if (max === channels[0]) hue = ((channels[1] - channels[2]) / delta + (channels[1] < channels[2] ? 6 : 0)) / 6;
+      else if (max === channels[1]) hue = ((channels[2] - channels[0]) / delta + 2) / 6;
+      else hue = ((channels[0] - channels[1]) / delta + 4) / 6;
+    }
+    return {
+      h: hue * 360,
+      s: max === 0 ? 0 : delta / max,
+      v: max
+    };
+  }
+  function hsvToHex(h2, s2, v) {
+    const hue = (h2 % 360 + 360) % 360;
+    const sat = clamp2(s2);
+    const val = clamp2(v);
+    const chroma = val * sat;
+    const x = chroma * (1 - Math.abs(hue / 60 % 2 - 1));
+    const m3 = val - chroma;
+    let rgb = [0, 0, 0];
+    if (hue < 60) rgb = [chroma, x, 0];
+    else if (hue < 120) rgb = [x, chroma, 0];
+    else if (hue < 180) rgb = [0, chroma, x];
+    else if (hue < 240) rgb = [0, x, chroma];
+    else if (hue < 300) rgb = [x, 0, chroma];
+    else rgb = [chroma, 0, x];
+    return rgbToHex(rgb.map((channel) => (channel + m3) * 255));
+  }
+  function previewSwatchColor(swatch, color) {
+    const normalized = parseColor(color);
+    swatch.style.background = normalized;
+    swatch.style.setProperty("--color-swatch-label", contrastLabelColor(normalized));
+  }
+  function updateSwatchDragPreview(session2, color) {
+    const normalized = parseColor(color);
+    session2.draftColor = normalized;
+    session2.hex.textContent = formatHexColor(normalized);
+    previewSwatchColor(session2.swatch, normalized);
+    window.clearTimeout(session2.nameTimer);
+    session2.nameTimer = window.setTimeout(() => {
+      ensureColorNames([normalized]).then(() => {
+        if (colorDragSession !== session2) return;
+        session2.title.textContent = colorNameCache.get(colorNameKey(normalized)) ?? "";
+      });
+    }, 120);
+  }
+  function syncSwatchFromPointer(session2, clientX, clientY) {
+    const rect = session2.swatch.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    session2.s = clamp2((clientX - rect.left) / rect.width);
+    session2.v = clamp2(1 - (clientY - rect.top) / rect.height);
+    updateSwatchDragPreview(session2, hsvToHex(session2.h, session2.s, session2.v));
+  }
+  function finishColorDrag(commit = true) {
+    if (!colorDragSession) return;
+    const session2 = colorDragSession;
+    window.clearTimeout(session2.nameTimer);
+    document.removeEventListener("keydown", session2.onKey, true);
+    window.removeEventListener("scroll", session2.onScroll, true);
+    if (session2.swatch.hasPointerCapture(session2.pointerId)) {
+      session2.swatch.releasePointerCapture(session2.pointerId);
+    }
+    if (commit) {
+      applySwatchColor(session2.swatch, session2.row, session2.swatchIndex, session2.draftColor);
+    } else {
+      previewSwatchColor(session2.swatch, session2.originalColor);
+      session2.hex.textContent = formatHexColor(session2.originalColor);
+      applyColorNameToSwatch(session2.swatch);
+    }
+    session2.swatch.classList.remove("is-adjusting");
+    colorDragSession = null;
+  }
+  function bindSwatchDragAdjust(swatch, row, swatchIndex) {
+    swatch.style.touchAction = "none";
+    swatch.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      if (event.target.closest(".color-swatch-hex")) return;
+      if (colorDragSession) finishColorDrag(true);
+      event.preventDefault();
+      event.stopPropagation();
+      setSwatchHexEditable(swatch.querySelector(".color-swatch-hex"), false);
+      swatch.querySelector(".color-swatch-hex")?.blur();
+      window.getSelection()?.removeAllRanges();
+      const originalColor = swatch.dataset.colorHex;
+      const { h: h2, s: s2, v } = rgbToHsv(hexToRgb(originalColor));
+      const session2 = {
+        swatch,
+        row,
+        swatchIndex,
+        title: swatch.querySelector(".color-swatch-title"),
+        hex: swatch.querySelector(".color-swatch-hex"),
+        originalColor,
+        draftColor: originalColor,
+        h: h2,
+        s: s2,
+        v,
+        pointerId: event.pointerId,
+        nameTimer: 0,
+        onKey(event2) {
+          if (event2.key === "Escape") {
+            event2.preventDefault();
+            finishColorDrag(false);
+          }
+        },
+        onScroll() {
+          finishColorDrag(true);
+        }
+      };
+      swatch.classList.add("is-adjusting");
+      swatch.setPointerCapture(event.pointerId);
+      colorDragSession = session2;
+      syncSwatchFromPointer(session2, event.clientX, event.clientY);
+      document.addEventListener("keydown", session2.onKey, true);
+      window.addEventListener("scroll", session2.onScroll, true);
+    });
+    swatch.addEventListener("pointermove", (event) => {
+      if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
+      syncSwatchFromPointer(colorDragSession, event.clientX, event.clientY);
+    });
+    swatch.addEventListener("pointerup", (event) => {
+      if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
+      finishColorDrag(true);
+    });
+    swatch.addEventListener("pointercancel", (event) => {
+      if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
+      finishColorDrag(false);
+    });
+  }
+  function applySwatchColor(swatch, row, swatchIndex, color) {
+    const normalized = parseColor(color);
+    const rowIndex = Number(row.dataset.colorIndex);
+    const combination = colorCombinations[rowIndex];
+    swatch.dataset.colorHex = colorNameKey(normalized);
+    swatch.style.background = normalized;
+    swatch.style.setProperty("--color-swatch-label", contrastLabelColor(normalized));
+    const hex = swatch.querySelector(".color-swatch-hex");
+    if (hex) hex.textContent = formatHexColor(normalized);
+    if (combination?.colors?.[swatchIndex] !== void 0) {
+      combination.colors[swatchIndex] = normalized;
+      row.setAttribute(
+        "aria-label",
+        `${combination.source} combination ${combination.colors.join(", ")}`
+      );
+    }
+    const title = swatch.querySelector(".color-swatch-title");
+    if (title) title.textContent = "";
+    applyColorNameToSwatch(swatch);
+    ensureColorNames([normalized]);
+  }
+  function setSwatchHexEditable(hex, editable) {
+    if (!hex) return;
+    hex.contentEditable = editable ? "true" : "false";
+  }
+  function bindSwatchHexEditor(hex, swatch, row, swatchIndex) {
+    setSwatchHexEditable(hex, false);
+    hex.spellcheck = false;
+    hex.setAttribute("role", "textbox");
+    hex.setAttribute("aria-label", "Edit hex color");
+    hex.addEventListener("mousedown", (event) => {
+      if (swatch.classList.contains("is-adjusting")) {
+        event.preventDefault();
+        return;
+      }
+      event.stopPropagation();
+      setSwatchHexEditable(hex, true);
+    });
+    hex.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    hex.addEventListener("keydown", (event) => {
+      event.stopPropagation();
+      if (event.key === "Enter") {
+        event.preventDefault();
+        hex.blur();
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        hex.textContent = formatHexColor(swatch.dataset.colorHex);
+        hex.blur();
+      }
+    });
+    hex.addEventListener("blur", () => {
+      setSwatchHexEditable(hex, false);
+      const current = swatch.dataset.colorHex;
+      const next = normalizeHexInput(hex.textContent);
+      if (next) {
+        applySwatchColor(swatch, row, swatchIndex, next);
+      } else {
+        hex.textContent = formatHexColor(current);
+      }
+    });
+    hex.addEventListener("focus", () => {
+      if (hex.contentEditable !== "true") {
+        hex.blur();
+        return;
+      }
+      requestAnimationFrame(() => {
+        const range = document.createRange();
+        range.selectNodeContents(hex);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      });
+    });
+  }
   function createColorRow(combination, index, rowHeight, rowStride) {
-    const row = document.createElement("button");
+    const row = document.createElement("div");
     row.className = "color-row";
-    row.type = "button";
+    row.setAttribute("role", "button");
+    row.tabIndex = 0;
     row.dataset.colorIndex = String(index);
     row.setAttribute(
       "aria-label",
       `${combination.source} combination ${combination.colors.join(", ")}`
     );
-    combination.colors.forEach((color) => {
+    combination.colors.forEach((color, swatchIndex) => {
       const swatch = document.createElement("span");
+      const label = document.createElement("span");
+      const title = document.createElement("span");
+      const hex = document.createElement("span");
+      const normalized = parseColor(color);
       swatch.className = "color-swatch";
-      swatch.style.background = color;
+      swatch.dataset.colorHex = colorNameKey(normalized);
+      swatch.style.background = normalized;
+      swatch.style.setProperty("--color-swatch-label", contrastLabelColor(normalized));
+      label.className = "color-swatch-label";
+      title.className = "color-swatch-title";
+      hex.className = "color-swatch-hex";
+      hex.textContent = formatHexColor(normalized);
+      label.append(title, hex);
+      swatch.append(label);
+      applyColorNameToSwatch(swatch);
+      bindSwatchHexEditor(hex, swatch, row, swatchIndex);
+      bindSwatchDragAdjust(swatch, row, swatchIndex);
+      swatch.addEventListener("mouseenter", () => {
+        ensureColorNames([swatch.dataset.colorHex]);
+      });
       row.append(swatch);
     });
     row.addEventListener("click", () => {
       setStatus(`${combination.source} combination`);
+    });
+    row.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        setStatus(`${combination.source} combination`);
+      }
     });
     positionColorRow(row, index, rowHeight, rowStride);
     return row;
@@ -25052,6 +25372,9 @@ void main() {
   function updateColorGridWindow(force = false) {
     if (colorGrid.hidden || activeBrandTab !== "Colors") return;
     if (!colorCombinations.length) return;
+    if (colorDragSession && !document.body.contains(colorDragSession.swatch)) {
+      colorDragSession = null;
+    }
     const metrics = measureColorGridMetrics();
     if (metrics.rowHeight <= 0) return;
     colorGrid.style.height = `${metrics.totalHeight}px`;
@@ -25090,6 +25413,7 @@ void main() {
       rowHeight: metrics.rowHeight,
       rowStride: metrics.rowStride
     };
+    prefetchVisibleColorNames(startIndex, endIndex);
   }
   function scheduleColorGridWindow() {
     if (colorGridScrollRaf) return;
