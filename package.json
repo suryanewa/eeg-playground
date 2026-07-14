@@ -4,6 +4,7 @@
   "description": "",
   "main": "logos-data.js",
   "scripts": {
+  "typefaces:import": "node scripts/import-typefaces.js",
     "build": "node scripts/write-env.js && esbuild src/app.js --bundle --format=iife --outfile=dist/app.js",
     "og:image": "node scripts/make-og-image.js",
     "test": "echo \"Error: no test specified\" && exit 1"

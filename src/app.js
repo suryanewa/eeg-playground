@@ -3,6 +3,8 @@ import { generateColorRamp } from "rampensau";
 import { Poline } from "poline";
 import { rybHsl2rgb } from "rybitten";
 import { createClient } from "@supabase/supabase-js";
+import { coolshapePlaceholders } from "./coolshape-placeholders.js";
+import { typefaces } from "./typefaces.js";
 import {
   GemSmokeShapes,
   HalftoneCmykTypes,
@@ -24,14 +26,26 @@ const shaderLayer = document.querySelector("#shader-layer");
 const favicon = document.querySelector("#favicon");
 const logoSheet = document.querySelector(".logo-sheet");
 const grid = document.querySelector("#logo-grid");
+const uploadPanel = document.querySelector("#logo-upload");
+const uploadEmpty = document.querySelector("#logo-upload-empty");
+const typeUploadEmpty = document.querySelector("#type-upload-empty");
+const uploadInput = document.querySelector("#logo-file-input");
+const typeUploadInput = document.querySelector("#type-file-input");
+const uploadButton = document.querySelector("#logo-file-button");
+const typeUploadButton = document.querySelector("#type-file-button");
+const placeholderButton = document.querySelector("#placeholder-button");
+const typeExploreButton = document.querySelector("#type-explore-button");
+const uploadAddButton = document.querySelector("#logo-add-button");
+const uploadFeedback = document.querySelector("#upload-feedback");
+const typeUploadFeedback = document.querySelector("#type-upload-feedback");
+const dropOverlay = document.querySelector("#drop-overlay");
+const dropOverlayTitle = document.querySelector("#drop-overlay-title");
+const dropOverlayHint = document.querySelector("#drop-overlay-hint");
 const shuffleButton = document.querySelector("#shuffle-button");
 const infoButton = document.querySelector("#info-button");
-const settingsButton = document.querySelector("#settings-button");
-const settingsPopover = document.querySelector("#settings-popover");
-const settingsGradientToggle = document.querySelector("#settings-gradient");
-const settingsFontButton = document.querySelector("#settings-font-button");
-const settingsFontOptions = document.querySelector("#settings-font-options");
-const settingsFontOptionButtons = [...document.querySelectorAll(".font-picker-option")];
+const brandTabButtons = [...document.querySelectorAll(".brand-tab")];
+const typeGrid = document.querySelector("#type-grid");
+const colorGrid = document.querySelector("#color-grid");
 const dialog = document.querySelector("#logo-dialog");
 const infoDialog = document.querySelector("#info-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
@@ -72,25 +86,24 @@ let clientBar = null;
 let adminPanel = null;
 let adminContent = null;
 let exportCsvButton = null;
-const logoOrder = [
-  6, 9, 90, 13, 14, 16, 15, 96, 25, 67, 70, 71, 76,
-  77, 78, 18, 12, 43, 17, 100, 37, 101, 38, 10, 11, 24, 26, 58, 80,
-  82, 86, 106, 1, 60, 21, 22, 27, 105, 127, 129, 61,
-  31, 36, 133, 134, 135, 136, 137, 138, 7, 8, 40, 41, 113, 114, 115, 116, 117, 118, 119, 79, 140, 139, 57, 62, 81, 83, 50, 97, 44, 45, 46, 47,
-  48, 51, 52, 53, 54, 55, 56, 68, 69, 84, 85, 102, 49, 89, 91, 92,
-  93, 94, 95, 103, 39, 122, 123, 124, 125, 126, 130, 120, 121, 3, 4, 5, 23, 65, 42, 63, 64, 73, 74, 87, 88,
-  108, 109, 110, 98, 111, 112, 72, 131, 132, 19, 20, 99, 2, 33, 59, 75,
-];
-const logoCount = logoOrder.length;
-let currentLogoId = logoId(logoOrder[0]);
-let gradientMode = false;
+const uploadedLogos = new Map();
+const reservedLogoIds = new Set();
+let nextLogoNumber = 1;
+let currentLogoId = "";
+let activeFileReads = 0;
+let dragDepth = 0;
 let gridLogoScale = 1;
 let fullscreenLogoScale = 1;
-const defaultPalette = { ink: "#111111", paper: "#ffffff", ratio: 21, source: "Default" };
-const invertedPalette = { ink: "#ffffff", paper: "#111111", ratio: 21, source: "Inverted" };
+const defaultPalette = { ink: "#000000", paper: "#ffffff", ratio: 21, source: "Default" };
+const invertedPalette = { ink: "#ffffff", paper: "#000000", ratio: 21, source: "Inverted" };
 let currentPalette = defaultPalette;
+let paletteBeforeColors = null;
 let currentShaderIndex = -1;
-let selectedFont = settingsFontButton.textContent.trim();
+let selectedFont = "Helvetica";
+let activeBrandTab = "Colors";
+let typeCatalogRevealed = false;
+const uploadedTypefaces = [];
+let activeFontReads = 0;
 let lockupMode = false;
 let shaderMount = null;
 let fullscreenShaderMount = null;
@@ -109,6 +122,69 @@ let mobileGridLockupMode = false;
 let suppressNextMobileLogoClick = false;
 const lockupText = "EEG";
 const lockupCanvas = document.createElement("canvas");
+const colorCombinationCount = 720;
+const colorRowGap = 72;
+let colorCombinations = [];
+const colorRowPool = new Map();
+let colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+let colorGridScrollRaf = 0;
+let colorGridListenersBound = false;
+const brandContentGap = 72;
+
+function contentTopInset(tile, content) {
+  if (!tile || !content) return 0;
+
+  const tileRect = tile.getBoundingClientRect();
+  const svg = content.matches?.("svg") ? content : content.querySelector?.("svg");
+
+  if (svg instanceof SVGSVGElement) {
+    try {
+      const bbox = svg.getBBox();
+      const ctm = svg.getScreenCTM();
+      if (ctm && bbox.height > 0 && bbox.width > 0) {
+        const point = svg.createSVGPoint();
+        point.x = bbox.x;
+        point.y = bbox.y;
+        const screen = point.matrixTransform(ctm);
+        return Math.max(0, screen.y - tileRect.top);
+      }
+    } catch {
+      // Fall through to element bounds when the SVG is not rendered yet.
+    }
+  }
+
+  return Math.max(0, content.getBoundingClientRect().top - tileRect.top);
+}
+
+function firstRowContentInset(container, tileSelector, contentSelector) {
+  const tiles = [...container.querySelectorAll(tileSelector)];
+  if (!tiles.length) return 0;
+
+  const firstTop = tiles[0].getBoundingClientRect().top;
+  const firstRow = tiles.filter((tile) => Math.abs(tile.getBoundingClientRect().top - firstTop) < 1);
+  let minInset = Infinity;
+
+  firstRow.forEach((tile) => {
+    const content = tile.querySelector(contentSelector);
+    const inset = contentTopInset(tile, content);
+    if (inset < minInset) minInset = inset;
+  });
+
+  return Number.isFinite(minInset) ? minInset : 0;
+}
+
+function syncBrandGridOffset() {
+  let inset = 0;
+
+  if (activeBrandTab === "Logos" && !grid.hidden) {
+    inset = firstRowContentInset(grid, ".logo-tile", ".logo-art svg, .logo-art");
+  } else if (activeBrandTab === "Type" && !typeGrid.hidden) {
+    inset = firstRowContentInset(typeGrid, ".type-tile", ".type-specimen");
+  }
+
+  const offset = Math.max(0, brandContentGap - inset);
+  document.documentElement.style.setProperty("--brand-grid-offset", `${offset}px`);
+}
 const lockupFontFamilies = {
   Helvetica: 'Helvetica, "Helvetica Neue", Arial, sans-serif',
   Inter: 'Inter, "Inter Tight", Arial, sans-serif',
@@ -126,17 +202,17 @@ function logoId(id) {
   return String(id).padStart(3, "0");
 }
 
-function logoPath(id) {
-  return `assets/logos/logo-${logoId(id)}.svg`;
+function logoMarkup(id) {
+  return uploadedLogos.get(logoId(id))?.markup ?? "";
 }
 
-function logoMarkup(id) {
-  return window.LOGO_SVGS?.[logoId(id)] ?? "";
+function logoName(id) {
+  return uploadedLogos.get(logoId(id))?.name ?? `Logo ${logoId(id)}`;
 }
 
 function logoFaviconHref(id) {
   const markup = logoMarkup(id);
-  if (!markup) return logoPath(id);
+  if (!markup) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E";
 
   const ink = parseColor(currentPalette.ink);
   const paper = parseColor(currentPalette.paper);
@@ -185,7 +261,7 @@ function logoFaviconHref(id) {
 }
 
 function updateFaviconForTopLogo() {
-  const topLogoId = grid.querySelector(".logo-tile")?.dataset.logoId ?? logoId(logoOrder[0]);
+  const topLogoId = grid.querySelector(".logo-tile")?.dataset.logoId ?? "";
   favicon?.setAttribute("href", logoFaviconHref(topLogoId));
 }
 
@@ -280,6 +356,8 @@ function setGridLogoScale(nextScale) {
   document.documentElement.style.setProperty("--grid-logo-scale", String(gridLogoScale));
   updateGridColumns();
   scheduleLogoShaderMask();
+  if (activeBrandTab === "Type") requestAnimationFrame(() => updateTypeGridWindow(true));
+  else requestAnimationFrame(syncBrandGridOffset);
 }
 
 function setFullscreenLogoScale(nextScale) {
@@ -305,6 +383,476 @@ updateGridColumns();
 
 function selectedFontFamily() {
   return lockupFontFamilies[selectedFont] ?? lockupFontFamilies.Helvetica;
+}
+
+const loadedTypefaceKeys = new Set();
+const typeTilePool = new Map();
+let typeGridWindow = {
+  columns: 0,
+  cellSize: 0,
+  startIndex: -1,
+  endIndex: -1,
+};
+let typeGridScrollRaf = 0;
+let typeGridListenersBound = false;
+
+function getTypefaces() {
+  return uploadedTypefaces.length
+    ? uploadedTypefaces.concat(typefaces)
+    : typefaces;
+}
+
+function typefaceLoadKey(face) {
+  return `${face.loader}:${face.id}:${face.weight}`;
+}
+
+function typefaceStylesheetUrl(face) {
+  if (face.loader === "google") {
+    const family = face.family.replace(/ /g, "+");
+    return `https://fonts.googleapis.com/css2?family=${family}:wght@${face.weight}&display=swap`;
+  }
+  if (face.loader === "bunny") {
+    return `https://fonts.bunny.net/css?family=${face.id}:${face.weight}`;
+  }
+  if (face.loader === "fontshare") {
+    return `https://api.fontshare.com/v2/css?f[]=${encodeURIComponent(face.id)}@${face.weight}&display=swap`;
+  }
+  return "";
+}
+
+function ensureTypefaceLoaded(face) {
+  const key = typefaceLoadKey(face);
+  if (loadedTypefaceKeys.has(key)) {
+    return document.fonts.load(`${face.weight} 48px "${face.family}"`).catch(() => undefined);
+  }
+  loadedTypefaceKeys.add(key);
+
+  if (face.loader === "local") {
+    return document.fonts.load(`${face.weight} 48px "${face.family}"`).catch(() => undefined);
+  }
+
+  if (face.loader === "fontsource") {
+    const style = document.createElement("style");
+    const url = `https://cdn.jsdelivr.net/fontsource/fonts/${face.id}@latest/${face.subset}-${face.weight}-normal.woff2`;
+    style.textContent = `@font-face{font-family:"${face.family}";src:url("${url}") format("woff2");font-weight:${face.weight};font-style:normal;font-display:swap;}`;
+    document.head.append(style);
+    return document.fonts.load(`${face.weight} 48px "${face.family}"`).catch(() => undefined);
+  }
+
+  const href = typefaceStylesheetUrl(face);
+  if (!href) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    const finish = () => {
+      document.fonts.load(`${face.weight} 48px "${face.family}"`).then(resolve, resolve);
+    };
+    link.addEventListener("load", finish);
+    link.addEventListener("error", resolve);
+    document.head.append(link);
+  });
+}
+
+const typeInkCanvas = document.createElement("canvas");
+const typeInkCtx = typeInkCanvas.getContext("2d");
+
+function measureTypeInk(family, weight, fontSize, sample) {
+  if (!typeInkCtx) return null;
+  typeInkCtx.font = `${weight} ${fontSize}px "${family}", sans-serif`;
+  const metrics = typeInkCtx.measureText(sample);
+  const left = metrics.actualBoundingBoxLeft ?? 0;
+  const right = metrics.actualBoundingBoxRight ?? metrics.width;
+  const ascent = metrics.actualBoundingBoxAscent ?? fontSize * 0.8;
+  const descent = metrics.actualBoundingBoxDescent ?? fontSize * 0.2;
+  const width = left + right;
+  const height = ascent + descent;
+  if (!(width > 0 && height > 0)) return null;
+  // Ink bounds relative to a left-aligned baseline origin.
+  return { left, right, ascent, descent, width, height };
+}
+
+function fitTypeTile(tile) {
+  const face = tile.querySelector(".type-button");
+  const specimen = tile.querySelector(".type-specimen");
+  if (!face || !specimen) return;
+
+  const outlineInset = 6;
+  const styles = getComputedStyle(face);
+  const padL = Number.parseFloat(styles.paddingLeft) || 0;
+  const padR = Number.parseFloat(styles.paddingRight) || 0;
+  const padT = Number.parseFloat(styles.paddingTop) || 0;
+  const padB = Number.parseFloat(styles.paddingBottom) || 0;
+  const availableWidth = Math.max(1, face.clientWidth - padL - padR);
+  const availableHeight = Math.max(1, face.clientHeight - padT - padB);
+  const family = specimen.dataset.fontFamily || "sans-serif";
+  const weight = specimen.dataset.fontWeight || "400";
+  const sample = specimen.textContent || lockupText;
+
+  let fontSize = Math.min(availableHeight * 0.44, availableWidth * 0.4, 54);
+  let ink = measureTypeInk(family, weight, fontSize, sample);
+
+  if (ink) {
+    const fit = Math.min(
+      1,
+      (availableWidth * 0.9) / ink.width,
+      (availableHeight * 0.7) / ink.height,
+    );
+    if (fit < 1) fontSize *= fit;
+  }
+
+  specimen.style.fontSize = `${fontSize}px`;
+  specimen.style.transform = "none";
+  specimen.style.left = "0px";
+  specimen.style.top = "0px";
+
+  const range = document.createRange();
+  range.selectNodeContents(specimen);
+  const glyphRect = range.getBoundingClientRect();
+  const faceRect = face.getBoundingClientRect();
+  if (glyphRect.width > 0 && glyphRect.height > 0) {
+    const inkCx = glyphRect.left + glyphRect.width / 2 - faceRect.left;
+    const inkCy = glyphRect.top + glyphRect.height / 2 - faceRect.top;
+    specimen.style.left = `${Math.round(face.clientWidth / 2 - inkCx)}px`;
+    specimen.style.top = `${Math.round(face.clientHeight / 2 - inkCy)}px`;
+  } else {
+    specimen.style.left = "50%";
+    specimen.style.top = "50%";
+    specimen.style.transform = "translate(-50%, -50%)";
+  }
+
+  const tileRect = tile.getBoundingClientRect();
+  const specimenRect = specimen.getBoundingClientRect();
+  if (specimenRect.height > 0) {
+    const gapTop = specimenRect.bottom - tileRect.top;
+    const gapBottom = tileRect.height - outlineInset;
+    tile.style.setProperty("--type-label-top", `${(gapTop + gapBottom) / 2}px`);
+  }
+}
+
+function scheduleFitTypeTile(tile) {
+  requestAnimationFrame(() => {
+    fitTypeTile(tile);
+    requestAnimationFrame(() => fitTypeTile(tile));
+  });
+}
+
+function fitTypeSpecimens() {
+  typeTilePool.forEach((tile) => fitTypeTile(tile));
+  syncBrandGridOffset();
+}
+
+function typeGridColumns() {
+  if (window.matchMedia("(max-width: 720px)").matches) return 2;
+  return Number.parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue("--grid-columns"),
+    10,
+  ) || gridColumnsForScale(gridLogoScale);
+}
+
+function measureTypeGridMetrics() {
+  const faces = getTypefaces();
+  const columns = Math.max(1, typeGridColumns());
+  const width = typeGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
+  const cellSize = width / columns;
+  const rows = Math.ceil(faces.length / columns);
+  return {
+    columns,
+    cellSize,
+    rows,
+    totalHeight: rows * cellSize,
+  };
+}
+
+function positionTypeTile(tile, index, columns, cellSize) {
+  tile.style.left = `${(index % columns) * cellSize}px`;
+  tile.style.top = `${Math.floor(index / columns) * cellSize}px`;
+  tile.style.width = `${cellSize}px`;
+  tile.style.height = `${cellSize}px`;
+}
+
+function createTypeTile(face, index, columns, cellSize) {
+  const tile = document.createElement("figure");
+  const button = document.createElement("div");
+  const specimen = document.createElement("span");
+
+  tile.className = "type-tile";
+  tile.dataset.fontName = face.family;
+  tile.dataset.typeIndex = String(index);
+  button.className = "type-button";
+  specimen.className = "type-specimen";
+  specimen.textContent = lockupText;
+  specimen.dataset.fontFamily = face.family;
+  specimen.dataset.fontWeight = String(face.weight);
+  specimen.style.fontFamily = `"${face.family}", sans-serif`;
+  specimen.style.fontWeight = String(face.weight);
+
+  button.append(specimen);
+  tile.append(button);
+  positionTypeTile(tile, index, columns, cellSize);
+  ensureTypefaceLoaded(face).then(() => scheduleFitTypeTile(tile));
+  return tile;
+}
+
+function updateTypeGridWindow(force = false) {
+  if (typeGrid.hidden || activeBrandTab !== "Type") return;
+
+  const metrics = measureTypeGridMetrics();
+  if (metrics.cellSize <= 0) return;
+
+  typeGrid.style.height = `${metrics.totalHeight}px`;
+
+  const rect = typeGrid.getBoundingClientRect();
+  const buffer = metrics.cellSize * 3;
+  const visibleTop = Math.max(0, -rect.top);
+  const visibleBottom = visibleTop + window.innerHeight;
+  const startRow = Math.max(0, Math.floor((visibleTop - buffer) / metrics.cellSize));
+  const endRow = Math.min(
+    metrics.rows - 1,
+    Math.ceil((visibleBottom + buffer) / metrics.cellSize),
+  );
+  const faces = getTypefaces();
+  const startIndex = startRow * metrics.columns;
+  const endIndex = Math.min(faces.length, (endRow + 1) * metrics.columns);
+
+  const sameWindow = !force
+    && startIndex === typeGridWindow.startIndex
+    && endIndex === typeGridWindow.endIndex
+    && metrics.columns === typeGridWindow.columns
+    && Math.abs(metrics.cellSize - typeGridWindow.cellSize) < 0.5;
+
+  if (sameWindow) return;
+
+  for (const [index, tile] of typeTilePool) {
+    if (index < startIndex || index >= endIndex) {
+      tile.remove();
+      typeTilePool.delete(index);
+    }
+  }
+
+  for (let index = startIndex; index < endIndex; index += 1) {
+    const face = faces[index];
+    if (!face) continue;
+
+    let tile = typeTilePool.get(index);
+    if (tile) {
+      positionTypeTile(tile, index, metrics.columns, metrics.cellSize);
+      continue;
+    }
+
+    tile = createTypeTile(face, index, metrics.columns, metrics.cellSize);
+    typeTilePool.set(index, tile);
+    typeGrid.append(tile);
+  }
+
+  typeGridWindow = {
+    columns: metrics.columns,
+    cellSize: metrics.cellSize,
+    startIndex,
+    endIndex,
+  };
+
+  requestAnimationFrame(fitTypeSpecimens);
+}
+
+function scheduleTypeGridWindow() {
+  if (typeGridScrollRaf) return;
+  typeGridScrollRaf = requestAnimationFrame(() => {
+    typeGridScrollRaf = 0;
+    updateTypeGridWindow();
+  });
+}
+
+function bindTypeGridListeners() {
+  if (typeGridListenersBound) return;
+  typeGridListenersBound = true;
+  window.addEventListener("scroll", scheduleTypeGridWindow, { passive: true });
+}
+
+function renderTypeGrid() {
+  typeTilePool.clear();
+  typeGrid.replaceChildren();
+  typeGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+  bindTypeGridListeners();
+  updateTypeGridWindow(true);
+}
+
+function buildColorCombinations() {
+  const used = new Set();
+  const combinations = [];
+
+  for (let index = 0; index < colorCombinationCount; index += 1) {
+    let combination = generateColorCombination();
+    for (let attempt = 0; attempt < 24; attempt += 1) {
+      const key = combination.colors.join("/");
+      if (!used.has(key)) {
+        used.add(key);
+        break;
+      }
+      combination = generateColorCombination();
+    }
+    combinations.push(combination);
+  }
+
+  return combinations;
+}
+
+function measureColorGridMetrics() {
+  const width = colorGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
+  const rowHeight = width / 4;
+  const rowStride = rowHeight + colorRowGap;
+  const totalHeight = colorCombinations.length > 0
+    ? colorCombinations.length * rowHeight + Math.max(0, colorCombinations.length - 1) * colorRowGap
+    : 0;
+  return { width, rowHeight, rowStride, totalHeight };
+}
+
+function positionColorRow(row, index, rowHeight, rowStride) {
+  row.style.top = `${index * rowStride}px`;
+  row.style.height = `${rowHeight}px`;
+}
+
+function createColorRow(combination, index, rowHeight, rowStride) {
+  const row = document.createElement("button");
+  row.className = "color-row";
+  row.type = "button";
+  row.dataset.colorIndex = String(index);
+  row.setAttribute(
+    "aria-label",
+    `${combination.source} combination ${combination.colors.join(", ")}`,
+  );
+
+  combination.colors.forEach((color) => {
+    const swatch = document.createElement("span");
+    swatch.className = "color-swatch";
+    swatch.style.background = color;
+    row.append(swatch);
+  });
+
+  row.addEventListener("click", () => {
+    setStatus(`${combination.source} combination`);
+  });
+
+  positionColorRow(row, index, rowHeight, rowStride);
+  return row;
+}
+
+function updateColorGridWindow(force = false) {
+  if (colorGrid.hidden || activeBrandTab !== "Colors") return;
+  if (!colorCombinations.length) return;
+
+  const metrics = measureColorGridMetrics();
+  if (metrics.rowHeight <= 0) return;
+
+  colorGrid.style.height = `${metrics.totalHeight}px`;
+
+  const rect = colorGrid.getBoundingClientRect();
+  const buffer = metrics.rowStride * 2;
+  const visibleTop = Math.max(0, -rect.top);
+  const visibleBottom = visibleTop + window.innerHeight;
+  const startIndex = Math.max(0, Math.floor((visibleTop - buffer) / metrics.rowStride));
+  const endIndex = Math.min(
+    colorCombinations.length,
+    Math.ceil((visibleBottom + buffer) / metrics.rowStride),
+  );
+
+  const sameWindow = !force
+    && startIndex === colorGridWindow.startIndex
+    && endIndex === colorGridWindow.endIndex
+    && Math.abs(metrics.rowHeight - colorGridWindow.rowHeight) < 0.5;
+
+  if (sameWindow) return;
+
+  for (const [index, row] of colorRowPool) {
+    if (index < startIndex || index >= endIndex) {
+      row.remove();
+      colorRowPool.delete(index);
+    }
+  }
+
+  for (let index = startIndex; index < endIndex; index += 1) {
+    const combination = colorCombinations[index];
+    if (!combination) continue;
+
+    let row = colorRowPool.get(index);
+    if (row) {
+      positionColorRow(row, index, metrics.rowHeight, metrics.rowStride);
+      continue;
+    }
+
+    row = createColorRow(combination, index, metrics.rowHeight, metrics.rowStride);
+    colorRowPool.set(index, row);
+    colorGrid.append(row);
+  }
+
+  colorGridWindow = {
+    startIndex,
+    endIndex,
+    rowHeight: metrics.rowHeight,
+    rowStride: metrics.rowStride,
+  };
+}
+
+function scheduleColorGridWindow() {
+  if (colorGridScrollRaf) return;
+  colorGridScrollRaf = requestAnimationFrame(() => {
+    colorGridScrollRaf = 0;
+    updateColorGridWindow();
+  });
+}
+
+function bindColorGridListeners() {
+  if (colorGridListenersBound) return;
+  colorGridListenersBound = true;
+  window.addEventListener("scroll", scheduleColorGridWindow, { passive: true });
+}
+
+function renderColorGrid() {
+  colorCombinations = buildColorCombinations();
+  colorRowPool.clear();
+  colorGrid.replaceChildren();
+  colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+  bindColorGridListeners();
+  updateColorGridWindow(true);
+}
+
+function syncBrandTabView() {
+  const showLogos = activeBrandTab === "Logos";
+  const showType = activeBrandTab === "Type";
+  const showColors = activeBrandTab === "Colors";
+  const isEmpty = uploadPanel.dataset.empty === "true";
+  const showTypeEmpty = showType && !typeCatalogRevealed;
+
+  grid.hidden = !showLogos || isEmpty;
+  typeGrid.hidden = !showType || showTypeEmpty;
+  colorGrid.hidden = !showColors;
+  uploadEmpty.hidden = !(showLogos && isEmpty);
+  typeUploadEmpty.hidden = !showTypeEmpty;
+  shuffleButton.hidden = showColors ? false : !(showLogos && !isEmpty);
+  shuffleButton.disabled = showColors ? false : uploadedLogos.size < 2;
+  shuffleButton.setAttribute(
+    "aria-label",
+    showColors ? "Shuffle color combinations" : "Shuffle logos",
+  );
+  uploadAddButton.hidden = !showLogos || isEmpty;
+
+  if (showLogos && !isEmpty) {
+    syncLogoGridPresentation();
+  }
+
+  if (showType && !showTypeEmpty) {
+    bindTypeGridListeners();
+    requestAnimationFrame(() => updateTypeGridWindow(true));
+  }
+
+  if (showColors) {
+    bindColorGridListeners();
+    if (!colorCombinations.length) renderColorGrid();
+    else requestAnimationFrame(() => updateColorGridWindow(true));
+  }
+
+  requestAnimationFrame(syncBrandGridOffset);
 }
 
 function lockupMarkup(id) {
@@ -436,11 +984,12 @@ function scheduleLockupLayout() {
 function renderFullscreenLogo() {
   fullscreenLogo.classList.toggle("is-lockup", lockupMode);
   fullscreenLogo.innerHTML = fullscreenMarkup(currentLogoId);
+  const name = logoName(currentLogoId);
   fullscreenLogo.setAttribute(
     "aria-label",
     lockupMode
-      ? `EEG logo exploration ${currentLogoId} lockup with EEG text`
-      : `EEG logo exploration ${currentLogoId}`,
+      ? `${name} lockup with EEG text`
+      : name,
   );
 
   if (lockupMode) {
@@ -463,18 +1012,22 @@ function toggleLockupMode() {
 }
 
 function showLogoById(id) {
-  currentLogoId = logoId(id);
+  const normalizedId = logoId(id);
+  if (!uploadedLogos.has(normalizedId)) return;
+  currentLogoId = normalizedId;
   renderFullscreenLogo();
 }
 
 function showAdjacentLogo(offset) {
   const order = tileOrder();
-  const position = order.indexOf(currentLogoId);
+  if (!order.length) return;
+  const position = Math.max(0, order.indexOf(currentLogoId));
   const nextPosition = ((position + offset) % order.length + order.length) % order.length;
-  showLogoById(Number(order[nextPosition]));
+  showLogoById(order[nextPosition]);
 }
 
 function openLogoDialog(id) {
+  if (!uploadedLogos.has(logoId(id))) return;
   document.activeElement?.blur?.();
   lockupMode = false;
   showLogoById(id);
@@ -483,7 +1036,7 @@ function openLogoDialog(id) {
   mountFullscreenShader();
 }
 
-logoOrder.forEach((id, position) => {
+function createLogoTile(id, name, position) {
   const tile = document.createElement("figure");
   const button = document.createElement("button");
   const logo = document.createElement("span");
@@ -494,26 +1047,27 @@ logoOrder.forEach((id, position) => {
   tile.className = "logo-tile";
   tile.dataset.logoIndex = String(id);
   tile.dataset.logoId = logoId(id);
+  tile.dataset.logoName = name;
   tile.dataset.sortIndex = String(position);
   tile.dataset.vote = "0";
   button.className = "logo-button";
   button.type = "button";
   button.setAttribute("aria-pressed", "false");
-  button.setAttribute("aria-label", `Fullscreen EEG logo exploration ${logoId(id)}`);
+  button.setAttribute("aria-label", `Preview ${name}`);
   logo.className = "logo-art";
   logo.setAttribute("aria-hidden", "true");
   logo.innerHTML = logoMarkup(id);
   voteControls.className = "vote-controls";
   upButton.className = "vote-button vote-button--up";
   upButton.type = "button";
-  upButton.disabled = true;
+  upButton.disabled = !canVote;
   upButton.dataset.voteValue = "1";
-  upButton.setAttribute("aria-label", `Upvote EEG logo exploration ${logoId(id)}`);
+  upButton.setAttribute("aria-label", `Upvote ${name}`);
   downButton.className = "vote-button vote-button--down";
   downButton.type = "button";
-  downButton.disabled = true;
+  downButton.disabled = !canVote;
   downButton.dataset.voteValue = "-1";
-  downButton.setAttribute("aria-label", `Downvote EEG logo exploration ${logoId(id)}`);
+  downButton.setAttribute("aria-label", `Downvote ${name}`);
 
   button.addEventListener("pointerdown", (event) => {
     if (!mobileDialogMedia.matches || !event.isPrimary) return;
@@ -584,7 +1138,412 @@ logoOrder.forEach((id, position) => {
   tile.append(button);
   tile.append(voteControls);
   grid.append(tile);
+  return tile;
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function keepLocalSvgUrl(value) {
+  const normalized = String(value).trim().replace(/^['"]|['"]$/g, "");
+  return normalized.startsWith("#") || /^data:image\/(?:png|jpe?g|gif|webp);/i.test(normalized);
+}
+
+function sanitizeCssUrls(value) {
+  return String(value)
+    .replace(/@import\s+(?:url\()?[^;]+;?/gi, "")
+    .replace(/url\(([^)]+)\)/gi, (match, url) => (keepLocalSvgUrl(url) ? match : "none"));
+}
+
+function sanitizeSvgMarkup(source, id) {
+  if (/<!DOCTYPE/i.test(source)) throw new Error("SVG doctypes are not supported");
+  const documentNode = new DOMParser().parseFromString(source, "image/svg+xml");
+  const svg = documentNode.documentElement;
+  if (svg.localName !== "svg" || documentNode.querySelector("parsererror")) {
+    throw new Error("Invalid SVG");
+  }
+
+  svg.querySelectorAll("script, foreignObject, iframe, object, embed, audio, video, animate, animateMotion, animateTransform, set, discard")
+    .forEach((node) => node.remove());
+
+  const elements = [svg, ...svg.querySelectorAll("*")];
+  elements.forEach((element) => {
+    [...element.attributes].forEach((attribute) => {
+      const attributeName = attribute.name.toLowerCase();
+      const attributeValue = attribute.value.trim();
+      if (attributeName.startsWith("on")) {
+        element.removeAttribute(attribute.name);
+        return;
+      }
+      if ((attributeName === "href" || attributeName === "xlink:href") && !keepLocalSvgUrl(attributeValue)) {
+        element.removeAttribute(attribute.name);
+        return;
+      }
+      if (element.localName === "a" && (attributeName === "href" || attributeName === "xlink:href")) {
+        element.removeAttribute(attribute.name);
+        return;
+      }
+      if (attributeName === "style" || /url\(/i.test(attributeValue)) {
+        element.setAttribute(attribute.name, sanitizeCssUrls(attribute.value));
+      }
+    });
+  });
+  svg.querySelectorAll("style").forEach((style) => {
+    style.textContent = sanitizeCssUrls(style.textContent);
+  });
+
+  const idMap = new Map();
+  svg.querySelectorAll("[id]").forEach((element) => {
+    const oldId = element.id;
+    const safeId = oldId.replace(/[^a-zA-Z0-9_-]/g, "-");
+    const nextId = `uploaded-${id}-${safeId}`;
+    idMap.set(oldId, nextId);
+    element.id = nextId;
+  });
+
+  const replaceReferences = (value) => {
+    let result = String(value);
+    idMap.forEach((nextId, oldId) => {
+      const escapedId = escapeRegExp(oldId);
+      result = result
+        .replace(new RegExp(`url\\(\\s*#${escapedId}\\s*\\)`, "g"), `url(#${nextId})`)
+        .replace(new RegExp(`(^|[\\s"'(])#${escapedId}(?=$|[\\s"')])`, "g"), `$1#${nextId}`);
+    });
+    return result;
+  };
+
+  [svg, ...svg.querySelectorAll("*")].forEach((element) => {
+    [...element.attributes].forEach((attribute) => {
+      element.setAttribute(attribute.name, replaceReferences(attribute.value));
+    });
+  });
+  svg.querySelectorAll("style").forEach((style) => {
+    style.textContent = replaceReferences(style.textContent);
+  });
+
+  if (!svg.hasAttribute("viewBox")) {
+    const width = Number.parseFloat(svg.getAttribute("width"));
+    const height = Number.parseFloat(svg.getAttribute("height"));
+    if (Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0) {
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    }
+  }
+  if (!svg.hasAttribute("preserveAspectRatio")) svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  return new XMLSerializer().serializeToString(svg);
+}
+
+function allocateLogoId(fileName) {
+  const fileNumber = fileName.match(/(\d+)(?=\D*\.svg$)/i)?.[1];
+  if (fileNumber) {
+    const preferredId = logoId(Number(fileNumber));
+    if (!uploadedLogos.has(preferredId) && !reservedLogoIds.has(preferredId)) {
+      nextLogoNumber = Math.max(nextLogoNumber, Number(fileNumber) + 1);
+      return preferredId;
+    }
+  }
+
+  while (uploadedLogos.has(logoId(nextLogoNumber)) || reservedLogoIds.has(logoId(nextLogoNumber))) {
+    nextLogoNumber += 1;
+  }
+  const id = logoId(nextLogoNumber);
+  nextLogoNumber += 1;
+  return id;
+}
+
+function updateUploadUi() {
+  const count = uploadedLogos.size;
+  const isEmpty = count === 0;
+  uploadPanel.dataset.empty = String(isEmpty);
+  document.body.classList.toggle("has-logos", !isEmpty);
+  grid.setAttribute("aria-label", isEmpty ? "No logos loaded" : `${count} uploaded logos`);
+  if (isEmpty && !activeFileReads) uploadFeedback.textContent = "";
+}
+
+async function addLogoFiles(fileList) {
+  const files = [...fileList];
+  if (!files.length) return;
+
+  activeFileReads += 1;
+  uploadPanel.setAttribute("aria-busy", "true");
+  uploadFeedback.textContent = `Reading ${files.length} ${files.length === 1 ? "file" : "files"}…`;
+
+  let added = 0;
+  let rejected = 0;
+  for (const file of files) {
+    const isSvg = file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
+    if (!isSvg || file.size > 10 * 1024 * 1024) {
+      rejected += 1;
+      continue;
+    }
+
+    try {
+      const id = allocateLogoId(file.name);
+      reservedLogoIds.add(id);
+      try {
+        const markup = sanitizeSvgMarkup(await file.text(), id);
+        uploadedLogos.set(id, { id, name: file.name, markup });
+        createLogoTile(id, file.name, grid.children.length);
+        if (!currentLogoId) currentLogoId = id;
+        added += 1;
+      } finally {
+        reservedLogoIds.delete(id);
+      }
+    } catch {
+      rejected += 1;
+    }
+  }
+
+  activeFileReads -= 1;
+  uploadPanel.removeAttribute("aria-busy");
+  uploadInput.value = "";
+  updateUploadUi();
+  applyVoteState();
+  syncBrandTabView();
+  syncLogoGridPresentation();
+
+  const addedMessage = added ? `${added} ${added === 1 ? "logo" : "logos"} added` : "Upload complete";
+  uploadFeedback.textContent = rejected
+    ? `${addedMessage}. ${rejected} ${rejected === 1 ? "file was" : "files were"} skipped.`
+    : addedMessage;
+  setStatus(uploadFeedback.textContent);
+}
+
+function populatePlaceholderLogos() {
+  if (uploadedLogos.size || activeFileReads) return;
+
+  coolshapePlaceholders.forEach(({ name, markup }) => {
+    const id = allocateLogoId("coolshape.svg");
+    uploadedLogos.set(id, { id, name, markup, isPlaceholder: true });
+    createLogoTile(id, name, grid.children.length);
+    if (!currentLogoId) currentLogoId = id;
+  });
+
+  updateUploadUi();
+  applyVoteState();
+  syncBrandTabView();
+  syncLogoGridPresentation();
+  uploadFeedback.textContent = `${coolshapePlaceholders.length} Coolshapes placeholders added`;
+  setStatus(uploadFeedback.textContent);
+}
+
+function openFilePicker() {
+  uploadInput.click();
+}
+
+function openTypeFilePicker() {
+  typeUploadInput.click();
+}
+
+function fontExtension(fileName) {
+  const match = fileName.toLowerCase().match(/\.([a-z0-9]+)$/);
+  return match ? match[1] : "";
+}
+
+function isFontFile(file) {
+  const extension = fontExtension(file.name);
+  if (["woff", "woff2", "ttf", "otf"].includes(extension)) return true;
+  const type = String(file.type || "").toLowerCase();
+  return type.includes("font") || type.includes("woff") || type.includes("ttf") || type.includes("otf");
+}
+
+function fontFamilyFromFileName(fileName) {
+  const base = fileName.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+  return base.replace(/\b\w/g, (char) => char.toUpperCase()) || "Custom Font";
+}
+
+function fontIdFromFamily(family) {
+  return `local-${family.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "font"}`;
+}
+
+function parseFontWeight(value) {
+  const numeric = Number.parseInt(String(value || ""), 10);
+  if (Number.isFinite(numeric) && numeric > 0) return numeric;
+  const named = String(value || "").toLowerCase();
+  if (named === "bold") return 700;
+  if (named === "normal") return 400;
+  return 400;
+}
+
+function revealTypeCatalog() {
+  if (typeCatalogRevealed) return;
+  typeCatalogRevealed = true;
+  syncBrandTabView();
+  setStatus("Exploring open-source typefaces");
+}
+
+function refreshTypeGrid() {
+  typeTilePool.forEach((tile) => tile.remove());
+  typeTilePool.clear();
+  typeGrid.replaceChildren();
+  typeGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+  updateTypeGridWindow(true);
+}
+
+async function addFontFiles(fileList) {
+  const files = [...fileList];
+  if (!files.length) return;
+
+  activeFontReads += 1;
+  uploadPanel.setAttribute("aria-busy", "true");
+  typeUploadFeedback.textContent = `Reading ${files.length} ${files.length === 1 ? "file" : "files"}…`;
+
+  let added = 0;
+  let rejected = 0;
+  for (const file of files) {
+    if (!isFontFile(file) || file.size > 10 * 1024 * 1024) {
+      rejected += 1;
+      continue;
+    }
+
+    try {
+      const family = fontFamilyFromFileName(file.name);
+      const buffer = await file.arrayBuffer();
+      const fontFace = new FontFace(family, buffer);
+      await fontFace.load();
+      document.fonts.add(fontFace);
+
+      const weight = parseFontWeight(fontFace.weight);
+      const id = fontIdFromFamily(family);
+      uploadedTypefaces.unshift({
+        id: `${id}-${uploadedTypefaces.length + 1}`,
+        family,
+        weight,
+        loader: "local",
+      });
+      loadedTypefaceKeys.add(typefaceLoadKey(uploadedTypefaces[0]));
+      added += 1;
+    } catch {
+      rejected += 1;
+    }
+  }
+
+  activeFontReads -= 1;
+  uploadPanel.removeAttribute("aria-busy");
+  typeUploadInput.value = "";
+
+  if (added) {
+    typeCatalogRevealed = true;
+    refreshTypeGrid();
+    syncBrandTabView();
+  }
+
+  const addedMessage = added ? `${added} ${added === 1 ? "font" : "fonts"} added` : "Upload complete";
+  const message = rejected
+    ? `${addedMessage}. ${rejected} ${rejected === 1 ? "file was" : "files were"} skipped.`
+    : addedMessage;
+  typeUploadFeedback.textContent = message;
+  setStatus(message);
+}
+
+function syncDropOverlayCopy() {
+  if (activeBrandTab === "Type") {
+    dropOverlayTitle.textContent = "Drop to add fonts";
+    dropOverlayHint.textContent = "WOFF, WOFF2, TTF, or OTF";
+    return;
+  }
+
+  dropOverlayTitle.textContent = "Drop to add logos";
+  dropOverlayHint.textContent = "SVG files only";
+}
+
+function draggedFiles(event) {
+  return [...(event.dataTransfer?.types ?? [])].includes("Files");
+}
+
+function hideDropOverlay() {
+  dragDepth = 0;
+  dropOverlay.hidden = true;
+  document.body.classList.remove("is-dragging-files");
+}
+
+uploadButton.addEventListener("click", openFilePicker);
+typeUploadButton.addEventListener("click", openTypeFilePicker);
+placeholderButton.addEventListener("click", populatePlaceholderLogos);
+typeExploreButton.addEventListener("click", revealTypeCatalog);
+uploadAddButton.addEventListener("click", openFilePicker);
+uploadInput.addEventListener("change", () => addLogoFiles(uploadInput.files));
+typeUploadInput.addEventListener("change", () => addFontFiles(typeUploadInput.files));
+
+function selectBrandTab(selectedButton, shouldFocus = false) {
+  const nextTab = selectedButton.textContent.trim();
+  const leavingColors = activeBrandTab === "Colors" && nextTab !== "Colors";
+  const enteringColors = activeBrandTab !== "Colors" && nextTab === "Colors";
+
+  if (leavingColors) restorePaletteBeforeColors();
+  if (enteringColors) stashPaletteBeforeColors();
+
+  brandTabButtons.forEach((button) => {
+    const isSelected = button === selectedButton;
+    button.setAttribute("aria-pressed", String(isSelected));
+    button.tabIndex = isSelected ? 0 : -1;
+  });
+  activeBrandTab = nextTab;
+  syncBrandTabView();
+  if (shouldFocus) selectedButton.focus();
+  setStatus(`${activeBrandTab} tab selected`);
+}
+
+brandTabButtons.forEach((button, index) => {
+  button.addEventListener("click", () => selectBrandTab(button));
+  button.addEventListener("keydown", (event) => {
+    let nextIndex = index;
+
+    if (event.key === "ArrowRight") {
+      nextIndex = (index + 1) % brandTabButtons.length;
+    } else if (event.key === "ArrowLeft") {
+      nextIndex = (index - 1 + brandTabButtons.length) % brandTabButtons.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = brandTabButtons.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    selectBrandTab(brandTabButtons[nextIndex], true);
+  });
 });
+
+document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
+
+document.addEventListener("dragenter", (event) => {
+  if (!draggedFiles(event)) return;
+  event.preventDefault();
+  dragDepth += 1;
+  syncDropOverlayCopy();
+  dropOverlay.hidden = false;
+  document.body.classList.add("is-dragging-files");
+});
+
+document.addEventListener("dragover", (event) => {
+  if (!draggedFiles(event)) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "copy";
+});
+
+document.addEventListener("dragleave", (event) => {
+  if (!draggedFiles(event)) return;
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (!dragDepth) hideDropOverlay();
+});
+
+document.addEventListener("drop", (event) => {
+  if (!draggedFiles(event)) return;
+  event.preventDefault();
+  const files = event.dataTransfer.files;
+  hideDropOverlay();
+  if (activeBrandTab === "Type") {
+    addFontFiles(files);
+    return;
+  }
+  addLogoFiles(files);
+});
+
+window.addEventListener("dragend", hideDropOverlay);
+updateUploadUi();
 updateFaviconForTopLogo();
 
 mobileDialogMedia.addEventListener("change", (event) => {
@@ -645,6 +1604,7 @@ function syncLogoGridPresentation() {
   updateFaviconForTopLogo();
   scheduleLogoShaderMask();
   schedulePerIconShaderSync();
+  requestAnimationFrame(syncBrandGridOffset);
 }
 
 function moveLogoTile(id, direction) {
@@ -786,9 +1746,9 @@ async function setLogoVote(id, nextVote) {
 }
 
 function summarizeAdminVotes(rows) {
-  const summaries = new Map(logoOrder.map((id) => [
-    logoId(id),
-    { logo_id: logoId(id), score: 0, upvotes: 0, downvotes: 0, clients: [] },
+  const summaries = new Map(tileOrder().map((id) => [
+    id,
+    { logo_id: id, score: 0, upvotes: 0, downvotes: 0, clients: [] },
   ]));
 
   rows.forEach((row) => {
@@ -922,29 +1882,6 @@ async function initializeClientAccess() {
   if (session) await refreshClientState();
 }
 
-function closeFontPicker() {
-  settingsFontOptions.hidden = true;
-  settingsFontButton.setAttribute("aria-expanded", "false");
-}
-
-function toggleFontPicker() {
-  const nextOpen = settingsFontOptions.hidden;
-  settingsFontOptions.hidden = !nextOpen;
-  settingsFontButton.setAttribute("aria-expanded", String(nextOpen));
-}
-
-function closeSettingsPopover() {
-  closeFontPicker();
-  settingsPopover.hidden = true;
-  settingsButton.setAttribute("aria-expanded", "false");
-}
-
-function toggleSettingsPopover() {
-  const nextOpen = settingsPopover.hidden;
-  settingsPopover.hidden = !nextOpen;
-  settingsButton.setAttribute("aria-expanded", String(nextOpen));
-}
-
 function clearSelection() {
   const selectedTiles = grid.querySelectorAll(".logo-tile.is-selected");
   if (!selectedTiles.length) return;
@@ -957,7 +1894,14 @@ function clearSelection() {
 }
 
 function randomizeLogoOrder() {
+  if (activeBrandTab === "Colors") {
+    renderColorGrid();
+    setStatus("Randomized color combinations");
+    return;
+  }
+
   const tiles = [...grid.querySelectorAll(".logo-tile")];
+  if (tiles.length < 2) return;
 
   for (let index = tiles.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(Math.random() * (index + 1));
@@ -979,10 +1923,6 @@ function randomizeLogoOrder() {
 shuffleButton.addEventListener("click", randomizeLogoOrder);
 
 document.addEventListener("pointerdown", (event) => {
-  if (!settingsPopover.hidden && !event.target.closest(".utility-dock")) {
-    closeSettingsPopover();
-  }
-
   if (event.shiftKey) return;
   if (dialog.open) return;
   if (event.target.closest(".logo-tile.is-selected")) return;
@@ -1004,7 +1944,6 @@ closeButton.addEventListener("click", closeDialog);
 
 function openInfoDialog() {
   if (infoDialog.open) return;
-  closeSettingsPopover();
   infoDialog.showModal();
   infoButton.setAttribute("aria-expanded", "true");
   infoCloseButton.focus({ preventScroll: true });
@@ -1044,12 +1983,6 @@ nextButton.addEventListener("click", () => {
 });
 
 dialog.addEventListener("keydown", (event) => {
-  if (event.key === "Tab") {
-    event.preventDefault();
-    toggleLockupMode();
-    return;
-  }
-
   if (event.key === "ArrowLeft") {
     event.preventDefault();
     showAdjacentLogo(-1);
@@ -1326,15 +2259,11 @@ function paletteTextureImage(palette) {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
   const image = new Image();
-  const stops = palette.gradientStops ?? [palette.paper, palette.paper];
 
   canvas.width = size;
   canvas.height = size;
 
-  const gradient = context.createLinearGradient(0, 0, size, size);
-  gradient.addColorStop(0, stops[0]);
-  gradient.addColorStop(1, stops[1]);
-  context.fillStyle = gradient;
+  context.fillStyle = palette.paper;
   context.fillRect(0, 0, size, size);
 
   context.fillStyle = alphaColor(palette.ink, 0.1);
@@ -1383,6 +2312,24 @@ function loadedNoiseTexture() {
 let maskFrame = null;
 let perIconFrame = null;
 
+function svgViewBox(svg) {
+  const values = (svg?.getAttribute("viewBox") ?? "")
+    .trim()
+    .split(/[\s,]+/)
+    .map(Number);
+  if (values.length === 4 && values.every(Number.isFinite) && values[2] > 0 && values[3] > 0) {
+    return values;
+  }
+  return [0, 0, 1200, 1200];
+}
+
+function svgMarkupScaledTo(svg, width, height, x = 0, y = 0) {
+  const [viewX, viewY, viewWidth, viewHeight] = svgViewBox(svg);
+  const scaleX = width / viewWidth;
+  const scaleY = height / viewHeight;
+  return `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${scaleX.toFixed(6)} ${scaleY.toFixed(6)}) translate(${-viewX} ${-viewY})">${svg.innerHTML}</g>`;
+}
+
 function scheduleLogoShaderMask() {
   if (currentShaderIndex < 0 || !shaderLayer?.classList.contains("is-active")) return;
   window.cancelAnimationFrame(maskFrame);
@@ -1412,9 +2359,7 @@ function updateLogoShaderMask() {
   }
 
   const logoMarkup = visibleLogos.map(({ svg, box }) => {
-    const scaleX = box.width / 1200;
-    const scaleY = box.height / 1200;
-    return `<g transform="translate(${box.left.toFixed(2)} ${box.top.toFixed(2)}) scale(${scaleX.toFixed(5)} ${scaleY.toFixed(5)})">${svg.innerHTML}</g>`;
+    return svgMarkupScaledTo(svg, box.width, box.height, box.left, box.top);
   }).join("");
   const maskSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
     <style>
@@ -1446,6 +2391,7 @@ function logoMaskUrl(tile) {
 
 function logoMaskUrlFromSvg(svg) {
   if (!svg) return "";
+  const normalizedMarkup = svgMarkupScaledTo(svg, 1200, 1200);
 
   const maskSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
     <style>
@@ -1456,7 +2402,7 @@ function logoMaskUrlFromSvg(svg) {
     <defs>
       <mask id="logo-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
         <rect width="1200" height="1200" fill="black"/>
-        <g class="logo-mask">${svg.innerHTML}</g>
+        <g class="logo-mask">${normalizedMarkup}</g>
       </mask>
     </defs>
     <rect width="1200" height="1200" fill="white" mask="url(#logo-mask)"/>
@@ -1471,6 +2417,7 @@ function logoSourceUrl(tile) {
 
 function logoSourceUrlFromSvg(svg) {
   if (!svg) return "";
+  const normalizedMarkup = svgMarkupScaledTo(svg, 1200, 1200);
 
   const sourceSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
     <style>
@@ -1481,7 +2428,7 @@ function logoSourceUrlFromSvg(svg) {
     <defs>
       <mask id="logo-source-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
         <rect width="1200" height="1200" fill="black"/>
-        <g class="logo-mask">${svg.innerHTML}</g>
+        <g class="logo-mask">${normalizedMarkup}</g>
       </mask>
     </defs>
     <rect width="1200" height="1200" fill="black" mask="url(#logo-source-mask)"/>
@@ -1986,6 +2933,9 @@ window.addEventListener("resize", () => {
   updateGridColumns();
   scheduleLogoShaderMask();
   if (dialog.open && lockupMode) scheduleLockupLayout();
+  if (activeBrandTab === "Type") updateTypeGridWindow(true);
+  else if (activeBrandTab === "Colors") updateColorGridWindow(true);
+  else requestAnimationFrame(syncBrandGridOffset);
 });
 window.addEventListener("scroll", schedulePerIconShaderSync, { passive: true });
 window.addEventListener("resize", schedulePerIconShaderSync);
@@ -2229,54 +3179,80 @@ function standardPalette() {
   return palette;
 }
 
-function gradientPairs(colors, source) {
-  const minimumLogoContrast = 2.1;
+function sampleFourColors(colors) {
   const normalized = [...new Set(colors.map(parseColor))];
-  const candidates = [];
+  if (!normalized.length) return ["#111111", "#555555", "#aaaaaa", "#ffffff"];
 
-  for (const start of normalized) {
-    for (const end of normalized) {
-      if (start === end) continue;
-      const gradientContrast = contrastRatio(start, end);
-      if (gradientContrast < 1.15) continue;
-
-      for (const ink of ["#111111", "#ffffff", ...normalized]) {
-        if (ink === start || ink === end) continue;
-        const ratioStart = contrastRatio(ink, start);
-        const ratioEnd = contrastRatio(ink, end);
-        const ratio = Math.min(ratioStart, ratioEnd);
-
-        if (ratio >= minimumLogoContrast) {
-          candidates.push({
-            ink,
-            paper: start,
-            gradientStops: [start, end],
-            ratio,
-            source,
-            score: ratio + gradientContrast * 0.75 + Math.random() * 2.5,
-          });
-        }
-      }
-    }
+  const sorted = [...normalized].sort((a, b) => luminance(a) - luminance(b));
+  if (sorted.length === 1) {
+    return [
+      sorted[0],
+      mixColors(sorted[0], "#ffffff", 0.33),
+      mixColors(sorted[0], "#ffffff", 0.66),
+      "#ffffff",
+    ];
   }
 
-  return candidates;
+  if (sorted.length === 2) {
+    return [
+      sorted[0],
+      mixColors(sorted[0], sorted[1], 0.33),
+      mixColors(sorted[0], sorted[1], 0.67),
+      sorted[1],
+    ];
+  }
+
+  if (sorted.length === 3) {
+    return [
+      sorted[0],
+      sorted[1],
+      mixColors(sorted[1], sorted[2], 0.5),
+      sorted[2],
+    ];
+  }
+
+  return [0, 1, 2, 3].map((step) => {
+    const index = Math.round((step / 3) * (sorted.length - 1));
+    return sorted[index];
+  });
 }
 
-function standardGradientPalette() {
-  const pair = randomFrom(standardPalettePairs);
-  const [start, end] = Math.random() > 0.5 ? pair : [...pair].reverse();
-  const blackRatio = Math.min(contrastRatio("#111111", start), contrastRatio("#111111", end));
-  const whiteRatio = Math.min(contrastRatio("#ffffff", start), contrastRatio("#ffffff", end));
-  const palette = {
-    ink: blackRatio >= whiteRatio ? "#111111" : "#ffffff",
-    paper: start,
-    gradientStops: [start, end],
-    ratio: Math.max(blackRatio, whiteRatio),
-    source: "Standard Gradient",
+function generateColorCombination() {
+  if (Math.random() < 0.24) {
+    const pair = randomFrom(standardPalettePairs);
+    return {
+      colors: [
+        pair[0],
+        mixColors(pair[0], pair[1], 0.33),
+        mixColors(pair[0], pair[1], 0.67),
+        pair[1],
+      ],
+      source: "Standard",
+    };
+  }
+
+  const [name, generator] = randomFrom(paletteSources);
+  return {
+    colors: sampleFourColors(generator()),
+    source: name,
+  };
+}
+
+function paletteFromCombination(combination) {
+  const candidates = contrastPairs(combination.colors, combination.source);
+  const palette = weightedRandom(candidates) ?? {
+    ink: combination.colors[0],
+    paper: combination.colors[combination.colors.length - 1],
+    ratio: contrastRatio(combination.colors[0], combination.colors[combination.colors.length - 1]),
+    source: combination.source,
   };
   rememberPalette(palette);
-  return palette;
+  return {
+    ink: palette.ink,
+    paper: palette.paper,
+    ratio: palette.ratio,
+    source: palette.source,
+  };
 }
 
 function weightedRandom(items) {
@@ -2290,8 +3266,6 @@ function weightedRandom(items) {
 }
 
 function randomPalette() {
-  if (gradientMode) return randomGradientPalette();
-
   if (Math.random() < 0.24) {
     return standardPalette();
   }
@@ -2315,40 +3289,43 @@ function randomPalette() {
   return palette;
 }
 
-function randomGradientPalette() {
-  if (Math.random() < 0.22) return standardGradientPalette();
-
-  const candidates = [];
-  for (let attempt = 0; attempt < 24; attempt += 1) {
-    const source = randomFrom(paletteSources);
-    candidates.push(...gradientPairs(source[1](), `${source[0]} Gradient`));
-  }
-
-  const fresh = candidates.filter((candidate) => {
-    return !recentPaletteKeys.includes(paletteKey(candidate))
-      && !recentPaletteSignatures.includes(paletteSignature(candidate));
-  });
-  const palette = weightedRandom(fresh.length ? fresh : candidates) ?? standardGradientPalette();
-  rememberPalette(palette);
-  return palette;
-}
-
 function applyPalette(palette) {
   currentPalette = palette;
   document.documentElement.style.setProperty("--logo-ink", palette.ink);
   document.documentElement.style.setProperty("--logo-bg", palette.paper);
-  if (gradientMode && palette.gradientStops) {
-    const angle = Math.round(Math.random() * 360);
-    document.documentElement.style.setProperty(
-      "--logo-bg-paint",
-      `linear-gradient(${angle}deg, ${palette.gradientStops[0]}, ${palette.gradientStops[1]})`,
-    );
-  } else {
-    document.documentElement.style.setProperty("--logo-bg-paint", palette.paper);
-  }
+  document.documentElement.style.setProperty("--logo-bg-paint", palette.paper);
   document.documentElement.style.setProperty("--editor-mark-color", alphaColor(palette.ink, 0.36));
   updateFaviconForTopLogo();
   refreshShaderPalette();
+}
+
+function isMonochromePalette(palette = currentPalette) {
+  const ink = palette.ink.toLowerCase();
+  const paper = palette.paper.toLowerCase();
+  const defaultMatch = ink === defaultPalette.ink && paper === defaultPalette.paper;
+  const invertedMatch = ink === invertedPalette.ink && paper === invertedPalette.paper;
+  return defaultMatch || invertedMatch;
+}
+
+function ensureMonochromePalette() {
+  if (isMonochromePalette()) return;
+  applyPalette(defaultPalette);
+}
+
+function stashPaletteBeforeColors() {
+  paletteBeforeColors = {
+    ink: currentPalette.ink,
+    paper: currentPalette.paper,
+    ratio: currentPalette.ratio,
+    source: currentPalette.source,
+  };
+  ensureMonochromePalette();
+}
+
+function restorePaletteBeforeColors() {
+  if (!paletteBeforeColors) return;
+  applyPalette(paletteBeforeColors);
+  paletteBeforeColors = null;
 }
 
 function toggleDefaultPalette() {
@@ -2361,8 +3338,6 @@ function applyMobilePaletteTap() {
   mobilePaletteTapCount = (mobilePaletteTapCount + 1) % 5;
 
   if (mobilePaletteTapCount === 4 || mobilePaletteTapCount === 0) {
-    gradientMode = false;
-    settingsGradientToggle.checked = false;
     applyPalette(mobilePaletteTapCount === 4 ? defaultPalette : invertedPalette);
     return;
   }
@@ -2370,58 +3345,38 @@ function applyMobilePaletteTap() {
   applyPalette(randomPalette());
 }
 
-function setGradientMode(enabled) {
-  gradientMode = enabled;
-  settingsGradientToggle.checked = gradientMode;
-  applyPalette(gradientMode
-    ? randomGradientPalette()
-    : defaultPalette);
-}
-
-settingsButton.addEventListener("click", toggleSettingsPopover);
-
-settingsGradientToggle.addEventListener("change", () => {
-  setGradientMode(settingsGradientToggle.checked);
-});
-
-settingsFontButton.addEventListener("click", toggleFontPicker);
-
-function setSelectedFont(font) {
-  selectedFont = font;
-  settingsFontButton.textContent = font;
-  settingsFontOptionButtons.forEach((option) => {
-    option.setAttribute("aria-selected", String(option.dataset.font === font));
-  });
-
-  if (dialog.open && lockupMode) {
-    updateLockupLayout();
-    scheduleLockupLayout();
-  }
-}
-
-settingsFontOptionButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    setSelectedFont(button.dataset.font);
-    closeFontPicker();
-  });
-});
-
 document.addEventListener("keydown", (event) => {
   const target = event.target;
-  if (event.key === "Escape" && !settingsPopover.hidden) {
-    event.preventDefault();
-    closeSettingsPopover();
-    return;
-  }
 
   if (infoDialog.open) return;
 
   const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
   if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
 
+  if (event.key === "Tab") {
+    if (dialog.open) return;
+    event.preventDefault();
+    const currentIndex = brandTabButtons.findIndex(
+      (button) => button.textContent.trim() === activeBrandTab,
+    );
+    const fromIndex = currentIndex < 0 ? 0 : currentIndex;
+    const nextIndex = event.shiftKey
+      ? (fromIndex - 1 + brandTabButtons.length) % brandTabButtons.length
+      : (fromIndex + 1) % brandTabButtons.length;
+    selectBrandTab(brandTabButtons[nextIndex]);
+    return;
+  }
+
   if (event.code === "Space") {
     event.preventDefault();
-    applyPalette(randomPalette());
+    if (target instanceof HTMLElement && target.classList.contains("brand-tab")) {
+      target.blur();
+    }
+    if (activeBrandTab === "Colors") {
+      toggleDefaultPalette();
+    } else {
+      applyPalette(randomPalette());
+    }
   }
 
   if (event.code === "ArrowDown") {
@@ -2437,8 +3392,6 @@ document.addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     event.preventDefault();
     resetShaderView();
-    gradientMode = false;
-    settingsGradientToggle.checked = false;
     toggleDefaultPalette();
   }
 
@@ -2458,4 +3411,5 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+syncBrandTabView();
 initializeClientAccess();
