@@ -50,11 +50,53 @@ function isLinedFont(entry) {
   const family = String(entry.family ?? "").toLowerCase();
   const key = normalizeKey(`${id} ${family}`);
   const blob = `${id} ${family}`;
-  if (/(?:^|[^a-z])(underline|pinstripe|linefont|striper)(?:[^a-z]|$)/i.test(blob)) return true;
+
+  // Handwriting paper with ruled baselines (Playwrite * Guides, etc.)
+  if (/(?:^|[^a-z])(guides?)(?:[^a-z]|$)/i.test(blob)) return true;
+
+  // Stripe / rule / inline letterforms
+  if (/(?:^|[^a-z])(underline|pinstripe|linefont|striper|rules)(?:[^a-z]|$)/i.test(blob)) return true;
   if (/(?:^|[^a-z])(inline)(?:[^a-z]|$)/i.test(blob)) return true;
   if (/(?:^|[^a-z])(lines|hatch)(?:[^a-z]|$)/i.test(blob)) return true;
-  // Engraved / scanline display faces that fill strokes with horizontal rules
-  if (key.includes("agudisplay")) return true;
+
+  // Knit / needlework chart fonts (horizontal grid rows)
+  if (/(?:^|[^a-z])(charted)(?:[^a-z]|$)/i.test(blob)) return true;
+
+  const blockedKeys = new Set([
+    "agudisplay",
+    "bigelowrules",
+    "wireone",
+    "workbench",
+    "codystar",
+    "ralewaydots",
+    "doto",
+    "dotgothic16",
+    "coralpixels",
+    "pixelifysans",
+    "rubikpixels",
+    "rubikmicrobe",
+    "rubikpuddles",
+    "rubikmaze",
+    "sixtyfour",
+    "sixtyfourconvergence",
+  ]);
+  if (
+    blockedKeys.has(key)
+    || blockedKeys.has(normalizeKey(id))
+    || blockedKeys.has(normalizeKey(family))
+  ) return true;
+
+  const blockedPrefixes = [
+    "bitcount",
+    "librebarcode",
+    "fusionpixel",
+    "materialsymbols",
+  ];
+  if (blockedPrefixes.some((prefix) => key.startsWith(prefix) || id.startsWith(prefix))) return true;
+
+  // Bungee decorative variants with thin rules / inline strokes
+  if (key.startsWith("bungee") && /(?:inline|outline|hairline)/.test(key)) return true;
+
   return false;
 }
 

@@ -46,6 +46,7 @@ const infoButton = document.querySelector("#info-button");
 const brandTabButtons = [...document.querySelectorAll(".brand-tab")];
 const typeGrid = document.querySelector("#type-grid");
 const colorGrid = document.querySelector("#color-grid");
+const lockupGrid = document.querySelector("#lockup-grid");
 const dialog = document.querySelector("#logo-dialog");
 const infoDialog = document.querySelector("#info-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
@@ -102,6 +103,7 @@ let currentShaderIndex = -1;
 let selectedFont = "Helvetica";
 let activeBrandTab = "Colors";
 let typeCatalogRevealed = false;
+let typeDisplayOrder = null;
 const uploadedTypefaces = [];
 let activeFontReads = 0;
 let lockupMode = false;
@@ -133,6 +135,148 @@ const colorNameApi = "https://api.color.pizza/v1/";
 const colorNameCache = new Map();
 const colorNameInflight = new Map();
 let colorDragSession = null;
+const lockupCombinationCount = 720;
+let lockupCombinations = [];
+const lockupTilePool = new Map();
+let lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+let lockupGridScrollRaf = 0;
+let lockupGridListenersBound = false;
+
+const pinnedGridSlots = {
+  Colors: new Map(),
+  Logos: new Map(),
+  Type: new Map(),
+  Lockups: new Map(),
+};
+
+function gridLockIconMarkup(locked) {
+  const body = `<path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"/>`;
+  const shackle = locked
+    ? `<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M8 11V8a4 4 0 0 1 8 0v3"/>`
+    : `<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M8 11V8a4 4 0 1 1 8 0"/>`;
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">${shackle}${body}</svg>`;
+}
+
+function syncGridLockControl(container, tab, slotIndex) {
+  const button = container.querySelector(".grid-lock-control");
+  if (!button) return;
+  const locked = pinnedGridSlots[tab].has(slotIndex);
+  container.classList.toggle("is-grid-locked", locked);
+  button.classList.toggle("is-locked", locked);
+  button.setAttribute("aria-pressed", String(locked));
+  button.setAttribute("aria-label", locked ? "Unlock position" : "Lock in place");
+  button.innerHTML = gridLockIconMarkup(locked);
+  if (tab === "Type" || tab === "Lockups") {
+    positionGridLockControl(container);
+  }
+}
+
+function gridItemInkTop(tile) {
+  const tileRect = tile.getBoundingClientRect();
+  const specimen = tile.querySelector(".type-specimen");
+  if (specimen) {
+    const range = document.createRange();
+    range.selectNodeContents(specimen);
+    const rect = range.getBoundingClientRect();
+    if (rect.height > 0) return rect.top - tileRect.top;
+  }
+
+  const mark = tile.querySelector(".lockup-mark");
+  const text = tile.querySelector(".lockup-text");
+  if (mark || text) {
+    let top = Infinity;
+    for (const element of [mark, text]) {
+      if (!element) continue;
+      const rect = element.getBoundingClientRect();
+      if (rect.height > 0) top = Math.min(top, rect.top - tileRect.top);
+    }
+    if (Number.isFinite(top)) return top;
+  }
+
+  return null;
+}
+
+function positionGridLockControl(tile) {
+  const lock = tile.querySelector(".grid-lock-control");
+  if (!lock) return;
+
+  const tileRect = tile.getBoundingClientRect();
+  if (tileRect.height <= 0) return;
+
+  const inkTop = gridItemInkTop(tile);
+  if (inkTop == null) return;
+
+  const outlineTop = 6;
+  const midY = (outlineTop + inkTop) / 2;
+  lock.style.top = `${Math.round(midY)}px`;
+}
+
+function attachGridLockControl(container, tab, getSlotIndex, getPinValue) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "grid-lock-control";
+  button.setAttribute("aria-pressed", "false");
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const slotIndex = getSlotIndex();
+    const map = pinnedGridSlots[tab];
+    if (map.has(slotIndex)) {
+      map.delete(slotIndex);
+      setStatus("Unlocked");
+    } else {
+      const value = getPinValue();
+      if (value == null) return;
+      map.set(slotIndex, value);
+      setStatus("Locked in place");
+    }
+    syncGridLockControl(container, tab, slotIndex);
+    button.blur();
+  });
+
+  container.append(button);
+  syncGridLockControl(container, tab, getSlotIndex());
+}
+
+function syncLogoTileLockControls() {
+  [...grid.querySelectorAll(".logo-tile")].forEach((tile, slotIndex) => {
+    syncGridLockControl(tile, "Logos", slotIndex);
+  });
+}
+
+function shuffleArray(values) {
+  for (let index = values.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [values[index], values[swapIndex]] = [values[swapIndex], values[index]];
+  }
+  return values;
+}
+
+function permuteIdsWithPinnedSlots(slotCount, pinnedMap, allIds) {
+  const result = new Array(slotCount);
+  const used = new Set();
+
+  for (const [slot, id] of pinnedMap) {
+    if (slot >= 0 && slot < slotCount && allIds.includes(id)) {
+      result[slot] = id;
+      used.add(id);
+    }
+  }
+
+  const remaining = shuffleArray(allIds.filter((id) => !used.has(id)));
+  let next = 0;
+  for (let slot = 0; slot < slotCount; slot += 1) {
+    if (result[slot]) continue;
+    result[slot] = remaining[next];
+    next += 1;
+  }
+  return result;
+}
+
+function logoTileSlotIndex(tile) {
+  return [...grid.querySelectorAll(".logo-tile")].indexOf(tile);
+}
 const brandContentGap = 72;
 
 function contentTopInset(tile, content) {
@@ -184,6 +328,8 @@ function syncBrandGridOffset() {
     inset = firstRowContentInset(grid, ".logo-tile", ".logo-art svg, .logo-art");
   } else if (activeBrandTab === "Type" && !typeGrid.hidden) {
     inset = firstRowContentInset(typeGrid, ".type-tile", ".type-specimen");
+  } else if (activeBrandTab === "Lockups" && !lockupGrid.hidden) {
+    inset = firstRowContentInset(lockupGrid, ".lockup-tile", ".lockup-content");
   }
 
   const offset = Math.max(0, brandContentGap - inset);
@@ -361,6 +507,7 @@ function setGridLogoScale(nextScale) {
   updateGridColumns();
   scheduleLogoShaderMask();
   if (activeBrandTab === "Type") requestAnimationFrame(() => updateTypeGridWindow(true));
+  else if (activeBrandTab === "Lockups") requestAnimationFrame(() => updateLockupGridWindow(true));
   else requestAnimationFrame(syncBrandGridOffset);
 }
 
@@ -404,6 +551,42 @@ function getTypefaces() {
   return uploadedTypefaces.length
     ? uploadedTypefaces.concat(typefaces)
     : typefaces;
+}
+
+function getTypefacesForGrid() {
+  const faces = getTypefaces();
+  if (!typeDisplayOrder || typeDisplayOrder.length !== faces.length) {
+    return faces;
+  }
+  return typeDisplayOrder.map((index) => faces[index]).filter(Boolean);
+}
+
+function resetTypeDisplayOrder() {
+  typeDisplayOrder = null;
+}
+
+function shuffleTypeDisplayOrder() {
+  const faces = getTypefaces();
+  const order = new Array(faces.length);
+  const used = new Set();
+
+  for (const [slot, key] of pinnedGridSlots.Type) {
+    const catalogIndex = faces.findIndex((face) => typefaceLoadKey(face) === key);
+    if (catalogIndex >= 0 && slot < faces.length) {
+      order[slot] = catalogIndex;
+      used.add(catalogIndex);
+    }
+  }
+
+  const available = shuffleArray(faces.map((_, index) => index).filter((index) => !used.has(index)));
+  let next = 0;
+  for (let slot = 0; slot < faces.length; slot += 1) {
+    if (order[slot] !== undefined) continue;
+    order[slot] = available[next];
+    next += 1;
+  }
+
+  typeDisplayOrder = order;
 }
 
 function typefaceLoadKey(face) {
@@ -506,6 +689,7 @@ function fitTypeTile(tile) {
     if (fit < 1) fontSize *= fit;
   }
 
+  fontSize = Math.max(1, Math.round(fontSize));
   specimen.style.fontSize = `${fontSize}px`;
   specimen.style.transform = "none";
   specimen.style.left = "0px";
@@ -533,6 +717,8 @@ function fitTypeTile(tile) {
     const gapBottom = tileRect.height - outlineInset;
     tile.style.setProperty("--type-label-top", `${(gapTop + gapBottom) / 2}px`);
   }
+
+  positionGridLockControl(tile);
 }
 
 function scheduleFitTypeTile(tile) {
@@ -555,8 +741,13 @@ function typeGridColumns() {
   ) || gridColumnsForScale(gridLogoScale);
 }
 
+function lockupGridColumns() {
+  if (window.matchMedia("(max-width: 720px)").matches) return 2;
+  return 4;
+}
+
 function measureTypeGridMetrics() {
-  const faces = getTypefaces();
+  const faces = getTypefacesForGrid();
   const columns = Math.max(1, typeGridColumns());
   const width = typeGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
   const cellSize = width / columns;
@@ -594,6 +785,12 @@ function createTypeTile(face, index, columns, cellSize) {
 
   button.append(specimen);
   tile.append(button);
+  attachGridLockControl(
+    tile,
+    "Type",
+    () => Number(tile.dataset.typeIndex),
+    () => typefaceLoadKey(getTypefacesForGrid()[Number(tile.dataset.typeIndex)]),
+  );
   positionTypeTile(tile, index, columns, cellSize);
   ensureTypefaceLoaded(face).then(() => scheduleFitTypeTile(tile));
   return tile;
@@ -616,7 +813,7 @@ function updateTypeGridWindow(force = false) {
     metrics.rows - 1,
     Math.ceil((visibleBottom + buffer) / metrics.cellSize),
   );
-  const faces = getTypefaces();
+  const faces = getTypefacesForGrid();
   const startIndex = startRow * metrics.columns;
   const endIndex = Math.min(faces.length, (endRow + 1) * metrics.columns);
 
@@ -642,6 +839,7 @@ function updateTypeGridWindow(force = false) {
     let tile = typeTilePool.get(index);
     if (tile) {
       positionTypeTile(tile, index, metrics.columns, metrics.cellSize);
+      syncGridLockControl(tile, "Type", index);
       continue;
     }
 
@@ -684,9 +882,18 @@ function renderTypeGrid() {
 
 function buildColorCombinations() {
   const used = new Set();
-  const combinations = [];
+  const combinations = new Array(colorCombinationCount);
+
+  for (const [slot, combination] of pinnedGridSlots.Colors) {
+    if (slot >= 0 && slot < colorCombinationCount) {
+      combinations[slot] = structuredClone(combination);
+      used.add(combination.colors.join("/"));
+    }
+  }
 
   for (let index = 0; index < colorCombinationCount; index += 1) {
+    if (combinations[index]) continue;
+
     let combination = generateColorCombination();
     for (let attempt = 0; attempt < 24; attempt += 1) {
       const key = combination.colors.join("/");
@@ -696,7 +903,7 @@ function buildColorCombinations() {
       }
       combination = generateColorCombination();
     }
-    combinations.push(combination);
+    combinations[index] = combination;
   }
 
   return combinations;
@@ -985,6 +1192,9 @@ function applySwatchColor(swatch, row, swatchIndex, color) {
       "aria-label",
       `${combination.source} combination ${combination.colors.join(", ")}`,
     );
+    if (pinnedGridSlots.Colors.has(rowIndex)) {
+      pinnedGridSlots.Colors.set(rowIndex, structuredClone(combination));
+    }
   }
 
   const title = swatch.querySelector(".color-swatch-title");
@@ -1101,6 +1311,13 @@ function createColorRow(combination, index, rowHeight, rowStride) {
     }
   });
 
+  attachGridLockControl(
+    row,
+    "Colors",
+    () => Number(row.dataset.colorIndex),
+    () => structuredClone(colorCombinations[Number(row.dataset.colorIndex)]),
+  );
+
   positionColorRow(row, index, rowHeight, rowStride);
   return row;
 }
@@ -1149,6 +1366,7 @@ function updateColorGridWindow(force = false) {
     let row = colorRowPool.get(index);
     if (row) {
       positionColorRow(row, index, metrics.rowHeight, metrics.rowStride);
+      syncGridLockControl(row, "Colors", index);
       continue;
     }
 
@@ -1181,6 +1399,7 @@ function bindColorGridListeners() {
 }
 
 function renderColorGrid() {
+  colorGrid.style.setProperty("--color-row-gap", `${colorRowGap}px`);
   colorCombinations = buildColorCombinations();
   colorRowPool.clear();
   colorGrid.replaceChildren();
@@ -1189,23 +1408,245 @@ function renderColorGrid() {
   updateColorGridWindow(true);
 }
 
+function getLogoIds() {
+  return [...uploadedLogos.keys()];
+}
+
+function buildLockupCombinations() {
+  const logos = getLogoIds();
+  const faces = getTypefaces();
+  if (!logos.length || !faces.length) return [];
+
+  const combinations = new Array(lockupCombinationCount);
+
+  for (const [slot, combination] of pinnedGridSlots.Lockups) {
+    if (slot >= 0 && slot < lockupCombinationCount) {
+      combinations[slot] = { ...combination };
+    }
+  }
+
+  for (let index = 0; index < lockupCombinationCount; index += 1) {
+    if (combinations[index]) continue;
+    combinations[index] = {
+      logoId: logos[Math.floor(Math.random() * logos.length)],
+      typeIndex: Math.floor(Math.random() * faces.length),
+    };
+  }
+  return combinations;
+}
+
+function measureLockupGridMetrics() {
+  const columns = Math.max(1, lockupGridColumns());
+  const width = lockupGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
+  const cellSize = width / columns;
+  const rows = Math.ceil(lockupCombinations.length / columns);
+  return {
+    columns,
+    cellSize,
+    rows,
+    totalHeight: rows * cellSize,
+  };
+}
+
+function positionLockupTile(tile, index, columns, cellSize) {
+  tile.style.left = `${(index % columns) * cellSize}px`;
+  tile.style.top = `${Math.floor(index / columns) * cellSize}px`;
+  tile.style.width = `${cellSize}px`;
+  tile.style.height = `${cellSize}px`;
+}
+
+function lockupLabel(combination) {
+  const face = getTypefaces()[combination.typeIndex];
+  return `${logoName(combination.logoId)} lockup with ${face?.family ?? "type"}`;
+}
+
+function scheduleFitLockupTile(tile) {
+  const index = Number(tile.dataset.lockupIndex);
+  const combination = lockupCombinations[index];
+  const face = combination ? getTypefaces()[combination.typeIndex] : null;
+
+  const fit = () => {
+    requestAnimationFrame(() => {
+      fitLockupTile(tile);
+      requestAnimationFrame(() => fitLockupTile(tile));
+    });
+  };
+
+  if (face) {
+    ensureTypefaceLoaded(face).then(fit);
+  } else {
+    fit();
+  }
+}
+
+function fitLockupTiles() {
+  lockupTilePool.forEach((tile) => fitLockupTile(tile));
+  syncBrandGridOffset();
+}
+
+function createLockupTile(combination, index, columns, cellSize) {
+  const tile = document.createElement("figure");
+  const button = document.createElement("div");
+  const content = document.createElement("div");
+  const mark = document.createElement("span");
+  const text = document.createElement("span");
+  const face = getTypefaces()[combination.typeIndex];
+
+  tile.className = "lockup-tile";
+  tile.dataset.lockupIndex = String(index);
+  tile.setAttribute("aria-label", lockupLabel(combination));
+
+  button.className = "lockup-button";
+  content.className = "lockup-content";
+  mark.className = "lockup-mark";
+  mark.innerHTML = logoMarkup(combination.logoId);
+  text.className = "lockup-text";
+  text.textContent = lockupText;
+
+  if (face) {
+    text.style.fontFamily = `"${face.family}", sans-serif`;
+    text.style.fontWeight = String(face.weight);
+  }
+
+  content.append(mark, text);
+  button.append(content);
+  tile.append(button);
+  tile.addEventListener("click", () => {
+    setStatus(lockupLabel(combination));
+  });
+
+  attachGridLockControl(
+    tile,
+    "Lockups",
+    () => Number(tile.dataset.lockupIndex),
+    () => {
+      const combo = lockupCombinations[Number(tile.dataset.lockupIndex)];
+      return combo ? { logoId: combo.logoId, typeIndex: combo.typeIndex } : null;
+    },
+  );
+
+  positionLockupTile(tile, index, columns, cellSize);
+  scheduleFitLockupTile(tile);
+  return tile;
+}
+
+function updateLockupGridWindow(force = false) {
+  if (lockupGrid.hidden || activeBrandTab !== "Lockups") return;
+  if (!lockupCombinations.length) return;
+
+  const metrics = measureLockupGridMetrics();
+  if (metrics.cellSize <= 0) return;
+
+  lockupGrid.style.height = `${metrics.totalHeight}px`;
+
+  const rect = lockupGrid.getBoundingClientRect();
+  const buffer = metrics.cellSize * 3;
+  const visibleTop = Math.max(0, -rect.top);
+  const visibleBottom = visibleTop + window.innerHeight;
+  const startRow = Math.max(0, Math.floor((visibleTop - buffer) / metrics.cellSize));
+  const endRow = Math.min(
+    metrics.rows - 1,
+    Math.ceil((visibleBottom + buffer) / metrics.cellSize),
+  );
+  const startIndex = startRow * metrics.columns;
+  const endIndex = Math.min(
+    lockupCombinations.length,
+    (endRow + 1) * metrics.columns,
+  );
+
+  const sameWindow = !force
+    && startIndex === lockupGridWindow.startIndex
+    && endIndex === lockupGridWindow.endIndex
+    && metrics.columns === lockupGridWindow.columns
+    && Math.abs(metrics.cellSize - lockupGridWindow.cellSize) < 0.5;
+
+  if (sameWindow) return;
+
+  for (const [index, tile] of lockupTilePool) {
+    if (index < startIndex || index >= endIndex) {
+      tile.remove();
+      lockupTilePool.delete(index);
+    }
+  }
+
+  for (let index = startIndex; index < endIndex; index += 1) {
+    const combination = lockupCombinations[index];
+    if (!combination) continue;
+
+    let tile = lockupTilePool.get(index);
+    if (tile) {
+      positionLockupTile(tile, index, metrics.columns, metrics.cellSize);
+      syncGridLockControl(tile, "Lockups", index);
+      continue;
+    }
+
+    tile = createLockupTile(combination, index, metrics.columns, metrics.cellSize);
+    lockupTilePool.set(index, tile);
+    lockupGrid.append(tile);
+  }
+
+  lockupGridWindow = {
+    columns: metrics.columns,
+    cellSize: metrics.cellSize,
+    startIndex,
+    endIndex,
+  };
+
+  requestAnimationFrame(fitLockupTiles);
+}
+
+function scheduleLockupGridWindow() {
+  if (lockupGridScrollRaf) return;
+  lockupGridScrollRaf = requestAnimationFrame(() => {
+    lockupGridScrollRaf = 0;
+    updateLockupGridWindow();
+  });
+}
+
+function bindLockupGridListeners() {
+  if (lockupGridListenersBound) return;
+  lockupGridListenersBound = true;
+  window.addEventListener("scroll", scheduleLockupGridWindow, { passive: true });
+}
+
+function renderLockupGrid() {
+  lockupCombinations = buildLockupCombinations();
+  lockupTilePool.clear();
+  lockupGrid.replaceChildren();
+  lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+  bindLockupGridListeners();
+  updateLockupGridWindow(true);
+}
+
 function syncBrandTabView() {
   const showLogos = activeBrandTab === "Logos";
   const showType = activeBrandTab === "Type";
   const showColors = activeBrandTab === "Colors";
+  const showLockups = activeBrandTab === "Lockups";
   const isEmpty = uploadPanel.dataset.empty === "true";
   const showTypeEmpty = showType && !typeCatalogRevealed;
+  const canRandomizeTab = showColors
+    || showLockups
+    || (showLogos && !isEmpty)
+    || showType;
 
   grid.hidden = !showLogos || isEmpty;
   typeGrid.hidden = !showType || showTypeEmpty;
   colorGrid.hidden = !showColors;
+  lockupGrid.hidden = !showLockups;
   uploadEmpty.hidden = !(showLogos && isEmpty);
   typeUploadEmpty.hidden = !showTypeEmpty;
-  shuffleButton.hidden = showColors ? false : !(showLogos && !isEmpty);
-  shuffleButton.disabled = showColors ? false : uploadedLogos.size < 2;
+  shuffleButton.hidden = !canRandomizeTab;
+  shuffleButton.disabled = activeBrandTab === "Logos" && uploadedLogos.size < 2;
   shuffleButton.setAttribute(
     "aria-label",
-    showColors ? "Shuffle color combinations" : "Shuffle logos",
+    activeBrandTab === "Colors"
+      ? "Randomize color combinations"
+      : activeBrandTab === "Lockups"
+        ? "Randomize lockup combinations"
+        : activeBrandTab === "Type"
+          ? "Randomize typefaces"
+          : "Randomize logos",
   );
   uploadAddButton.hidden = !showLogos || isEmpty;
 
@@ -1219,9 +1660,17 @@ function syncBrandTabView() {
   }
 
   if (showColors) {
+    colorGrid.style.setProperty("--color-row-gap", `${colorRowGap}px`);
     bindColorGridListeners();
     if (!colorCombinations.length) renderColorGrid();
     else requestAnimationFrame(() => updateColorGridWindow(true));
+  }
+
+  if (showLockups) {
+    if (!uploadedLogos.size && !activeFileReads) populatePlaceholderLogos();
+    bindLockupGridListeners();
+    if (!lockupCombinations.length) renderLockupGrid();
+    else requestAnimationFrame(() => updateLockupGridWindow(true));
   }
 
   requestAnimationFrame(syncBrandGridOffset);
@@ -1268,9 +1717,9 @@ function fullscreenMarkup(id) {
     : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(id)}</span>`;
 }
 
-function measureLockupText(fontSize, fontFamily) {
+function measureLockupText(fontSize, fontFamily, fontWeight = 700) {
   const context = lockupCanvas.getContext("2d");
-  context.font = `700 ${fontSize}px ${fontFamily}`;
+  context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
   const metrics = context.measureText(lockupText);
   const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
@@ -1280,9 +1729,8 @@ function measureLockupText(fontSize, fontFamily) {
   };
 }
 
-function cropLockupSvgToArtwork() {
-  const svg = fullscreenLogo.querySelector(".fullscreen-lockup-mark svg");
-  if (!svg) return 1;
+function cropLockupSvg(svg) {
+  if (!(svg instanceof SVGSVGElement)) return 1;
 
   try {
     const box = svg.getBBox();
@@ -1303,6 +1751,61 @@ function cropLockupSvgToArtwork() {
     // Some SVG states cannot be measured immediately; the default viewBox still renders safely.
     return 1;
   }
+}
+
+function fitLockupTile(tile) {
+  const button = tile.querySelector(".lockup-button");
+  const content = tile.querySelector(".lockup-content");
+  const mark = tile.querySelector(".lockup-mark");
+  const text = tile.querySelector(".lockup-text");
+  const svg = mark?.querySelector("svg");
+  if (!button || !content || !mark || !text || !svg) return;
+
+  const markAspect = cropLockupSvg(svg);
+  const styles = getComputedStyle(button);
+  const padL = Number.parseFloat(styles.paddingLeft) || 0;
+  const padR = Number.parseFloat(styles.paddingRight) || 0;
+  const padT = Number.parseFloat(styles.paddingTop) || 0;
+  const padB = Number.parseFloat(styles.paddingBottom) || 0;
+  const maxWidth = Math.max(1, button.clientWidth - padL - padR) * 0.92;
+  const maxHeight = Math.max(1, button.clientHeight - padT - padB) * 0.88;
+
+  const textStyle = getComputedStyle(text);
+  const fontFamily = textStyle.fontFamily;
+  const fontWeight = textStyle.fontWeight || "700";
+  let fontSize = Math.min(maxHeight * 0.72, maxWidth * 0.22);
+
+  for (let pass = 0; pass < 5; pass += 1) {
+    const textMetrics = measureLockupText(fontSize, fontFamily, fontWeight);
+    const markHeight = fontSize * 1.02;
+    const markWidth = markHeight * markAspect;
+    const gap = Math.min(84, Math.max(22, fontSize * 0.27));
+    const totalWidth = markWidth + gap + textMetrics.width;
+    const totalHeight = Math.max(markHeight, textMetrics.height);
+    const scale = Math.min(1, maxWidth / totalWidth, maxHeight / totalHeight);
+
+    fontSize *= scale;
+  }
+
+  const roundedFontSize = Math.max(1, Math.round(fontSize));
+  const roundedMarkHeight = Math.round(roundedFontSize * 1.02);
+  const roundedMarkWidth = Math.round(roundedMarkHeight * markAspect);
+  const gapPx = Math.round(Math.min(84, Math.max(22, roundedFontSize * 0.27)));
+
+  text.style.fontSize = `${roundedFontSize}px`;
+  mark.style.width = `${roundedMarkWidth}px`;
+  mark.style.height = `${roundedMarkHeight}px`;
+  content.style.gap = `${gapPx}px`;
+
+  const lockupTile = tile.classList.contains("lockup-tile")
+    ? tile
+    : tile.closest(".lockup-tile");
+  if (lockupTile) positionGridLockControl(lockupTile);
+}
+
+function cropLockupSvgToArtwork() {
+  const svg = fullscreenLogo.querySelector(".fullscreen-lockup-mark svg");
+  return cropLockupSvg(svg);
 }
 
 function updateLockupLayout() {
@@ -1509,6 +2012,12 @@ function createLogoTile(id, name, position) {
   voteControls.append(upButton, downButton);
   tile.append(button);
   tile.append(voteControls);
+  attachGridLockControl(
+    tile,
+    "Logos",
+    () => logoTileSlotIndex(tile),
+    () => tile.dataset.logoId,
+  );
   grid.append(tile);
   return tile;
 }
@@ -1796,6 +2305,7 @@ async function addFontFiles(fileList) {
   typeUploadInput.value = "";
 
   if (added) {
+    resetTypeDisplayOrder();
     typeCatalogRevealed = true;
     refreshTypeGrid();
     syncBrandTabView();
@@ -2265,22 +2775,40 @@ function clearSelection() {
   setStatus("Selection cleared");
 }
 
-function randomizeLogoOrder() {
+function randomizeActiveTab() {
   if (activeBrandTab === "Colors") {
     renderColorGrid();
     setStatus("Randomized color combinations");
     return;
   }
 
+  if (activeBrandTab === "Lockups") {
+    renderLockupGrid();
+    setStatus("Randomized lockup combinations");
+    return;
+  }
+
+  if (activeBrandTab === "Type") {
+    if (!typeCatalogRevealed) revealTypeCatalog();
+    shuffleTypeDisplayOrder();
+    refreshTypeGrid();
+    setStatus("Randomized typefaces");
+    return;
+  }
+
+  if (activeBrandTab !== "Logos") return;
+
   const tiles = [...grid.querySelectorAll(".logo-tile")];
   if (tiles.length < 2) return;
 
-  for (let index = tiles.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [tiles[index], tiles[swapIndex]] = [tiles[swapIndex], tiles[index]];
-  }
+  const nextIds = permuteIdsWithPinnedSlots(tiles.length, pinnedGridSlots.Logos, getLogoIds());
+  const tileById = new Map(tiles.map((tile) => [tile.dataset.logoId, tile]));
+  nextIds.forEach((id) => {
+    const tile = tileById.get(id);
+    if (tile) grid.append(tile);
+  });
 
-  tiles.forEach((tile) => grid.append(tile));
+  syncLogoTileLockControls();
   updateFaviconForTopLogo();
   clearSelection();
   if (clientVotes.size) {
@@ -2289,7 +2817,11 @@ function randomizeLogoOrder() {
     scheduleLogoShaderMask();
     schedulePerIconShaderSync();
   }
-  setStatus("Randomized order");
+  setStatus("Randomized logos");
+}
+
+function randomizeLogoOrder() {
+  randomizeActiveTab();
 }
 
 shuffleButton.addEventListener("click", randomizeLogoOrder);
@@ -3307,6 +3839,7 @@ window.addEventListener("resize", () => {
   if (dialog.open && lockupMode) scheduleLockupLayout();
   if (activeBrandTab === "Type") updateTypeGridWindow(true);
   else if (activeBrandTab === "Colors") updateColorGridWindow(true);
+  else if (activeBrandTab === "Lockups") updateLockupGridWindow(true);
   else requestAnimationFrame(syncBrandGridOffset);
 });
 window.addEventListener("scroll", schedulePerIconShaderSync, { passive: true });
@@ -3741,14 +4274,11 @@ document.addEventListener("keydown", (event) => {
 
   if (event.code === "Space") {
     event.preventDefault();
+    if (dialog.open) return;
     if (target instanceof HTMLElement && target.classList.contains("brand-tab")) {
       target.blur();
     }
-    if (activeBrandTab === "Colors") {
-      toggleDefaultPalette();
-    } else {
-      applyPalette(randomPalette());
-    }
+    randomizeActiveTab();
   }
 
   if (event.code === "ArrowDown") {
