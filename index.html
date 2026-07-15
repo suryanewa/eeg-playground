@@ -27,36 +27,111 @@
       <section class="logo-upload" id="logo-upload" data-empty="true" aria-label="Upload logos">
         <input id="logo-file-input" type="file" accept=".svg,image/svg+xml" multiple hidden />
         <input id="type-file-input" type="file" accept=".woff,.woff2,.ttf,.otf,font/woff,font/woff2,font/ttf,font/otf" multiple hidden />
+        <input id="locked-import-input" type="file" accept=".json,application/json" hidden />
         <nav class="brand-tabs" aria-label="Brand asset categories">
           <button class="brand-tab" type="button" aria-pressed="true" tabindex="0">Colors</button>
           <button class="brand-tab" type="button" aria-pressed="false" tabindex="-1">Logos</button>
           <button class="brand-tab" type="button" aria-pressed="false" tabindex="-1">Type</button>
           <button class="brand-tab" type="button" aria-pressed="false" tabindex="-1">Lockups</button>
-          <button class="brand-tab" type="button" aria-pressed="false" tabindex="-1">Artifacts</button>
+          <button class="brand-tab brand-tab--soon" type="button" aria-pressed="false" aria-disabled="true" tabindex="-1" data-brand-tab="Artifacts">Artifacts</button>
         </nav>
-        <div class="logo-upload-empty" id="logo-upload-empty" hidden>
+        <div class="logo-upload-empty" id="logo-upload-empty" hidden tabindex="0" aria-label="Upload logo SVGs">
+          <svg class="upload-border" aria-hidden="true"><rect x="1" y="1" rx="0" ry="0" fill="none" /></svg>
           <div class="upload-copy">
-            <p>Drop SVG logos here, or <button class="placeholder-link" id="placeholder-button" type="button">use placeholders instead</button>.</p>
+            <p>Drop logo SVGs here, or <button class="placeholder-link" id="placeholder-button" type="button">use placeholders instead</button>.</p>
           </div>
-          <button class="upload-button" id="logo-file-button" type="button" aria-label="Choose SVG files">
+          <span class="upload-button" id="logo-file-button" aria-hidden="true">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 19V5M6 11l6-6 6 6"/>
             </svg>
-          </button>
+          </span>
           <p class="upload-feedback" id="upload-feedback" role="status" aria-live="polite"></p>
         </div>
-        <div class="logo-upload-empty" id="type-upload-empty" hidden>
+        <div class="logo-upload-empty" id="type-upload-empty" hidden tabindex="0" aria-label="Upload font files">
+          <svg class="upload-border" aria-hidden="true"><rect x="1" y="1" rx="0" ry="0" fill="none" /></svg>
           <div class="upload-copy">
             <p>Drop font files here, or <button class="placeholder-link" id="type-explore-button" type="button">explore ours</button>.</p>
           </div>
-          <button class="upload-button" id="type-file-button" type="button" aria-label="Choose font files">
+          <span class="upload-button" id="type-file-button" aria-hidden="true">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 19V5M6 11l6-6 6 6"/>
             </svg>
-          </button>
+          </span>
           <p class="upload-feedback" id="type-upload-feedback" role="status" aria-live="polite"></p>
         </div>
+        <div class="logo-upload-empty" id="lockup-upload-empty" hidden tabindex="0" aria-label="Upload logos or typefaces">
+          <svg class="upload-border" aria-hidden="true"><rect x="1" y="1" rx="0" ry="0" fill="none" /></svg>
+          <div class="upload-copy">
+            <p>You haven't uploaded any logos or typefaces.<br>Add them on the <button class="brand-tab-link" type="button" data-brand-tab="Logos">Logos</button> or <button class="brand-tab-link" type="button" data-brand-tab="Type">Type</button> tabs or <button class="placeholder-link" id="lockup-try-button" type="button">try ours</button>.</p>
+          </div>
+          <span class="upload-button" id="lockup-file-button" aria-hidden="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 19V5M6 11l6-6 6 6"/>
+            </svg>
+          </span>
+        </div>
       </section>
+      <nav class="grid-filters" id="grid-filters" aria-label="Grid filters" hidden>
+        <div class="grid-filter-panel" data-grid-filter-tab="Colors">
+          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+        </div>
+        <div class="grid-filter-panel" data-grid-filter-tab="Logos">
+          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+        </div>
+        <div class="grid-filter-panel" data-grid-filter-tab="Type">
+          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+          <button class="grid-filter" type="button" data-filter="editors-picks" aria-pressed="false">Picks</button>
+        </div>
+        <div class="grid-filter-panel" data-grid-filter-tab="Lockups">
+          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+        </div>
+      </nav>
+      <nav class="grid-actions" id="grid-actions" aria-label="Grid actions" hidden>
+        <div class="grid-action-panel" data-tab="Colors">
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
+            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
+          </div>
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
+          </div>
+        </div>
+        <div class="grid-action-panel" data-tab="Logos">
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
+            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
+          </div>
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
+          </div>
+        </div>
+        <div class="grid-action-panel" data-tab="Type">
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
+            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
+          </div>
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
+          </div>
+        </div>
+        <div class="grid-action-panel" data-tab="Lockups">
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
+            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
+          </div>
+          <div class="grid-action-group">
+            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
+          </div>
+        </div>
+      </nav>
       <section class="logo-grid" id="logo-grid" aria-label="Individual EEG logo SVGs"></section>
       <section class="type-grid" id="type-grid" aria-label="Open-source typeface specimens" hidden></section>
       <section class="color-grid" id="color-grid" aria-label="Color combinations" hidden></section>

@@ -1669,20 +1669,30 @@ function syncBrandTabView() {
   }
 
   if (showColors) {
-    colorGrid.style.setProperty("--color-row-gap", `${colorRowGap}px`);
+    colorGrid.style.setProperty("--color-swatch-gap", `${colorSwatchGap}px`);
     bindColorGridListeners();
     if (!colorCombinations.length) renderColorGrid();
     else requestAnimationFrame(() => updateColorGridWindow(true));
   }
 
-  if (showLockups) {
-    if (!uploadedLogos.size && !activeFileReads) populatePlaceholderLogos();
+  if (showLockups && lockupsReady()) {
     bindLockupGridListeners();
     if (!lockupCombinations.length) renderLockupGrid();
     else requestAnimationFrame(() => updateLockupGridWindow(true));
+  } else if (showLockups) {
+    lockupCombinations = [];
+    lockupTilePool.clear();
+    lockupGrid.replaceChildren();
+    lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
   }
 
   requestAnimationFrame(syncBrandGridOffset);
+  requestAnimationFrame(updateUploadBorders);
+  syncGridFilterUi();
+  syncGridActionsUi();
+  requestAnimationFrame(syncGridFiltersPosition);
+  requestAnimationFrame(syncGridActionsPosition);
+  requestAnimationFrame(validateKeyboardGridSelection);
 }
 
 function lockupMarkup(id) {
@@ -2205,6 +2215,27 @@ function openTypeFilePicker() {
   typeUploadInput.click();
 }
 
+function openLockupFilePicker() {
+  if (uploadedLogos.size === 0) {
+    openFilePicker();
+    return;
+  }
+  openTypeFilePicker();
+}
+
+function bindUploadEmptyPanel(panel, openPicker) {
+  panel.addEventListener("click", (event) => {
+    if (event.target.closest(".placeholder-link, .brand-tab-link")) return;
+    openPicker();
+  });
+  panel.addEventListener("keydown", (event) => {
+    if (event.target !== panel) return;
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openPicker();
+  });
+}
+
 function fontExtension(fileName) {
   const match = fileName.toLowerCase().match(/\.([a-z0-9]+)$/);
   return match ? match[1] : "";
@@ -2328,46 +2359,375 @@ function hideDropOverlay() {
   document.body.classList.remove("is-dragging-files");
 }
 
-uploadButton.addEventListener("click", openFilePicker);
-typeUploadButton.addEventListener("click", openTypeFilePicker);
 placeholderButton.addEventListener("click", populatePlaceholderLogos);
 typeExploreButton.addEventListener("click", revealTypeCatalog);
-uploadAddButton.addEventListener("click", openFilePicker);
+lockupTryButton.addEventListener("click", revealLockupCatalog);
+bindUploadEmptyPanel(uploadEmpty, openFilePicker);
+bindUploadEmptyPanel(typeUploadEmpty, openTypeFilePicker);
+bindUploadEmptyPanel(lockupUploadEmpty, openLockupFilePicker);
+bindBrandTabLinks(lockupUploadEmpty);
 uploadInput.addEventListener("change", () => addLogoFiles(uploadInput.files));
 typeUploadInput.addEventListener("change", () => addFontFiles(typeUploadInput.files));
 
-function selectBrandTab(selectedButton, shouldFocus = false) {
-  const nextTab = selectedButton.textContent.trim();
-  const leavingColors = activeBrandTab === "Colors" && nextTab !== "Colors";
-  const enteringColors = activeBrandTab !== "Colors" && nextTab === "Colors";
+function selectBrandTabByName(tabName) {
+  const button = brandTabButtons.find((entry) => brandTabName(entry) === tabName);
+  if (button) selectBrandTab(button);
+}
 
-  if (leavingColors) restorePaletteBeforeColors();
-  if (enteringColors) stashPaletteBeforeColors();
+function bindBrandTabLinks(container) {
+  container.querySelectorAll("[data-brand-tab]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      selectBrandTabByName(link.dataset.brandTab);
+    });
+  });
+}
+
+let keyboardGridSelection = null;
+
+function isActiveBrandGridVisible() {
+  if (activeBrandTab === "Logos") return !grid.hidden;
+  if (activeBrandTab === "Type") return !typeGrid.hidden;
+  if (activeBrandTab === "Colors") return !colorGrid.hidden && colorCombinations.length > 0;
+  if (activeBrandTab === "Lockups") return !lockupGrid.hidden && lockupCombinations.length > 0;
+  return false;
+}
+
+function canUseGridKeyboardNav(event) {
+  if (dialog.open) return false;
+  if (!BRAND_TABS.has(activeBrandTab)) return false;
+  if (!isActiveBrandGridVisible()) return false;
+  if (colorDragSession) return false;
+
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return false;
+  if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return false;
+  if (target.isContentEditable || target.closest('[contenteditable="true"]')) return false;
+  if (target.closest(".brand-tab")) return false;
+  if (target.closest(".grid-filter")) return false;
+  if (target.closest(".grid-action")) return false;
+  if (target.closest(".access-panel")) return false;
+  if (accessPanel && !accessPanel.hidden) return false;
+
+  return true;
+}
+
+function getVisibleLogoTiles() {
+  return [...grid.querySelectorAll(".logo-tile")].filter((tile) => !tile.hidden);
+}
+
+function getKeyboardGridNavMetrics(tab = activeBrandTab) {
+  if (tab === "Colors") {
+    const rowCount = getColorRowSourceIndices().length;
+    return { columns: 4, count: rowCount * 4 };
+  }
+
+  if (tab === "Logos") {
+    const tiles = getVisibleLogoTiles();
+    return { columns: gridBaseColumns(), count: tiles.length };
+  }
+
+  if (tab === "Type") {
+    const indices = getTypeGridSourceIndices();
+    return { columns: Math.max(1, typeGridColumns()), count: indices.length };
+  }
+
+  if (tab === "Lockups") {
+    const indices = getLockupSourceIndices();
+    return { columns: Math.max(1, lockupGridColumns()), count: indices.length };
+  }
+
+  return { columns: 1, count: 0 };
+}
+
+function keyboardSelectionToFlatIndex(selection) {
+  if (!selection) return -1;
+
+  if (selection.tab === "Colors") {
+    const indices = getColorRowSourceIndices();
+    const displayRow = indices.indexOf(selection.rowSourceIndex);
+    if (displayRow < 0) return -1;
+    return displayRow * 4 + selection.swatchIndex;
+  }
+
+  if (selection.tab === "Logos") {
+    const tiles = getVisibleLogoTiles();
+    return tiles.findIndex((tile) => tile.dataset.logoId === selection.logoId);
+  }
+
+  if (selection.tab === "Type") {
+    return getTypeGridSourceIndices().indexOf(selection.typeIndex);
+  }
+
+  if (selection.tab === "Lockups") {
+    return getLockupSourceIndices().indexOf(selection.lockupIndex);
+  }
+
+  return -1;
+}
+
+function flatIndexToKeyboardSelection(tab, flatIndex) {
+  if (flatIndex < 0) return null;
+
+  if (tab === "Colors") {
+    const indices = getColorRowSourceIndices();
+    const displayRow = Math.floor(flatIndex / 4);
+    const swatchIndex = flatIndex % 4;
+    const rowSourceIndex = indices[displayRow];
+    if (rowSourceIndex == null || swatchIndex > 3) return null;
+    return { tab, rowSourceIndex, swatchIndex };
+  }
+
+  if (tab === "Logos") {
+    const tile = getVisibleLogoTiles()[flatIndex];
+    if (!tile) return null;
+    return { tab, logoId: tile.dataset.logoId };
+  }
+
+  if (tab === "Type") {
+    const typeIndex = getTypeGridSourceIndices()[flatIndex];
+    if (typeIndex == null) return null;
+    return { tab, typeIndex };
+  }
+
+  if (tab === "Lockups") {
+    const lockupIndex = getLockupSourceIndices()[flatIndex];
+    if (lockupIndex == null) return null;
+    return { tab, lockupIndex };
+  }
+
+  return null;
+}
+
+function navigateGridFlatIndex(current, columns, count, key) {
+  if (count <= 0) return -1;
+  if (current < 0) {
+    return key === "ArrowLeft" || key === "ArrowUp" ? count - 1 : 0;
+  }
+
+  const row = Math.floor(current / columns);
+  const col = current % columns;
+  const rowCount = Math.ceil(count / columns);
+  let nextRow = row;
+  let nextCol = col;
+
+  if (key === "ArrowLeft") {
+    if (col > 0) nextCol = col - 1;
+    else {
+      nextRow = row > 0 ? row - 1 : rowCount - 1;
+      nextCol = columns - 1;
+    }
+  } else if (key === "ArrowRight") {
+    if (col < columns - 1 && current + 1 < count) nextCol = col + 1;
+    else {
+      nextRow = row < rowCount - 1 ? row + 1 : 0;
+      nextCol = 0;
+    }
+  } else if (key === "ArrowUp") {
+    nextRow = row > 0 ? row - 1 : rowCount - 1;
+  } else if (key === "ArrowDown") {
+    nextRow = row < rowCount - 1 ? row + 1 : 0;
+  }
+
+  let next = nextRow * columns + nextCol;
+  if (next >= count) {
+    if (key === "ArrowUp" || key === "ArrowDown") {
+      next = Math.min((rowCount - 1) * columns + nextCol, count - 1);
+    } else {
+      next = count - 1;
+    }
+  }
+  return next;
+}
+
+function getKeyboardSelectionElement() {
+  if (!keyboardGridSelection) return null;
+
+  const { tab } = keyboardGridSelection;
+  if (tab === "Colors") {
+    const { rowSourceIndex, swatchIndex } = keyboardGridSelection;
+    const row = colorRowPool.get(rowSourceIndex);
+    return row?.querySelectorAll(".color-swatch")[swatchIndex] ?? null;
+  }
+
+  if (tab === "Logos") {
+    const tile = grid.querySelector(`.logo-tile[data-logo-id="${keyboardGridSelection.logoId}"]`);
+    return tile?.hidden ? null : tile;
+  }
+
+  if (tab === "Type") {
+    return typeTilePool.get(keyboardGridSelection.typeIndex) ?? null;
+  }
+
+  if (tab === "Lockups") {
+    return lockupTilePool.get(keyboardGridSelection.lockupIndex) ?? null;
+  }
+
+  return null;
+}
+
+function clearKeyboardGridSelection() {
+  document.querySelectorAll(".is-keyboard-selected").forEach((element) => {
+    element.classList.remove("is-keyboard-selected");
+  });
+  keyboardGridSelection = null;
+}
+
+function syncKeyboardGridSelection() {
+  document.querySelectorAll(".is-keyboard-selected").forEach((element) => {
+    element.classList.remove("is-keyboard-selected");
+  });
+
+  if (!keyboardGridSelection || keyboardGridSelection.tab !== activeBrandTab) return;
+
+  const element = getKeyboardSelectionElement();
+  if (!element) {
+    keyboardGridSelection = null;
+    return;
+  }
+
+  element.classList.add("is-keyboard-selected");
+
+  if (element.classList.contains("color-swatch")) {
+    ensureColorNames([element.dataset.colorHex]);
+    positionColorSwatchLockControl(element);
+    return;
+  }
+
+  if (
+    element.classList.contains("logo-tile")
+    || element.classList.contains("type-tile")
+    || element.classList.contains("lockup-tile")
+  ) {
+    positionGridLockControl(element);
+  }
+}
+
+function scrollVirtualGridToOffset(gridElement, offsetTop, callback) {
+  const gridTop = gridElement.getBoundingClientRect().top + window.scrollY;
+  const target = gridTop + offsetTop - window.innerHeight * 0.35;
+  window.scrollTo({ top: Math.max(0, target) });
+  requestAnimationFrame(() => {
+    callback();
+    const element = getKeyboardSelectionElement();
+    element?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    syncKeyboardGridSelection();
+  });
+}
+
+function scrollKeyboardSelectionIntoView() {
+  if (!keyboardGridSelection) return;
+
+  const { tab } = keyboardGridSelection;
+
+  if (tab === "Colors") {
+    const indices = getColorRowSourceIndices();
+    const displayRow = indices.indexOf(keyboardGridSelection.rowSourceIndex);
+    if (displayRow < 0) return;
+    const metrics = measureColorGridMetrics();
+    scrollVirtualGridToOffset(colorGrid, displayRow * metrics.rowStride, () => {
+      updateColorGridWindow(true);
+    });
+    return;
+  }
+
+  if (tab === "Type") {
+    const indices = getTypeGridSourceIndices();
+    const displayIndex = indices.indexOf(keyboardGridSelection.typeIndex);
+    if (displayIndex < 0) return;
+    const metrics = measureTypeGridMetrics();
+    const top = Math.floor(displayIndex / metrics.columns) * metrics.cellSize;
+    scrollVirtualGridToOffset(typeGrid, top, () => {
+      updateTypeGridWindow(true);
+    });
+    return;
+  }
+
+  if (tab === "Lockups") {
+    const indices = getLockupSourceIndices();
+    const displayIndex = indices.indexOf(keyboardGridSelection.lockupIndex);
+    if (displayIndex < 0) return;
+    const metrics = measureLockupGridMetrics();
+    const top = Math.floor(displayIndex / metrics.columns) * metrics.cellSize;
+    scrollVirtualGridToOffset(lockupGrid, top, () => {
+      updateLockupGridWindow(true);
+    });
+    return;
+  }
+
+  if (tab === "Logos") {
+    getKeyboardSelectionElement()?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    syncKeyboardGridSelection();
+  }
+}
+
+function navigateKeyboardGrid(key) {
+  const tab = activeBrandTab;
+  const { columns, count } = getKeyboardGridNavMetrics(tab);
+  if (count <= 0) return;
+
+  const currentFlat = keyboardGridSelection?.tab === tab
+    ? keyboardSelectionToFlatIndex(keyboardGridSelection)
+    : -1;
+  const nextFlat = navigateGridFlatIndex(currentFlat, columns, count, key);
+  keyboardGridSelection = flatIndexToKeyboardSelection(tab, nextFlat);
+  scrollKeyboardSelectionIntoView();
+  syncKeyboardGridSelection();
+}
+
+function lockKeyboardGridSelection() {
+  const element = getKeyboardSelectionElement();
+  const lockButton = element?.querySelector(".grid-lock-control");
+  lockButton?.click();
+}
+
+function validateKeyboardGridSelection() {
+  if (!keyboardGridSelection) return;
+  if (keyboardGridSelection.tab !== activeBrandTab) {
+    clearKeyboardGridSelection();
+    return;
+  }
+  if (keyboardSelectionToFlatIndex(keyboardGridSelection) < 0) {
+    clearKeyboardGridSelection();
+    return;
+  }
+  syncKeyboardGridSelection();
+}
+
+function selectBrandTab(selectedButton, shouldFocus = false) {
+  if (isBrandTabDisabled(selectedButton)) return;
+
+  const nextTab = brandTabName(selectedButton);
+  if (nextTab !== activeBrandTab) clearKeyboardGridSelection();
 
   brandTabButtons.forEach((button) => {
     const isSelected = button === selectedButton;
     button.setAttribute("aria-pressed", String(isSelected));
-    button.tabIndex = isSelected ? 0 : -1;
+    if (!isBrandTabDisabled(button)) button.tabIndex = isSelected ? 0 : -1;
   });
   activeBrandTab = nextTab;
   syncBrandTabView();
   if (shouldFocus) selectedButton.focus();
   setStatus(`${activeBrandTab} tab selected`);
+  saveSessionState();
 }
 
 brandTabButtons.forEach((button, index) => {
-  button.addEventListener("click", () => selectBrandTab(button));
+  button.addEventListener("click", () => {
+    if (isBrandTabDisabled(button)) return;
+    selectBrandTab(button);
+  });
   button.addEventListener("keydown", (event) => {
     let nextIndex = index;
 
     if (event.key === "ArrowRight") {
-      nextIndex = (index + 1) % brandTabButtons.length;
+      nextIndex = nextEnabledBrandTabIndex(index, 1);
     } else if (event.key === "ArrowLeft") {
-      nextIndex = (index - 1 + brandTabButtons.length) % brandTabButtons.length;
+      nextIndex = nextEnabledBrandTabIndex(index, -1);
     } else if (event.key === "Home") {
-      nextIndex = 0;
+      nextIndex = firstEnabledBrandTabIndex();
     } else if (event.key === "End") {
-      nextIndex = brandTabButtons.length - 1;
+      nextIndex = lastEnabledBrandTabIndex();
     } else {
       return;
     }
@@ -4176,5 +4536,40 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+function updateUploadBorders() {
+  const rects = document.querySelectorAll(".upload-border rect");
+  rects.forEach((rect) => {
+    const svg = rect.ownerSVGElement;
+    if (!svg) return;
+    const parent = svg.parentElement;
+    if (!parent || parent.offsetWidth === 0) return;
+
+    const width = parent.offsetWidth;
+    const height = parent.offsetHeight;
+    const perimeter = 2 * (width + height);
+
+    const nominalPeriod = 20;
+    const n = Math.round(perimeter / nominalPeriod);
+    const actualPeriod = perimeter / n;
+
+    const dash = actualPeriod * 0.4;
+    const gap = actualPeriod * 0.6;
+
+    rect.setAttribute("stroke-dasharray", `${dash.toFixed(2)} ${gap.toFixed(2)}`);
+    rect.style.setProperty("--dash-period", `${actualPeriod.toFixed(2)}px`);
+  });
+}
+
+window.addEventListener("resize", updateUploadBorders);
+window.addEventListener("resize", syncGridFiltersPosition);
+window.addEventListener("resize", syncGridActionsPosition);
+window.addEventListener("scroll", syncGridFiltersPosition, { passive: true });
+window.addEventListener("scroll", syncGridActionsPosition, { passive: true });
+
+// Must run after paletteSources is initialized (used by color generator filters).
+initTypeRegistryFilters();
+initColorGeneratorFilters();
+
+restoreSessionState();
 syncBrandTabView();
 initializeClientAccess();
