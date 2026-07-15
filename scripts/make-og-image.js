@@ -4,129 +4,101 @@ const os = require("node:os");
 const path = require("node:path");
 
 const root = path.join(__dirname, "..");
-const logoDir = path.join(root, "assets", "logos");
 const args = new Map(process.argv.slice(2).map((arg) => {
   const [key, value = ""] = arg.split("=");
   return [key, value];
 }));
-const seed = Number(args.get("--seed") || 20260706);
+
+const BRAND_MARK_PATH = "M391.8,734c1.4,31.3-9.8,51.5-33.2,61-13.7,5.4-22.2,5-36.5,5H77.9c-14.3,0-22.8.4-36.5-5-23.5-9.4-34.7-29.6-33.2-61C-4.4,392.9-.9,346.7,8.2,305.9c13.1-58.5,35.4-73.8,44.3-80.2,24.9-17.9,53.7-19.7,68.3-45.1,7.6-13.3,7.9-27,7.1-36.3V8.3c0-4.6,4-8.3,8.9-8.3h126.4c4.9,0,8.9,3.7,8.9,8.3v136c-.8,9.3-.5,23.1,7.1,36.3,14.6,25.5,43.3,27.2,68.3,45.1,9,6.5,31.3,21.7,44.3,80.2,9.1,40.7,12.6,87,0,428.1Z";
+
+const ink = args.get("--ink") || "#000000";
+const paper = args.get("--paper") || "#ffffff";
+const svgOutput = path.resolve(root, args.get("--svg") || "assets/og-image.svg");
 const pngOutput = path.resolve(root, args.get("--output") || "assets/og-image.png");
 const width = 1200;
 const height = 630;
-const logoSize = 104;
+const iconScale = 0.13;
+const iconWidth = Math.round(400 * iconScale);
+const iconHeight = Math.round(800 * iconScale);
+const fontSize = 96;
+const gap = 20;
+const textWidth = Math.round(fontSize * 3.15);
+const lockupWidth = iconWidth + gap + textWidth;
+const lockupLeft = (width - lockupWidth) / 2;
+const iconLeft = Math.round(lockupLeft);
+const textLeft = Math.round(iconLeft + iconWidth + gap);
+const centerY = height / 2;
+const iconTop = Math.round(centerY - iconHeight / 2);
+const textTop = Math.round(centerY - fontSize * 0.38);
 
-function mulberry32(seed) {
-  return () => {
-    let value = seed += 0x6d2b79f5;
-    value = Math.imul(value ^ (value >>> 15), value | 1);
-    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-  };
-}
+const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <rect width="${width}" height="${height}" fill="${paper}"/>
+  <g transform="translate(${iconLeft} ${iconTop}) scale(${iconScale})">
+    <path fill="${ink}" fill-rule="evenodd" d="${BRAND_MARK_PATH}"/>
+  </g>
+  <text
+    x="${textLeft}"
+    y="${textTop + fontSize}"
+    fill="${ink}"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="${fontSize}"
+    font-weight="700"
+    letter-spacing="-2.8"
+  >Brandy</text>
+</svg>
+`;
 
-function shuffle(items, random) {
-  const result = [...items];
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(random() * (index + 1));
-    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
-  }
-  return result;
-}
+const fontPath = [
+  "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+  "/Library/Fonts/Arial Bold.ttf",
+  "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+].find((candidate) => fs.existsSync(candidate));
+const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "brandy-og-"));
+const iconSvg = path.join(tempDir, "icon.svg");
+const iconPng = path.join(tempDir, "icon.png");
 
-function runMagick(args) {
-  execFileSync("magick", args, { stdio: "inherit" });
-}
+fs.mkdirSync(path.dirname(svgOutput), { recursive: true });
+fs.writeFileSync(svgOutput, svg);
 
-function placeLogo(canvas, logo, placement, output) {
-  const size = Math.round(placement.size);
-  const rotatedSize = Math.ceil(size * 1.45);
-  const x = Math.min(width - rotatedSize, Math.max(0, Math.round(placement.x - rotatedSize / 2)));
-  const y = Math.min(height - rotatedSize, Math.max(0, Math.round(placement.y - rotatedSize / 2)));
-
-  runMagick([
-    canvas,
-    "(",
-    logo,
-    "-resize",
-    `${size}x${size}`,
-    "-background",
-    "none",
-    "-gravity",
-    "center",
-    "-extent",
-    `${rotatedSize}x${rotatedSize}`,
-    "-rotate",
-    placement.rotation.toFixed(2),
-    ")",
-    "-gravity",
-    "northwest",
-    "-geometry",
-    `+${x}+${y}`,
-    "-compose",
-    "over",
-    "-composite",
-    output,
-  ]);
-}
-
-const random = mulberry32(seed);
-const logos = fs.readdirSync(logoDir)
-  .filter((fileName) => /^logo-\d+\.svg$/.test(fileName))
-  .sort();
-const chosenLogos = shuffle(logos, random).slice(0, 48);
-const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "eeg-og-"));
+fs.writeFileSync(iconSvg, `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="800" viewBox="0 0 400 800">
+  <path fill="${ink}" fill-rule="evenodd" d="${BRAND_MARK_PATH}"/>
+</svg>`);
 
 try {
-  const rasterLogos = new Map(chosenLogos.map((fileName) => {
-    const input = path.join(logoDir, fileName);
-    const output = path.join(tempDir, `${path.basename(fileName, ".svg")}.png`);
-    runMagick([
-      input,
-      "-background",
-      "none",
-      "-trim",
-      "+repage",
-      "-resize",
-      "640x640",
-      "-gravity",
-      "center",
-      "-extent",
-      "640x640",
-      output,
-    ]);
-    return [fileName, output];
-  }));
+  execFileSync("magick", [
+    "-background",
+    "none",
+    iconSvg,
+    "-resize",
+    `${iconWidth}x${iconHeight}`,
+    iconPng,
+  ], { stdio: "inherit" });
 
-  let canvas = path.join(tempDir, "canvas-000.png");
-  runMagick(["-size", `${width}x${height}`, "canvas:white", canvas]);
-
-  const placements = [];
-  const columns = 7;
-  const rows = 4;
-  const cellWidth = width / columns;
-  const cellHeight = height / rows;
-
-  for (let row = 0; row < rows; row += 1) {
-    for (let column = 0; column < columns; column += 1) {
-      placements.push({
-        logo: chosenLogos[placements.length % chosenLogos.length],
-        size: logoSize,
-        x: column * cellWidth + cellWidth / 2,
-        y: row * cellHeight + cellHeight / 2,
-        rotation: 0,
-      });
-    }
-  }
-
-  placements.forEach((placement, index) => {
-    const nextCanvas = index === placements.length - 1
-      ? pngOutput
-      : path.join(tempDir, `canvas-${String(index + 1).padStart(3, "0")}.png`);
-    placeLogo(canvas, rasterLogos.get(placement.logo), placement, nextCanvas);
-    canvas = nextCanvas;
-  });
-
-  console.log(`Wrote ${path.relative(root, pngOutput)}`);
+  execFileSync("magick", [
+    "-size",
+    `${width}x${height}`,
+    `canvas:${paper}`,
+    iconPng,
+    "-geometry",
+    `+${iconLeft}+${iconTop}`,
+    "-composite",
+    ...(fontPath ? ["-font", fontPath] : []),
+    "-fill",
+    ink,
+    "-pointsize",
+    String(fontSize),
+    "-kerning",
+    "-3",
+    "-annotate",
+    `+${textLeft}+${textTop}`,
+    "Brandy",
+    pngOutput,
+  ], { stdio: "inherit" });
 } finally {
   fs.rmSync(tempDir, { force: true, recursive: true });
 }
+
+console.log(`Wrote ${path.relative(root, svgOutput)}`);
+console.log(`Wrote ${path.relative(root, pngOutput)}`);
