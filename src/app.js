@@ -6301,6 +6301,11 @@ function applyPalette(palette) {
   document.documentElement.style.setProperty("--editor-mark-color", alphaColor(palette.ink, 0.36));
   updateFaviconForTopLogo();
   refreshShaderPalette();
+  if (!isMonochromePalette(palette)) {
+    bwModeActive = false;
+    preBwPalette = null;
+  }
+  syncBwButtons();
 }
 
 function isMonochromePalette(palette = currentPalette) {
@@ -6311,31 +6316,23 @@ function isMonochromePalette(palette = currentPalette) {
   return defaultMatch || invertedMatch;
 }
 
-function ensureMonochromePalette() {
-  if (isMonochromePalette()) return;
-  applyPalette(defaultPalette);
-}
-
-function stashPaletteBeforeColors() {
-  paletteBeforeColors = {
-    ink: currentPalette.ink,
-    paper: currentPalette.paper,
-    ratio: currentPalette.ratio,
-    source: currentPalette.source,
-  };
-  ensureMonochromePalette();
-}
-
-function restorePaletteBeforeColors() {
-  if (!paletteBeforeColors) return;
-  applyPalette(paletteBeforeColors);
-  paletteBeforeColors = null;
-}
-
 function toggleDefaultPalette() {
-  const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink
-    && currentPalette.paper.toLowerCase() === invertedPalette.paper;
-  applyPalette(isInverted ? defaultPalette : invertedPalette);
+  if (!bwModeActive) {
+    preBwPalette = { ...currentPalette };
+    bwModeActive = true;
+    applyPalette(invertedPalette);
+    return;
+  }
+
+  if (isBwInverted()) {
+    applyPalette(defaultPalette);
+    return;
+  }
+
+  const restore = preBwPalette ?? defaultPalette;
+  preBwPalette = null;
+  bwModeActive = false;
+  applyPalette(restore);
 }
 
 function applyMobilePaletteTap() {
