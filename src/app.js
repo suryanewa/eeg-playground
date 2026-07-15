@@ -1115,7 +1115,9 @@ function gridLockIconMarkup(locked) {
 function syncGridLockControl(container, tab, slotIndex) {
   const button = container.querySelector(".grid-lock-control");
   if (!button) return;
-  const locked = pinnedGridSlots[tab].has(slotIndex);
+  const locked = tab === "Logos"
+    ? isLogoPinned(container.dataset.logoId)
+    : pinnedGridSlots[tab].has(slotIndex);
   container.classList.toggle("is-grid-locked", locked);
   button.classList.toggle("is-locked", locked);
   button.setAttribute("aria-pressed", String(locked));
@@ -1461,18 +1463,22 @@ function attachGridLockControl(container, tab, getSlotIndex, getPinValue) {
   button.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const slotIndex = getSlotIndex();
     const map = pinnedGridSlots[tab];
-    if (map.has(slotIndex)) {
-      map.delete(slotIndex);
+    const value = getPinValue();
+    if (value == null) return;
+    const ordered = orderedPinnedValues(map);
+    const existing = pinValueIndex(value, ordered);
+    if (existing >= 0) {
+      resetPinnedMap(
+        map,
+        ordered.filter((entry) => !pinValuesEqual(entry, value)),
+      );
       setStatus("Unlocked");
     } else {
-      const value = getPinValue();
-      if (value == null) return;
-      map.set(slotIndex, value);
+      resetPinnedMap(map, [...ordered, clonePinValue(value)]);
       setStatus("Locked in place");
     }
-    syncGridLockControl(container, tab, slotIndex);
+    applyGridPinnedOrder(tab);
     button.blur();
   });
 
@@ -1697,11 +1703,24 @@ function logoId(id) {
   return String(id).padStart(3, "0");
 }
 
+function lockupPlaceholderIndex(id) {
+  const match = String(id).match(/^lockup-ph:(\d+)$/);
+  return match ? Number(match[1]) : -1;
+}
+
 function logoMarkup(id) {
+  const placeholderIndex = lockupPlaceholderIndex(id);
+  if (placeholderIndex >= 0) {
+    return coolshapePlaceholders[placeholderIndex]?.markup ?? "";
+  }
   return uploadedLogos.get(logoId(id))?.markup ?? "";
 }
 
 function logoName(id) {
+  const placeholderIndex = lockupPlaceholderIndex(id);
+  if (placeholderIndex >= 0) {
+    return coolshapePlaceholders[placeholderIndex]?.name ?? `Placeholder ${placeholderIndex + 1}`;
+  }
   return uploadedLogos.get(logoId(id))?.name ?? `Logo ${logoId(id)}`;
 }
 
@@ -1827,19 +1846,11 @@ function createAccessUi() {
 }
 
 function gridBaseColumns() {
-  return window.matchMedia("(max-width: 720px)").matches ? 4 : 8;
-}
-
-function gridColumnsForScale(scale) {
-  const baseColumns = gridBaseColumns();
-  const maxColumns = baseColumns <= 4 ? 11 : 15;
-  const progress = (Math.min(maxLogoScale, Math.max(minLogoScale, scale)) - minLogoScale)
-    / (maxLogoScale - minLogoScale);
-  return Math.max(1, Math.round(maxColumns - progress * (maxColumns - 1)));
+  return window.matchMedia("(max-width: 720px)").matches ? 2 : 4;
 }
 
 function updateGridColumns() {
-  document.documentElement.style.setProperty("--grid-columns", String(gridColumnsForScale(gridLogoScale)));
+  document.documentElement.style.setProperty("--grid-columns", String(gridBaseColumns()));
 }
 
 function clampLogoScale(nextScale) {
@@ -2081,11 +2092,7 @@ function fitTypeSpecimens() {
 }
 
 function typeGridColumns() {
-  if (window.matchMedia("(max-width: 720px)").matches) return 2;
-  return Number.parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue("--grid-columns"),
-    10,
-  ) || gridColumnsForScale(gridLogoScale);
+  return lockupGridColumns();
 }
 
 function lockupGridColumns() {
@@ -2177,7 +2184,7 @@ function updateTypeGridWindow(force = false) {
   );
   const faces = getTypefacesForGrid();
   const startIndex = startRow * metrics.columns;
-  const endIndex = Math.min(faces.length, (endRow + 1) * metrics.columns);
+  const endIndex = Math.min(indices.length, (endRow + 1) * metrics.columns);
 
   const sameWindow = !force
     && startIndex === typeGridWindow.startIndex
@@ -2187,27 +2194,31 @@ function updateTypeGridWindow(force = false) {
 
   if (sameWindow) return;
 
+  const visibleSourceIndices = new Set(indices.slice(startIndex, endIndex));
+
   for (const [index, tile] of typeTilePool) {
-    if (index < startIndex || index >= endIndex) {
+    if (!visibleSourceIndices.has(index)) {
       tile.remove();
       typeTilePool.delete(index);
     }
   }
 
-  for (let index = startIndex; index < endIndex; index += 1) {
-    const face = faces[index];
+  for (let displayIndex = startIndex; displayIndex < endIndex; displayIndex += 1) {
+    const sourceIndex = indices[displayIndex];
+    const face = faces[sourceIndex];
     if (!face) continue;
 
-    let tile = typeTilePool.get(index);
+    let tile = typeTilePool.get(sourceIndex);
     if (tile) {
-      positionTypeTile(tile, index, metrics.columns, metrics.cellSize);
-      syncGridLockControl(tile, "Type", index);
+      positionTypeTile(tile, displayIndex, metrics.columns, metrics.cellSize);
+      syncGridLockControl(tile, "Type", sourceIndex);
       continue;
     }
 
-    tile = createTypeTile(face, index, metrics.columns, metrics.cellSize);
-    typeTilePool.set(index, tile);
+    tile = createTypeTile(face, sourceIndex, metrics.columns, metrics.cellSize);
+    typeTilePool.set(sourceIndex, tile);
     typeGrid.append(tile);
+    positionTypeTile(tile, displayIndex, metrics.columns, metrics.cellSize);
   }
 
   typeGridWindow = {
@@ -2368,9 +2379,9 @@ function ensureColorNames(colors) {
   return fetchColorNames(colors).catch(() => undefined);
 }
 
-function prefetchVisibleColorNames(startIndex, endIndex) {
+function prefetchVisibleColorNames(sourceIndices) {
   const colors = [];
-  for (let index = startIndex; index < endIndex; index += 1) {
+  for (const index of sourceIndices) {
     const combination = colorCombinations[index];
     if (combination) colors.push(...combination.colors);
   }
@@ -2509,6 +2520,9 @@ function bindSwatchDragAdjust(swatch, row, swatchIndex) {
       s,
       v,
       pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      hasDragged: false,
       nameTimer: 0,
       onKey(event) {
         if (event.key === "Escape") {
@@ -2517,14 +2531,12 @@ function bindSwatchDragAdjust(swatch, row, swatchIndex) {
         }
       },
       onScroll() {
-        finishColorDrag(true);
+        finishColorDrag(session.hasDragged);
       },
     };
 
-    swatch.classList.add("is-adjusting");
     swatch.setPointerCapture(event.pointerId);
     colorDragSession = session;
-    syncSwatchFromPointer(session, event.clientX, event.clientY);
 
     document.addEventListener("keydown", session.onKey, true);
     window.addEventListener("scroll", session.onScroll, true);
@@ -2532,12 +2544,20 @@ function bindSwatchDragAdjust(swatch, row, swatchIndex) {
 
   swatch.addEventListener("pointermove", (event) => {
     if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
-    syncSwatchFromPointer(colorDragSession, event.clientX, event.clientY);
+    const session = colorDragSession;
+    if (!session.hasDragged) {
+      const dx = event.clientX - session.startX;
+      const dy = event.clientY - session.startY;
+      if (Math.hypot(dx, dy) < 4) return;
+      session.hasDragged = true;
+      session.swatch.classList.add("is-adjusting");
+    }
+    syncSwatchFromPointer(session, event.clientX, event.clientY);
   });
 
   swatch.addEventListener("pointerup", (event) => {
     if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
-    finishColorDrag(true);
+    finishColorDrag(colorDragSession.hasDragged);
   });
 
   swatch.addEventListener("pointercancel", (event) => {
@@ -2564,8 +2584,9 @@ function applySwatchColor(swatch, row, swatchIndex, color) {
       "aria-label",
       `${combination.source} combination ${combination.colors.join(", ")}`,
     );
-    if (pinnedGridSlots.Colors.has(rowIndex)) {
-      pinnedGridSlots.Colors.set(rowIndex, structuredClone(combination));
+    const rowLocks = pinnedGridSlots.Colors.get(rowIndex);
+    if (rowLocks?.has(swatchIndex)) {
+      rowLocks.set(swatchIndex, normalized);
     }
   }
 
@@ -2645,6 +2666,8 @@ function createColorRow(combination, index, rowHeight, rowStride) {
     `${combination.source} combination ${combination.colors.join(", ")}`,
   );
 
+  attachColorRowLockControl(row);
+
   combination.colors.forEach((color, swatchIndex) => {
     const swatch = document.createElement("span");
     const label = document.createElement("span");
@@ -2685,12 +2708,7 @@ function createColorRow(combination, index, rowHeight, rowStride) {
     }
   });
 
-  attachGridLockControl(
-    row,
-    "Colors",
-    () => Number(row.dataset.colorIndex),
-    () => structuredClone(colorCombinations[Number(row.dataset.colorIndex)]),
-  );
+  syncColorRowLockControls(row, index);
 
   positionColorRow(row, index, rowHeight, rowStride);
   return row;
@@ -2725,7 +2743,7 @@ function updateColorGridWindow(force = false) {
   const visibleBottom = visibleTop + window.innerHeight;
   const startIndex = Math.max(0, Math.floor((visibleTop - buffer) / metrics.rowStride));
   const endIndex = Math.min(
-    colorCombinations.length,
+    indices.length,
     Math.ceil((visibleBottom + buffer) / metrics.rowStride),
   );
 
@@ -2736,27 +2754,33 @@ function updateColorGridWindow(force = false) {
 
   if (sameWindow) return;
 
+  const visibleSourceIndices = new Set(indices.slice(startIndex, endIndex));
+
   for (const [index, row] of colorRowPool) {
-    if (index < startIndex || index >= endIndex) {
+    if (!visibleSourceIndices.has(index)) {
       row.remove();
       colorRowPool.delete(index);
     }
   }
 
-  for (let index = startIndex; index < endIndex; index += 1) {
-    const combination = colorCombinations[index];
+  for (let displayIndex = startIndex; displayIndex < endIndex; displayIndex += 1) {
+    const sourceIndex = indices[displayIndex];
+    const combination = colorCombinations[sourceIndex];
     if (!combination) continue;
 
-    let row = colorRowPool.get(index);
+    let row = colorRowPool.get(sourceIndex);
     if (row) {
-      positionColorRow(row, index, metrics.rowHeight, metrics.rowStride);
-      syncGridLockControl(row, "Colors", index);
+      positionColorRow(row, displayIndex, metrics.rowHeight, metrics.rowStride);
+      syncColorRowLockControls(row, sourceIndex);
+      positionColorRowLockControls(row);
       continue;
     }
 
-    row = createColorRow(combination, index, metrics.rowHeight, metrics.rowStride);
-    colorRowPool.set(index, row);
+    row = createColorRow(combination, sourceIndex, metrics.rowHeight, metrics.rowStride);
+    colorRowPool.set(sourceIndex, row);
     colorGrid.append(row);
+    positionColorRow(row, displayIndex, metrics.rowHeight, metrics.rowStride);
+    positionColorRowLockControls(row);
   }
 
   colorGridWindow = {
@@ -2765,7 +2789,13 @@ function updateColorGridWindow(force = false) {
     rowHeight: metrics.rowHeight,
     rowStride: metrics.rowStride,
   };
-  prefetchVisibleColorNames(startIndex, endIndex);
+  prefetchVisibleColorNames(indices.slice(startIndex, endIndex));
+  const visibleSources = indices.slice(startIndex, endIndex);
+  scheduleColorRowLockReposition(visibleSources);
+  document.fonts?.ready?.then(() => {
+    if (activeBrandTab !== "Colors" || colorGrid.hidden) return;
+    scheduleColorRowLockReposition(visibleSources);
+  });
 }
 
 function scheduleColorGridWindow() {
@@ -2970,7 +3000,7 @@ function updateLockupGridWindow(force = false) {
   );
   const startIndex = startRow * metrics.columns;
   const endIndex = Math.min(
-    lockupCombinations.length,
+    indices.length,
     (endRow + 1) * metrics.columns,
   );
 
@@ -2982,27 +3012,31 @@ function updateLockupGridWindow(force = false) {
 
   if (sameWindow) return;
 
+  const visibleSourceIndices = new Set(indices.slice(startIndex, endIndex));
+
   for (const [index, tile] of lockupTilePool) {
-    if (index < startIndex || index >= endIndex) {
+    if (!visibleSourceIndices.has(index)) {
       tile.remove();
       lockupTilePool.delete(index);
     }
   }
 
-  for (let index = startIndex; index < endIndex; index += 1) {
-    const combination = lockupCombinations[index];
+  for (let displayIndex = startIndex; displayIndex < endIndex; displayIndex += 1) {
+    const sourceIndex = indices[displayIndex];
+    const combination = lockupCombinations[sourceIndex];
     if (!combination) continue;
 
-    let tile = lockupTilePool.get(index);
+    let tile = lockupTilePool.get(sourceIndex);
     if (tile) {
-      positionLockupTile(tile, index, metrics.columns, metrics.cellSize);
-      syncGridLockControl(tile, "Lockups", index);
+      positionLockupTile(tile, displayIndex, metrics.columns, metrics.cellSize);
+      syncGridLockControl(tile, "Lockups", sourceIndex);
       continue;
     }
 
-    tile = createLockupTile(combination, index, metrics.columns, metrics.cellSize);
-    lockupTilePool.set(index, tile);
+    tile = createLockupTile(combination, sourceIndex, metrics.columns, metrics.cellSize);
+    lockupTilePool.set(sourceIndex, tile);
     lockupGrid.append(tile);
+    positionLockupTile(tile, displayIndex, metrics.columns, metrics.cellSize);
   }
 
   lockupGridWindow = {
@@ -3329,20 +3363,20 @@ function cropLockupSvgToArtwork() {
 }
 
 function updateLockupLayout() {
-  if (!dialog.open || !lockupMode) return;
+  if (!dialog.open || !isFullscreenLockup()) return;
 
   const markAspect = cropLockupSvgToArtwork();
 
   const box = fullscreenLogo.getBoundingClientRect();
   if (!box.width || !box.height) return;
 
-  const fontFamily = selectedFontFamily();
+  const { family: fontFamily, weight: fontWeight } = lockupLayoutTypeface();
   const maxWidth = box.width * 0.9;
   const maxHeight = box.height * 0.62;
   let fontSize = Math.min(maxHeight, maxWidth * 0.28);
 
   for (let pass = 0; pass < 5; pass += 1) {
-    const textMetrics = measureLockupText(fontSize, fontFamily);
+    const textMetrics = measureLockupText(fontSize, fontFamily, fontWeight);
     const markHeight = fontSize * 1.02;
     const markWidth = markHeight * markAspect;
     const gap = Math.min(84, Math.max(22, fontSize * 0.27));
@@ -3353,7 +3387,7 @@ function updateLockupLayout() {
     fontSize *= scale;
   }
 
-  const textMetrics = measureLockupText(fontSize, fontFamily);
+  const textMetrics = measureLockupText(fontSize, fontFamily, fontWeight);
   const markHeight = fontSize * 1.02;
   const markWidth = markHeight * markAspect;
   const gap = Math.min(84, Math.max(22, fontSize * 0.27));
@@ -3935,6 +3969,12 @@ function syncDropOverlayCopy() {
     return;
   }
 
+  if (activeBrandTab === "Lockups" && !lockupsReady()) {
+    dropOverlayTitle.textContent = "Drop to add logos or fonts";
+    dropOverlayHint.textContent = "SVG, WOFF, WOFF2, TTF, or OTF";
+    return;
+  }
+
   dropOverlayTitle.textContent = "Drop to add logos";
   dropOverlayHint.textContent = "SVG files only";
 }
@@ -4389,6 +4429,15 @@ document.addEventListener("drop", (event) => {
   hideDropOverlay();
   if (activeBrandTab === "Type") {
     addFontFiles(files);
+    return;
+  }
+  if (activeBrandTab === "Lockups" && !lockupsReady()) {
+    const logoFiles = [...files].filter((file) => {
+      return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
+    });
+    const fontFiles = [...files].filter((file) => isFontFile(file));
+    if (logoFiles.length) addLogoFiles(logoFiles);
+    if (fontFiles.length) addFontFiles(fontFiles);
     return;
   }
   addLogoFiles(files);
@@ -4907,10 +4956,11 @@ dialog.addEventListener("click", (event) => {
 
 dialog.addEventListener("cancel", () => {
   disposeFullscreenShader();
-  lockupMode = false;
-  fullscreenLogo.classList.remove("is-lockup");
+  resetPreviewState();
+  fullscreenLogo.classList.remove("is-lockup", "is-type");
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
+  dialog.setAttribute("aria-label", "Selected logo preview");
 });
 
 const commonShaderSizing = {
@@ -5605,7 +5655,7 @@ async function fullscreenShaderImage(preset) {
     return paletteTextureImage(currentPalette);
   }
 
-  if (lockupMode) {
+  if (isFullscreenLockup()) {
     return lightweightLockupTexture(preset.logoTexture);
   }
 
@@ -5646,7 +5696,7 @@ async function mountFullscreenShader() {
 
   const layer = document.createElement("div");
   layer.className = "fullscreen-shader-layer";
-  const mask = lockupMode ? lockupMaskUrl() : logoMaskUrlFromSvg(svg);
+  const mask = isFullscreenLockup() ? lockupMaskUrl() : logoMaskUrlFromSvg(svg);
   if (!mask) return;
   layer.style.webkitMaskImage = mask;
   layer.style.maskImage = mask;
