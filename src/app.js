@@ -267,12 +267,840 @@ let lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 }
 let lockupGridScrollRaf = 0;
 let lockupGridListenersBound = false;
 
+// Colors pins are per-swatch: Map<rowIndex, Map<swatchIndex, colorHex>>
 const pinnedGridSlots = {
   Colors: new Map(),
   Logos: new Map(),
   Type: new Map(),
   Lockups: new Map(),
 };
+
+const TYPEFACE_REGISTRY_ORDER = ["google", "fontshare", "fontsource", "bunny", "local"];
+const TYPEFACE_REGISTRY_LABELS = {
+  google: "Google",
+  fontshare: "Fontshare",
+  fontsource: "Fontsource",
+  bunny: "Bunny",
+  local: "Local",
+};
+
+const EDITOR_PICK_TYPEFACE_IDS = new Set([
+  // Geometric / modern sans
+  "bricolage-grotesque",
+  "space-grotesk",
+  "syne",
+  // Humanist / editorial sans
+  "instrument-sans",
+  "schibsted-grotesk",
+  // Display / condensed sans
+  "clash-display",
+  "bebas-neue",
+  "oswald",
+  "unbounded",
+  // Editorial & classic serif
+  "fraunces",
+  "newsreader",
+  "libre-baskerville",
+  "instrument-serif",
+  // Display serif
+  "gloock",
+  "playfair-display",
+  // Slab
+  "montagu-slab",
+  "rokkitt",
+  // Mono
+  "jetbrains-mono",
+  "space-mono",
+]);
+
+const gridFilterState = {
+  Colors: "all",
+  Logos: "all",
+  Type: "all",
+  Lockups: "all",
+};
+
+function gridFilterForTab(tab) {
+  return gridFilterState[tab] ?? "all";
+}
+
+function isEditorPickTypeface(face) {
+  return EDITOR_PICK_TYPEFACE_IDS.has(face.id);
+}
+
+function getTypefaceRegistries() {
+  const loaders = new Set(typefaces.map((face) => face.loader));
+  return TYPEFACE_REGISTRY_ORDER.filter((loader) => loaders.has(loader));
+}
+
+function initTypeRegistryFilters() {
+  const panel = gridFilters?.querySelector('.grid-filter-panel[data-grid-filter-tab="Type"]');
+  if (!panel || panel.dataset.registryFiltersBuilt === "true") return;
+
+  for (const loader of getTypefaceRegistries()) {
+    const button = document.createElement("button");
+    button.className = "grid-filter grid-filter--registry";
+    button.type = "button";
+    button.dataset.filter = loader;
+    button.setAttribute("aria-pressed", "false");
+    button.textContent = TYPEFACE_REGISTRY_LABELS[loader] ?? loader;
+    panel.appendChild(button);
+  }
+
+  panel.dataset.registryFiltersBuilt = "true";
+}
+
+function getColorGeneratorTitles() {
+  return ["Standard", ...paletteSources.map(([name]) => name)];
+}
+
+function initColorGeneratorFilters() {
+  const panel = gridFilters?.querySelector('.grid-filter-panel[data-grid-filter-tab="Colors"]');
+  if (!panel || panel.dataset.generatorFiltersBuilt === "true") return;
+
+  for (const title of getColorGeneratorTitles()) {
+    const button = document.createElement("button");
+    button.className = "grid-filter grid-filter--generator";
+    button.type = "button";
+    button.dataset.filter = title;
+    button.setAttribute("aria-pressed", "false");
+    button.textContent = title;
+    panel.appendChild(button);
+  }
+
+  panel.dataset.generatorFiltersBuilt = "true";
+}
+
+function pinnedLogoIds() {
+  return new Set(orderedPinnedValues(pinnedGridSlots.Logos));
+}
+
+function isLogoPinned(logoId) {
+  return pinnedLogoIds().has(logoId);
+}
+
+function pinnedTypefaceKeys() {
+  return new Set(orderedPinnedValues(pinnedGridSlots.Type).map((key) => JSON.stringify(key)));
+}
+
+function isTypefacePinned(face) {
+  return pinnedTypefaceKeys().has(JSON.stringify(typefaceLoadKey(face)));
+}
+
+function isLockupCombinationPinned(index, combination) {
+  if (pinnedGridSlots.Lockups.has(index)) return true;
+  const combo = { logoId: combination.logoId, typeIndex: combination.typeIndex };
+  return orderedPinnedValues(pinnedGridSlots.Lockups)
+    .some((entry) => pinValuesEqual(entry, combo));
+}
+
+function getColorRowSourceIndices() {
+  const all = colorCombinations.map((_, index) => index);
+  const filter = gridFilterForTab("Colors");
+  if (filter === "locked") {
+    return all.filter((index) => isColorRowPinned(index));
+  }
+  if (filter !== "all") {
+    return all.filter((index) => colorCombinations[index]?.source === filter);
+  }
+  return all;
+}
+
+function getTypeGridSourceIndices() {
+  const faces = getTypefacesForGrid();
+  const all = faces.map((_, index) => index);
+  const filter = gridFilterForTab("Type");
+  if (filter === "locked") {
+    return all.filter((index) => isTypefacePinned(faces[index]));
+  }
+  if (filter === "editors-picks") {
+    return all.filter((index) => isEditorPickTypeface(faces[index]));
+  }
+  if (filter !== "all") {
+    return all.filter((index) => faces[index].loader === filter);
+  }
+  return all;
+}
+
+function getLockupSourceIndices() {
+  const all = lockupCombinations.map((_, index) => index);
+  if (gridFilterForTab("Lockups") !== "locked") return all;
+  return all.filter((index) => isLockupCombinationPinned(index, lockupCombinations[index]));
+}
+
+function activeBrandGridElement() {
+  if (activeBrandTab === "Colors") return colorGrid;
+  if (activeBrandTab === "Logos") return grid;
+  if (activeBrandTab === "Type") return typeGrid;
+  if (activeBrandTab === "Lockups") return lockupGrid;
+  return null;
+}
+
+function gridFiltersHaveGutter() {
+  const sheetRect = logoSheet.getBoundingClientRect();
+  return (window.innerWidth - sheetRect.width) / 2 >= 72;
+}
+
+function syncGridFilterUi() {
+  if (!gridFilters) return;
+
+  const activeGrid = activeBrandGridElement();
+  const show = BRAND_TABS.has(activeBrandTab)
+    && activeGrid
+    && !activeGrid.hidden
+    && gridFiltersHaveGutter();
+
+  gridFilters.hidden = !show;
+  gridFilters.querySelectorAll(".grid-filter-panel").forEach((panel) => {
+    panel.classList.toggle("is-active", panel.dataset.gridFilterTab === activeBrandTab);
+  });
+  gridFilters.querySelectorAll(".grid-filter").forEach((button) => {
+    const tab = button.closest(".grid-filter-panel")?.dataset.gridFilterTab;
+    if (!tab) return;
+    button.setAttribute("aria-pressed", String(gridFilterForTab(tab) === button.dataset.filter));
+  });
+}
+
+function syncGridFiltersPosition() {
+  if (!gridFilters || gridFilters.hidden) return;
+
+  const activeGrid = activeBrandGridElement();
+  if (!activeGrid || activeGrid.hidden) return;
+
+  const sheetRect = logoSheet.getBoundingClientRect();
+  const gridRect = activeGrid.getBoundingClientRect();
+  const gutterCenterX = gridRect.left / 2;
+
+  const brandTabs = uploadPanel.querySelector(".brand-tabs");
+  const contentTop = (brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom)
+    + brandContentGap;
+  const centerY = contentTop + Math.max(0, window.innerHeight - contentTop) / 2;
+
+  gridFilters.style.left = `${gutterCenterX - sheetRect.left}px`;
+  gridFilters.style.top = `${centerY - sheetRect.top}px`;
+}
+
+function isBwInverted() {
+  const ink = currentPalette.ink.toLowerCase();
+  const paper = currentPalette.paper.toLowerCase();
+  return ink === invertedPalette.ink.toLowerCase() && paper === invertedPalette.paper.toLowerCase();
+}
+
+function syncBwButtons() {
+  if (!gridActions) return;
+
+  const inverted = bwModeActive && isBwInverted();
+  gridActions.querySelectorAll('[data-action="toggle-bw"]').forEach((button) => {
+    button.setAttribute("aria-pressed", String(bwModeActive));
+    button.classList.toggle("is-active", bwModeActive);
+    button.classList.toggle("is-inverted", inverted);
+  });
+}
+
+function syncGridActionsUi() {
+  if (!gridActions) return;
+
+  const activeGrid = activeBrandGridElement();
+  const show = BRAND_TABS.has(activeBrandTab)
+    && activeGrid
+    && !activeGrid.hidden
+    && gridFiltersHaveGutter();
+
+  gridActions.hidden = !show;
+  gridActions.querySelectorAll(".grid-action-panel").forEach((panel) => {
+    panel.classList.toggle("is-active", panel.dataset.tab === activeBrandTab);
+  });
+  syncBwButtons();
+}
+
+function syncGridActionsPosition() {
+  if (!gridActions || gridActions.hidden) return;
+
+  const activeGrid = activeBrandGridElement();
+  if (!activeGrid || activeGrid.hidden) return;
+
+  const sheetRect = logoSheet.getBoundingClientRect();
+  const gridRect = activeGrid.getBoundingClientRect();
+  const gutterCenterX = (window.innerWidth + gridRect.right) / 2;
+
+  const brandTabs = uploadPanel.querySelector(".brand-tabs");
+  const contentTop = (brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom)
+    + brandContentGap;
+  const centerY = contentTop + Math.max(0, window.innerHeight - contentTop) / 2;
+
+  gridActions.style.left = `${gutterCenterX - sheetRect.left}px`;
+  gridActions.style.top = `${centerY - sheetRect.top}px`;
+}
+
+function downloadDataFile(filename, data, mimeType = "application/json") {
+  const url = URL.createObjectURL(new Blob([data], { type: mimeType }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadJsonFile(filename, payload) {
+  downloadDataFile(filename, JSON.stringify(payload, null, 2));
+}
+
+function downloadTextFile(filename, text, mimeType = "text/markdown") {
+  downloadDataFile(filename, text, mimeType);
+}
+
+function lockedColorExportRows() {
+  if (!pinnedGridSlots.Colors.size) return [];
+
+  return [...pinnedGridSlots.Colors.entries()]
+    .sort((left, right) => left[0] - right[0])
+    .map(([slot, locks]) => {
+      if (!locks?.size) return null;
+      const combination = colorCombinations[slot];
+      const colors = combination?.colors?.length === 4
+        ? combination.colors.map((color) => parseColor(color))
+        : [0, 1, 2, 3].map((index) => parseColor(locks.get(index) ?? "#888888"));
+      return {
+        slot,
+        source: combination?.source ?? "Pinned",
+        colors,
+        swatches: colorSwatchesFromLocks(locks),
+      };
+    })
+    .filter(Boolean);
+}
+
+function lockedLogoExportRows() {
+  return orderedPinnedValues(pinnedGridSlots.Logos).map((id) => {
+    const logo = uploadedLogos.get(id);
+    if (!logo?.markup) return null;
+    return { id: logo.id, name: logo.name, markup: logo.markup };
+  }).filter(Boolean);
+}
+
+function lockedTypefaceExportRows() {
+  const faces = getTypefaces();
+  return orderedPinnedValues(pinnedGridSlots.Type).map((key) => {
+    const face = faces.find((entry) => typefaceLoadKey(entry) === key);
+    return typefaceExportRecord(face);
+  }).filter(Boolean);
+}
+
+function lockedLockupExportRows() {
+  const faces = getTypefaces();
+  return orderedPinnedValues(pinnedGridSlots.Lockups).map((combination) => {
+    const face = faces[combination.typeIndex];
+    const uploaded = uploadedLogos.get(combination.logoId);
+    const logo = uploaded
+      ? { id: uploaded.id, name: uploaded.name, markup: uploaded.markup }
+      : {
+        id: combination.logoId,
+        name: logoName(combination.logoId),
+        markup: logoMarkup(combination.logoId),
+      };
+    return {
+      logoId: combination.logoId,
+      typeIndex: combination.typeIndex,
+      typeface: typefaceExportRecord(face),
+      logo: logo.markup ? logo : null,
+    };
+  });
+}
+
+function designMdColorNames(hexes) {
+  const names = {};
+  for (const hex of hexes) {
+    const key = colorNameKey(hex);
+    const name = colorNameCache.get(key);
+    if (name) names[key] = name;
+  }
+  return names;
+}
+
+function collectDesignMdContext() {
+  const colors = lockedColorExportRows();
+  const logos = lockedLogoExportRows().map(({ id, name }) => ({ id, name }));
+  const typefacesLocked = lockedTypefaceExportRows();
+  const lockups = lockedLockupExportRows().map((entry) => ({
+    logoId: entry.logoId,
+    logo: entry.logo ? { id: entry.logo.id, name: entry.logo.name } : null,
+    typeface: entry.typeface,
+  }));
+
+  const hexes = [
+    currentPalette.ink,
+    currentPalette.paper,
+    ...colors.flatMap((row) => row.colors ?? []),
+  ];
+
+  return {
+    name: "Brandy",
+    description: "Design tokens generated from locked Brandy brand selections.",
+    palette: {
+      ink: parseColor(currentPalette.ink),
+      paper: parseColor(currentPalette.paper),
+      source: currentPalette.source,
+    },
+    colors,
+    logos,
+    typefaces: typefacesLocked,
+    lockups,
+    colorNames: designMdColorNames(hexes),
+  };
+}
+
+function downloadDesignMdCompanion() {
+  const markdown = buildDesignMd(collectDesignMdContext());
+  // Slight delay helps browsers that coalesce same-tick multi-downloads.
+  window.setTimeout(() => {
+    downloadTextFile(designMdFilename("Brandy"), markdown, "text/markdown;charset=utf-8");
+  }, 120);
+}
+
+function clearLockedForTab(tab) {
+  const pinnedMap = pinnedGridSlots[tab];
+  if (!pinnedMap?.size) {
+    setStatus("No locked items");
+    return;
+  }
+
+  pinnedMap.clear();
+  if (tab === "Colors") {
+    renderColorGrid();
+  } else if (tab === "Logos") {
+    applyLogosPinnedOrder();
+  } else if (tab === "Type") {
+    applyTypePinnedOrder();
+  } else if (tab === "Lockups") {
+    renderLockupGrid();
+  }
+  setStatus("Cleared locked items");
+}
+
+const LOCKED_EXPORT_VERSION = 1;
+const LOCKED_EXPORT_TABS = new Set(["Colors", "Logos", "Type", "Lockups"]);
+
+function lockedExportPayload(tab, locked) {
+  return { version: LOCKED_EXPORT_VERSION, tab, locked };
+}
+
+function nothingLockedToExport() {
+  setStatus("Nothing locked to export");
+}
+
+function typefaceExportRecord(face) {
+  if (!face) return null;
+  return {
+    id: face.id,
+    family: face.family,
+    weight: face.weight,
+    loader: face.loader,
+  };
+}
+
+function findTypefaceIndexByRecord(record) {
+  if (!record || typeof record !== "object") return -1;
+  const faces = getTypefaces();
+  const weight = Number(record.weight);
+  return faces.findIndex((face) => (
+    face.id === record.id
+    && face.loader === record.loader
+    && Number(face.weight) === weight
+  ));
+}
+
+function colorSwatchesFromLocks(locks) {
+  const swatches = {};
+  for (const [swatchIndex, hex] of locks.entries()) {
+    swatches[String(swatchIndex)] = parseColor(hex);
+  }
+  return swatches;
+}
+
+function locksFromColorSwatches(swatches, colors = []) {
+  const locks = new Map();
+  if (swatches && typeof swatches === "object" && !Array.isArray(swatches)) {
+    for (const [key, hex] of Object.entries(swatches)) {
+      const swatchIndex = Number(key);
+      if (!Number.isInteger(swatchIndex) || swatchIndex < 0 || swatchIndex > 3) continue;
+      locks.set(swatchIndex, parseColor(hex));
+    }
+  }
+  if (!locks.size && Array.isArray(colors) && colors.length === 4) {
+    colors.forEach((color, swatchIndex) => {
+      locks.set(swatchIndex, parseColor(color));
+    });
+  }
+  return locks;
+}
+
+function exportLogos() {
+  const locked = lockedLogoExportRows();
+  if (!locked.length) {
+    nothingLockedToExport();
+    return;
+  }
+
+  downloadJsonFile("brandy-logos-locked.json", lockedExportPayload("Logos", locked));
+  downloadDesignMdCompanion();
+  setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "logo" : "logos"}`);
+}
+
+function exportTypefaces() {
+  const locked = lockedTypefaceExportRows();
+  if (!locked.length) {
+    nothingLockedToExport();
+    return;
+  }
+
+  downloadJsonFile("brandy-type-locked.json", lockedExportPayload("Type", locked));
+  downloadDesignMdCompanion();
+  setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "typeface" : "typefaces"}`);
+}
+
+function exportColors() {
+  const locked = lockedColorExportRows();
+  if (!locked.length) {
+    nothingLockedToExport();
+    return;
+  }
+
+  downloadJsonFile("brandy-colors-locked.json", lockedExportPayload("Colors", locked));
+  downloadDesignMdCompanion();
+  setStatus(`Exported ${locked.length} locked color ${locked.length === 1 ? "row" : "rows"}`);
+}
+
+function exportLockups() {
+  const locked = lockedLockupExportRows();
+  if (!locked.length) {
+    nothingLockedToExport();
+    return;
+  }
+
+  downloadJsonFile("brandy-lockups-locked.json", lockedExportPayload("Lockups", locked));
+  downloadDesignMdCompanion();
+  setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "lockup" : "lockups"}`);
+}
+
+async function readLockedExportFile(file, expectedTab) {
+  const text = await file.text();
+  const payload = JSON.parse(text);
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Invalid export file");
+  }
+
+  if (payload.tab != null && payload.tab !== expectedTab) {
+    throw new Error(`Expected ${expectedTab} export`);
+  }
+
+  const locked = Array.isArray(payload.locked)
+    ? payload.locked
+    : Array.isArray(payload.logos)
+      ? payload.logos
+      : Array.isArray(payload.typefaces)
+        ? payload.typefaces
+        : Array.isArray(payload.combinations)
+          ? payload.combinations
+          : null;
+
+  if (!Array.isArray(locked) || !locked.length) {
+    throw new Error("No locked items in file");
+  }
+
+  return { ...payload, tab: expectedTab, locked };
+}
+
+function ensureLogoFromExport(logo) {
+  if (!logo?.markup) return null;
+
+  const placeholderIndex = lockupPlaceholderIndex(logo.id);
+  if (placeholderIndex >= 0) {
+    revealLockupCatalog();
+    return logo.id;
+  }
+
+  if (logo.id && uploadedLogos.has(logo.id)) {
+    return logo.id;
+  }
+
+  let id = typeof logo.id === "string" && logo.id && !uploadedLogos.has(logo.id)
+    ? logo.id
+    : allocateLogoId(logo.name || "imported.svg");
+
+  if (/^\d+$/.test(String(id))) {
+    id = logoId(id);
+    if (uploadedLogos.has(id)) {
+      id = allocateLogoId(logo.name || "imported.svg");
+    } else {
+      nextLogoNumber = Math.max(nextLogoNumber, Number(id) + 1);
+    }
+  }
+
+  const markup = sanitizeSvgMarkup(logo.markup, id);
+  uploadedLogos.set(id, { id, name: logo.name || id, markup });
+  const exists = [...grid.querySelectorAll(".logo-tile")].some((tile) => tile.dataset.logoId === id);
+  if (!exists) {
+    createLogoTile(id, logo.name || id, grid.children.length);
+  }
+  return id;
+}
+
+function ensureTypefaceFromExport(record) {
+  if (!record || typeof record !== "object") return -1;
+
+  let index = findTypefaceIndexByRecord(record);
+  if (index >= 0) return index;
+
+  if (record.loader === "local") {
+    // Custom uploads need the font file already loaded; metadata alone cannot recreate them.
+    return -1;
+  }
+
+  revealTypeCatalog();
+  return findTypefaceIndexByRecord(record);
+}
+
+async function importColorsFromFile(file) {
+  const payload = await readLockedExportFile(file, "Colors");
+  ensureColorCombinations();
+
+  const imported = payload.locked.map((entry) => {
+    const colors = Array.isArray(entry?.colors)
+      ? entry.colors
+      : Array.isArray(entry)
+        ? entry
+        : null;
+    if (!Array.isArray(colors) || colors.length !== 4) {
+      throw new Error("Each locked color row must include 4 colors");
+    }
+    const normalized = colors.map((color) => parseColor(color));
+    const locks = locksFromColorSwatches(entry?.swatches, normalized);
+    if (!locks.size) {
+      throw new Error("Each locked color row must include swatch locks");
+    }
+    return {
+      colors: normalized,
+      source: typeof entry?.source === "string" ? entry.source : "Pinned",
+      locks,
+    };
+  });
+
+  const nextCombinations = colorCombinations.slice();
+  while (nextCombinations.length < colorCombinationCount) {
+    nextCombinations.push(generateColorCombination());
+  }
+
+  pinnedGridSlots.Colors.clear();
+  imported.forEach((entry, index) => {
+    nextCombinations[index] = { colors: entry.colors, source: entry.source };
+    pinnedGridSlots.Colors.set(index, entry.locks);
+  });
+
+  colorCombinations = nextCombinations.slice(0, colorCombinationCount);
+  colorRowPool.clear();
+  colorGrid.replaceChildren();
+  colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+  applyColorsPinnedOrder();
+  if (!colorRowPool.size) {
+    updateColorGridWindow(true);
+  }
+  setStatus(`Imported ${imported.length} locked color ${imported.length === 1 ? "row" : "rows"}`);
+}
+
+async function importLogosFromFile(file) {
+  const payload = await readLockedExportFile(file, "Logos");
+  const restoredIds = [];
+
+  for (const entry of payload.locked) {
+    if (!entry?.markup) {
+      throw new Error("Each locked logo must include SVG markup");
+    }
+    const id = ensureLogoFromExport(entry);
+    if (id) restoredIds.push(id);
+  }
+
+  if (!restoredIds.length) {
+    throw new Error("No logos restored");
+  }
+
+  resetPinnedMap(pinnedGridSlots.Logos, restoredIds);
+  updateUploadUi();
+  syncBrandTabView();
+  applyLogosPinnedOrder();
+  syncLogoGridPresentation();
+  setStatus(`Imported ${restoredIds.length} locked ${restoredIds.length === 1 ? "logo" : "logos"}`);
+}
+
+async function importTypefacesFromFile(file) {
+  const payload = await readLockedExportFile(file, "Type");
+  const needsCatalog = payload.locked.some((entry) => entry?.loader && entry.loader !== "local");
+  if (needsCatalog) revealTypeCatalog();
+
+  const keys = [];
+  for (const entry of payload.locked) {
+    const index = ensureTypefaceFromExport(entry);
+    if (index < 0) continue;
+    const face = getTypefaces()[index];
+    if (face) keys.push(typefaceLoadKey(face));
+  }
+
+  if (!keys.length) {
+    throw new Error("No typefaces restored");
+  }
+
+  resetPinnedMap(pinnedGridSlots.Type, keys);
+  resetTypeDisplayOrder();
+  applyTypePinnedOrder();
+  syncBrandTabView();
+  setStatus(`Imported ${keys.length} locked ${keys.length === 1 ? "typeface" : "typefaces"}`);
+}
+
+async function importLockupsFromFile(file) {
+  const payload = await readLockedExportFile(file, "Lockups");
+  const combinations = [];
+
+  for (const entry of payload.locked) {
+    if (!entry || typeof entry !== "object") {
+      throw new Error("Invalid lockup entry");
+    }
+
+    let nextLogoId = typeof entry.logoId === "string" ? entry.logoId : null;
+    if (entry.logo?.markup) {
+      nextLogoId = ensureLogoFromExport({ ...entry.logo, id: entry.logo.id || nextLogoId }) || nextLogoId;
+    } else if (lockupPlaceholderIndex(nextLogoId) >= 0) {
+      revealLockupCatalog();
+    }
+
+    if (!nextLogoId) {
+      throw new Error("Each lockup must include a logoId");
+    }
+
+    let typeIndex = Number.isFinite(entry.typeIndex) ? entry.typeIndex : -1;
+    if (entry.typeface) {
+      const resolved = ensureTypefaceFromExport(entry.typeface);
+      if (resolved >= 0) typeIndex = resolved;
+    }
+    if (!Number.isFinite(typeIndex) || typeIndex < 0) {
+      throw new Error("Each lockup must include a resolvable typeface");
+    }
+
+    combinations.push({ logoId: nextLogoId, typeIndex });
+  }
+
+  if (!combinations.length) {
+    throw new Error("No lockups restored");
+  }
+
+  if (!typeCatalogRevealed && uploadedTypefaces.length === 0) {
+    revealTypeCatalog();
+  }
+
+  const nextCombinations = Array.from({ length: lockupCombinationCount }, (_, index) => {
+    const source = combinations[index % combinations.length];
+    return { logoId: source.logoId, typeIndex: source.typeIndex };
+  });
+  combinations.forEach((combination, index) => {
+    nextCombinations[index] = { ...combination };
+  });
+  lockupCombinations = nextCombinations;
+  resetPinnedMap(pinnedGridSlots.Lockups, combinations);
+  updateUploadUi();
+  syncBrandTabView();
+  applyLockupsPinnedOrder();
+  setStatus(`Imported ${combinations.length} locked ${combinations.length === 1 ? "lockup" : "lockups"}`);
+}
+
+async function importLockedForTab(tab, file) {
+  if (tab === "Colors") await importColorsFromFile(file);
+  else if (tab === "Logos") await importLogosFromFile(file);
+  else if (tab === "Type") await importTypefacesFromFile(file);
+  else if (tab === "Lockups") await importLockupsFromFile(file);
+}
+
+function importForTab(tab) {
+  if (!LOCKED_EXPORT_TABS.has(tab)) return;
+  pendingImportTab = tab;
+  lockedImportInput?.click();
+}
+
+function exportForTab(tab) {
+  if (tab === "Logos") exportLogos();
+  else if (tab === "Type") exportTypefaces();
+  else if (tab === "Colors") exportColors();
+  else if (tab === "Lockups") exportLockups();
+}
+
+function handleGridAction(tab, action) {
+  if (action === "clear-locked") {
+    clearLockedForTab(tab);
+    return;
+  }
+  if (action === "toggle-bw") {
+    toggleDefaultPalette();
+    return;
+  }
+  if (action === "import") {
+    importForTab(tab);
+    return;
+  }
+  if (action === "export") {
+    exportForTab(tab);
+  }
+}
+
+function applyLogoGridFilter() {
+  const filter = gridFilterForTab("Logos");
+  const pinnedIds = pinnedLogoIds();
+  grid.querySelectorAll(".logo-tile").forEach((tile) => {
+    tile.hidden = filter === "locked" && !pinnedIds.has(tile.dataset.logoId);
+  });
+}
+
+function resetFilteredGridWindow(tab) {
+  if (tab === "Colors") {
+    colorRowPool.clear();
+    colorGrid.replaceChildren();
+    colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+    updateColorGridWindow(true);
+    return;
+  }
+
+  if (tab === "Type") {
+    typeTilePool.clear();
+    typeGrid.replaceChildren();
+    typeGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+    updateTypeGridWindow(true);
+    return;
+  }
+
+  if (tab === "Lockups") {
+    lockupTilePool.clear();
+    lockupGrid.replaceChildren();
+    lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+    updateLockupGridWindow(true);
+    return;
+  }
+
+  if (tab === "Logos") {
+    applyLogoGridFilter();
+  }
+}
+
+function setGridFilter(tab, filter) {
+  if (gridFilterForTab(tab) === filter) return;
+  gridFilterState[tab] = filter;
+  syncGridFilterUi();
+  resetFilteredGridWindow(tab);
+  requestAnimationFrame(syncGridFiltersPosition);
+  requestAnimationFrame(syncGridActionsPosition);
+  requestAnimationFrame(validateKeyboardGridSelection);
+}
+
+function maybeRefreshGridFilter(tab) {
+  if (gridFilterForTab(tab) === "locked") {
+    resetFilteredGridWindow(tab);
+  }
+}
 
 function gridLockIconMarkup(locked) {
   const body = `<path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"/>`;
@@ -331,9 +1159,295 @@ function positionGridLockControl(tile) {
   const inkTop = gridItemInkTop(tile);
   if (inkTop == null) return;
 
-  const outlineTop = 6;
+  const outlineTop = 12;
   const midY = (outlineTop + inkTop) / 2;
   lock.style.top = `${Math.round(midY)}px`;
+}
+
+function colorSwatchInkTop(swatch) {
+  const label = swatch.querySelector(".color-swatch-label");
+  const title = swatch.querySelector(".color-swatch-title");
+  const hex = swatch.querySelector(".color-swatch-hex");
+  if (!label || !title) return null;
+
+  const wasHidden = getComputedStyle(label).display === "none";
+  if (wasHidden) swatch.classList.add("is-measuring-label");
+
+  const swatchRect = swatch.getBoundingClientRect();
+  const titleRect = title.getBoundingClientRect();
+  let top = titleRect.height > 0 ? titleRect.top - swatchRect.top : null;
+  if (top == null && hex) {
+    const hexRect = hex.getBoundingClientRect();
+    if (hexRect.height > 0) top = hexRect.top - swatchRect.top;
+  }
+
+  if (wasHidden) swatch.classList.remove("is-measuring-label");
+
+  return top;
+}
+
+function getColorSwatchLockControl(swatch) {
+  const locks = swatch.querySelectorAll(".grid-lock-control");
+  for (let index = 1; index < locks.length; index += 1) {
+    locks[index].remove();
+  }
+  return locks[0] ?? null;
+}
+
+function positionColorSwatchLockControl(swatch) {
+  const lock = getColorSwatchLockControl(swatch);
+  if (!lock) return;
+
+  const swatchRect = swatch.getBoundingClientRect();
+  if (swatchRect.height <= 0) {
+    swatch.classList.remove("is-lock-positioned");
+    return;
+  }
+
+  const inkTop = colorSwatchInkTop(swatch);
+  if (inkTop == null) {
+    swatch.classList.remove("is-lock-positioned");
+    return;
+  }
+
+  lock.style.top = `${Math.round(inkTop / 2)}px`;
+  swatch.classList.add("is-lock-positioned");
+}
+
+function positionColorRowLockControls(row) {
+  row.querySelectorAll(".color-swatch").forEach((swatch) => {
+    positionColorSwatchLockControl(swatch);
+  });
+}
+
+function scheduleColorRowLockReposition(sourceIndices) {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      for (const index of sourceIndices) {
+        const row = colorRowPool.get(index);
+        if (row) positionColorRowLockControls(row);
+      }
+    });
+  });
+}
+
+function isColorSwatchLocked(rowIndex, swatchIndex) {
+  return pinnedGridSlots.Colors.get(rowIndex)?.has(swatchIndex) ?? false;
+}
+
+function isColorRowFullyLocked(rowIndex) {
+  const locks = pinnedGridSlots.Colors.get(rowIndex);
+  if (!locks || locks.size < 4) return false;
+  return [0, 1, 2, 3].every((swatchIndex) => locks.has(swatchIndex));
+}
+
+function isColorRowPinned(rowIndex) {
+  const locks = pinnedGridSlots.Colors.get(rowIndex);
+  return locks != null && locks.size > 0;
+}
+
+/** Unique locked swatch hexes across all color rows (Colors pin map values). */
+function getLockedColorHexes() {
+  const colors = [];
+  const seen = new Set();
+  for (const locks of pinnedGridSlots.Colors.values()) {
+    for (const hex of locks.values()) {
+      const normalized = parseColor(hex);
+      if (seen.has(normalized)) continue;
+      seen.add(normalized);
+      colors.push(normalized);
+    }
+  }
+  return colors;
+}
+
+/**
+ * Unique hexes from color rows matching the active Colors filter.
+ * Locked uses pinned swatches; generator filters use row colors where source matches.
+ */
+function getActiveColorPool() {
+  ensureColorCombinations();
+  const filter = gridFilterForTab("Colors");
+
+  if (filter === "all") {
+    return { filter: "all", colors: null, combinations: colorCombinations };
+  }
+
+  if (filter === "locked") {
+    return { filter, colors: getLockedColorHexes(), combinations: null };
+  }
+
+  const colors = [];
+  const seen = new Set();
+  const combinations = [];
+  for (const index of getColorRowSourceIndices()) {
+    const combination = colorCombinations[index];
+    if (!combination?.colors?.length) continue;
+    combinations.push(combination);
+    for (const hex of combination.colors) {
+      const normalized = parseColor(hex);
+      if (seen.has(normalized)) continue;
+      seen.add(normalized);
+      colors.push(normalized);
+    }
+  }
+  return { filter, colors, combinations };
+}
+
+/** Catalog typeface indices available to Lockups, constrained by the Type filter. */
+function getActiveTypefaceIndices() {
+  const faces = getTypefaces();
+  const all = faces.map((_, index) => index);
+  if (!all.length) return [];
+
+  const filter = gridFilterForTab("Type");
+  if (filter === "all") return all;
+  if (filter === "locked") {
+    return all.filter((index) => isTypefacePinned(faces[index]));
+  }
+  if (filter === "editors-picks") {
+    return all.filter((index) => isEditorPickTypeface(faces[index]));
+  }
+  return all.filter((index) => faces[index].loader === filter);
+}
+
+/** Logo ids available to Lockups, constrained by the Logos filter. */
+function getActiveLogoIds() {
+  let logos;
+  if (uploadedLogos.size) {
+    logos = getLogoIds();
+  } else if (lockupCatalogRevealed) {
+    logos = coolshapePlaceholders.map((_, index) => `lockup-ph:${index}`);
+  } else {
+    return [];
+  }
+
+  if (gridFilterForTab("Logos") === "locked") {
+    const logoSet = new Set(logos);
+    return orderedPinnedValues(pinnedGridSlots.Logos).filter((id) => logoSet.has(id));
+  }
+
+  return logos;
+}
+
+function emptyColorsFilterStatus(continuation) {
+  const filter = gridFilterForTab("Colors");
+  if (filter === "all") return null;
+  const label = filter === "locked" ? "locked colors" : `${filter} colors`;
+  return continuation ? `No ${label} — ${continuation}` : `No ${label}`;
+}
+
+function getColorRowLockControl(row) {
+  return row.querySelector(":scope > .grid-lock-control");
+}
+
+function syncColorSwatchLockControl(swatch, rowIndex, swatchIndex) {
+  const button = getColorSwatchLockControl(swatch);
+  if (!button) return;
+  const locked = isColorSwatchLocked(rowIndex, swatchIndex);
+  swatch.classList.toggle("is-grid-locked", locked);
+  button.classList.toggle("is-locked", locked);
+  button.setAttribute("aria-pressed", String(locked));
+  button.setAttribute("aria-label", locked ? "Unlock color" : "Lock color in place");
+  button.innerHTML = gridLockIconMarkup(locked);
+  positionColorSwatchLockControl(swatch);
+}
+
+function syncColorRowLockControl(row, rowIndex) {
+  const button = getColorRowLockControl(row);
+  if (!button) return;
+  const locked = isColorRowFullyLocked(rowIndex);
+  row.classList.toggle("is-grid-locked", locked);
+  button.classList.toggle("is-locked", locked);
+  button.setAttribute("aria-pressed", String(locked));
+  button.setAttribute("aria-label", locked ? "Unlock row" : "Lock row in place");
+  button.innerHTML = gridLockIconMarkup(locked);
+}
+
+function syncColorRowLockControls(row, slotIndex) {
+  row.querySelectorAll(".color-swatch").forEach((swatch, swatchIndex) => {
+    syncColorSwatchLockControl(swatch, slotIndex, swatchIndex);
+  });
+  syncColorRowLockControl(row, slotIndex);
+}
+
+function attachColorRowLockControl(row) {
+  const existing = getColorRowLockControl(row);
+  if (existing) {
+    syncColorRowLockControl(row, Number(row.dataset.colorIndex));
+    return;
+  }
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "grid-lock-control";
+  button.setAttribute("aria-pressed", "false");
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const rowIndex = Number(row.dataset.colorIndex);
+    const combination = colorCombinations[rowIndex];
+    if (!combination?.colors?.length) return;
+
+    if (isColorRowFullyLocked(rowIndex)) {
+      pinnedGridSlots.Colors.delete(rowIndex);
+      setStatus("Unlocked");
+    } else {
+      const nextLocks = pinnedGridSlots.Colors.get(rowIndex) ?? new Map();
+      combination.colors.forEach((color, swatchIndex) => {
+        nextLocks.set(swatchIndex, parseColor(color));
+      });
+      pinnedGridSlots.Colors.set(rowIndex, nextLocks);
+      setStatus("Locked in place");
+    }
+
+    applyColorsPinnedOrder();
+    button.blur();
+  });
+
+  row.prepend(button);
+  syncColorRowLockControl(row, Number(row.dataset.colorIndex));
+}
+
+function attachColorSwatchLockControl(swatch, row, swatchIndex) {
+  const existing = getColorSwatchLockControl(swatch);
+  if (existing) {
+    syncColorSwatchLockControl(swatch, Number(row.dataset.colorIndex), swatchIndex);
+    return;
+  }
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "grid-lock-control";
+  button.setAttribute("aria-pressed", "false");
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const rowIndex = Number(row.dataset.colorIndex);
+    const rowLocks = pinnedGridSlots.Colors.get(rowIndex);
+
+    if (rowLocks?.has(swatchIndex)) {
+      rowLocks.delete(swatchIndex);
+      if (rowLocks.size === 0) pinnedGridSlots.Colors.delete(rowIndex);
+      setStatus("Unlocked");
+    } else {
+      const combination = colorCombinations[rowIndex];
+      const color = combination?.colors?.[swatchIndex];
+      if (color == null) return;
+      const nextLocks = rowLocks ?? new Map();
+      nextLocks.set(swatchIndex, parseColor(color));
+      pinnedGridSlots.Colors.set(rowIndex, nextLocks);
+      setStatus("Locked in place");
+    }
+
+    applyColorsPinnedOrder();
+    button.blur();
+  });
+
+  swatch.append(button);
+  syncColorSwatchLockControl(swatch, Number(row.dataset.colorIndex), swatchIndex);
 }
 
 function attachGridLockControl(container, tab, getSlotIndex, getPinValue) {
@@ -399,66 +1513,170 @@ function permuteIdsWithPinnedSlots(slotCount, pinnedMap, allIds) {
   return result;
 }
 
+function orderedPinnedValues(pinnedMap) {
+  return [...pinnedMap.entries()]
+    .sort((left, right) => left[0] - right[0])
+    .map(([, value]) => value);
+}
+
+function pinValuesEqual(left, right) {
+  if (left === right) return true;
+  if (left && right && typeof left === "object" && typeof right === "object") {
+    return JSON.stringify(left) === JSON.stringify(right);
+  }
+  return false;
+}
+
+function clonePinValue(value) {
+  return value && typeof value === "object" ? structuredClone(value) : value;
+}
+
+function resetPinnedMap(pinnedMap, orderedValues) {
+  pinnedMap.clear();
+  orderedValues.forEach((value, index) => {
+    pinnedMap.set(index, clonePinValue(value));
+  });
+}
+
+function pinValueIndex(value, orderedValues) {
+  return orderedValues.findIndex((entry) => pinValuesEqual(entry, value));
+}
+
+function reorderItemsPinnedFirst(items, getPinValue, pinnedMap) {
+  const pinnedOrdered = orderedPinnedValues(pinnedMap);
+  const pinnedItems = pinnedOrdered
+    .map((pinValue) => items.find((item) => pinValuesEqual(getPinValue(item), pinValue)))
+    .filter(Boolean);
+  const unpinnedItems = items.filter((item) => pinValueIndex(getPinValue(item), pinnedOrdered) < 0);
+  return pinnedItems.concat(unpinnedItems);
+}
+
+function applyLogosPinnedOrder() {
+  const tiles = [...grid.querySelectorAll(".logo-tile")];
+  if (!tiles.length) return;
+
+  reorderItemsPinnedFirst(
+    tiles,
+    (tile) => tile.dataset.logoId,
+    pinnedGridSlots.Logos,
+  ).forEach((tile) => {
+    grid.append(tile);
+  });
+
+  syncLogoTileLockControls();
+  updateFaviconForTopLogo();
+  scheduleLogoShaderMask();
+  schedulePerIconShaderSync();
+  applyLogoGridFilter();
+  maybeRefreshGridFilter("Logos");
+}
+
+function applyTypePinnedOrder() {
+  const faces = getTypefaces();
+  if (!faces.length) return;
+
+  const currentOrder = typeDisplayOrder?.length === faces.length
+    ? typeDisplayOrder
+    : faces.map((_, index) => index);
+  const items = currentOrder.map((catalogIndex) => ({
+    catalogIndex,
+    key: typefaceLoadKey(faces[catalogIndex]),
+  }));
+
+  typeDisplayOrder = reorderItemsPinnedFirst(
+    items,
+    (item) => item.key,
+    pinnedGridSlots.Type,
+  ).map((item) => item.catalogIndex);
+
+  refreshTypeGrid();
+  maybeRefreshGridFilter("Type");
+}
+
+function applyColorsPinnedOrder() {
+  if (!colorCombinations.length) return;
+
+  const lockedRows = [];
+  const unlockedRows = [];
+
+  for (let index = 0; index < colorCombinations.length; index += 1) {
+    if (isColorRowPinned(index)) {
+      lockedRows.push(index);
+    } else {
+      unlockedRows.push(index);
+    }
+  }
+
+  const newOrder = lockedRows.concat(unlockedRows);
+  const unchanged = newOrder.every((oldIndex, newIndex) => oldIndex === newIndex);
+  if (unchanged) {
+    for (const [index, row] of colorRowPool) {
+      syncColorRowLockControls(row, index);
+    }
+    return;
+  }
+
+  const nextCombinations = newOrder.map((oldIndex) => colorCombinations[oldIndex]);
+
+  const oldToNew = new Map();
+  newOrder.forEach((oldIndex, newIndex) => {
+    oldToNew.set(oldIndex, newIndex);
+  });
+
+  const nextLocks = new Map();
+  for (const [oldIndex, locks] of pinnedGridSlots.Colors) {
+    const newIndex = oldToNew.get(oldIndex);
+    if (newIndex != null) {
+      nextLocks.set(newIndex, locks);
+    }
+  }
+
+  colorCombinations = nextCombinations;
+  pinnedGridSlots.Colors.clear();
+  for (const [newIndex, locks] of nextLocks) {
+    pinnedGridSlots.Colors.set(newIndex, locks);
+  }
+
+  colorRowPool.clear();
+  colorGrid.replaceChildren();
+  colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+  updateColorGridWindow(true);
+  maybeRefreshGridFilter("Colors");
+}
+
+function applyLockupsPinnedOrder() {
+  if (!lockupCombinations.length) return;
+
+  lockupCombinations = reorderItemsPinnedFirst(
+    lockupCombinations,
+    (combination) => ({ logoId: combination.logoId, typeIndex: combination.typeIndex }),
+    pinnedGridSlots.Lockups,
+  );
+  lockupTilePool.clear();
+  lockupGrid.replaceChildren();
+  lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+  updateLockupGridWindow(true);
+  maybeRefreshGridFilter("Lockups");
+}
+
+function applyGridPinnedOrder(tab) {
+  if (tab === "Logos") applyLogosPinnedOrder();
+  else if (tab === "Type") applyTypePinnedOrder();
+  else if (tab === "Colors") applyColorsPinnedOrder();
+  else if (tab === "Lockups") applyLockupsPinnedOrder();
+}
+
 function logoTileSlotIndex(tile) {
   return [...grid.querySelectorAll(".logo-tile")].indexOf(tile);
 }
 const brandContentGap = 72;
 
-function contentTopInset(tile, content) {
-  if (!tile || !content) return 0;
-
-  const tileRect = tile.getBoundingClientRect();
-  const svg = content.matches?.("svg") ? content : content.querySelector?.("svg");
-
-  if (svg instanceof SVGSVGElement) {
-    try {
-      const bbox = svg.getBBox();
-      const ctm = svg.getScreenCTM();
-      if (ctm && bbox.height > 0 && bbox.width > 0) {
-        const point = svg.createSVGPoint();
-        point.x = bbox.x;
-        point.y = bbox.y;
-        const screen = point.matrixTransform(ctm);
-        return Math.max(0, screen.y - tileRect.top);
-      }
-    } catch {
-      // Fall through to element bounds when the SVG is not rendered yet.
-    }
-  }
-
-  return Math.max(0, content.getBoundingClientRect().top - tileRect.top);
-}
-
-function firstRowContentInset(container, tileSelector, contentSelector) {
-  const tiles = [...container.querySelectorAll(tileSelector)];
-  if (!tiles.length) return 0;
-
-  const firstTop = tiles[0].getBoundingClientRect().top;
-  const firstRow = tiles.filter((tile) => Math.abs(tile.getBoundingClientRect().top - firstTop) < 1);
-  let minInset = Infinity;
-
-  firstRow.forEach((tile) => {
-    const content = tile.querySelector(contentSelector);
-    const inset = contentTopInset(tile, content);
-    if (inset < minInset) minInset = inset;
-  });
-
-  return Number.isFinite(minInset) ? minInset : 0;
-}
-
 function syncBrandGridOffset() {
-  let inset = 0;
-
-  if (activeBrandTab === "Logos" && !grid.hidden) {
-    inset = firstRowContentInset(grid, ".logo-tile", ".logo-art svg, .logo-art");
-  } else if (activeBrandTab === "Type" && !typeGrid.hidden) {
-    inset = firstRowContentInset(typeGrid, ".type-tile", ".type-specimen");
-  } else if (activeBrandTab === "Lockups" && !lockupGrid.hidden) {
-    inset = firstRowContentInset(lockupGrid, ".lockup-tile", ".lockup-content");
-  }
-
-  const offset = Math.max(0, brandContentGap - inset);
-  document.documentElement.style.setProperty("--brand-grid-offset", `${offset}px`);
+  document.documentElement.style.setProperty("--brand-grid-offset", `${brandContentGap}px`);
+  syncGridFilterUi();
+  syncGridFiltersPosition();
+  syncGridActionsUi();
+  syncGridActionsPosition();
 }
 const lockupFontFamilies = {
   Helvetica: 'Helvetica, "Helvetica Neue", Arial, sans-serif',
@@ -872,11 +2090,11 @@ function lockupGridColumns() {
 }
 
 function measureTypeGridMetrics() {
-  const faces = getTypefacesForGrid();
+  const indices = getTypeGridSourceIndices();
   const columns = Math.max(1, typeGridColumns());
   const width = typeGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
   const cellSize = width / columns;
-  const rows = Math.ceil(faces.length / columns);
+  const rows = Math.ceil(indices.length / columns);
   return {
     columns,
     cellSize,
@@ -923,6 +2141,16 @@ function createTypeTile(face, index, columns, cellSize) {
 
 function updateTypeGridWindow(force = false) {
   if (typeGrid.hidden || activeBrandTab !== "Type") return;
+
+  const indices = getTypeGridSourceIndices();
+  if (!indices.length) {
+    typeGrid.style.height = "0px";
+    for (const [index, tile] of typeTilePool) {
+      tile.remove();
+      typeTilePool.delete(index);
+    }
+    return;
+  }
 
   const metrics = measureTypeGridMetrics();
   if (metrics.cellSize <= 0) return;
@@ -1035,11 +2263,13 @@ function buildColorCombinations() {
 }
 
 function measureColorGridMetrics() {
-  const width = colorGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
-  const rowHeight = width / 4;
-  const rowStride = rowHeight + colorRowGap;
-  const totalHeight = colorCombinations.length > 0
-    ? colorCombinations.length * rowHeight + Math.max(0, colorCombinations.length - 1) * colorRowGap
+  const indices = getColorRowSourceIndices();
+  const gridWidth = colorGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
+  const width = gridWidth - colorSwatchGap - gridLockControlSize;
+  const rowHeight = (width - colorSwatchGap * 3) / 4;
+  const rowStride = rowHeight + colorSwatchGap;
+  const totalHeight = indices.length > 0
+    ? indices.length * rowHeight + Math.max(0, indices.length - 1) * colorSwatchGap
     : 0;
   return { width, rowHeight, rowStride, totalHeight };
 }
@@ -1455,6 +2685,16 @@ function updateColorGridWindow(force = false) {
     colorDragSession = null;
   }
 
+  const indices = getColorRowSourceIndices();
+  if (!indices.length) {
+    colorGrid.style.height = "0px";
+    for (const [index, row] of colorRowPool) {
+      row.remove();
+      colorRowPool.delete(index);
+    }
+    return;
+  }
+
   const metrics = measureColorGridMetrics();
   if (metrics.rowHeight <= 0) return;
 
@@ -1554,17 +2794,18 @@ function buildLockupCombinations() {
     if (combinations[index]) continue;
     combinations[index] = {
       logoId: logos[Math.floor(Math.random() * logos.length)],
-      typeIndex: Math.floor(Math.random() * faces.length),
+      typeIndex: typeIndices[Math.floor(Math.random() * typeIndices.length)],
     };
   }
   return combinations;
 }
 
 function measureLockupGridMetrics() {
+  const indices = getLockupSourceIndices();
   const columns = Math.max(1, lockupGridColumns());
   const width = lockupGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
   const cellSize = width / columns;
-  const rows = Math.ceil(lockupCombinations.length / columns);
+  const rows = Math.ceil(indices.length / columns);
   return {
     columns,
     cellSize,
@@ -1658,6 +2899,16 @@ function createLockupTile(combination, index, columns, cellSize) {
 function updateLockupGridWindow(force = false) {
   if (lockupGrid.hidden || activeBrandTab !== "Lockups") return;
   if (!lockupCombinations.length) return;
+
+  const indices = getLockupSourceIndices();
+  if (!indices.length) {
+    lockupGrid.style.height = "0px";
+    for (const [index, tile] of lockupTilePool) {
+      tile.remove();
+      lockupTilePool.delete(index);
+    }
+    return;
+  }
 
   const metrics = measureLockupGridMetrics();
   if (metrics.cellSize <= 0) return;
@@ -2009,7 +3260,60 @@ function showLogoById(id) {
   const normalizedId = logoId(id);
   if (!uploadedLogos.has(normalizedId)) return;
   currentLogoId = normalizedId;
-  renderFullscreenLogo();
+  renderFullscreenPreview();
+}
+
+function showTypeByIndex(index) {
+  const faces = getTypefacesForGrid();
+  if (!faces[index]) return;
+  currentTypeIndex = index;
+  const face = faces[index];
+  ensureTypefaceLoaded(face).then(() => {
+    if (dialog.open && previewMode === "type" && currentTypeIndex === index) {
+      renderFullscreenPreview();
+    }
+  });
+  renderFullscreenPreview();
+}
+
+function showLockupByIndex(index) {
+  const combination = lockupCombinations[index];
+  if (!combination) return;
+  currentLockupIndex = index;
+  const face = getTypefaces()[combination.typeIndex];
+  const finish = () => {
+    if (dialog.open && previewMode === "lockup" && currentLockupIndex === index) {
+      renderFullscreenPreview();
+    }
+  };
+  if (face) {
+    ensureTypefaceLoaded(face).then(finish);
+  } else {
+    finish();
+  }
+  renderFullscreenPreview();
+}
+
+function showAdjacentPreview(offset) {
+  if (previewMode === "type") {
+    const order = getTypeGridSourceIndices();
+    if (!order.length) return;
+    const position = Math.max(0, order.indexOf(currentTypeIndex));
+    const nextPosition = ((position + offset) % order.length + order.length) % order.length;
+    showTypeByIndex(order[nextPosition]);
+    return;
+  }
+
+  if (previewMode === "lockup") {
+    const order = getLockupSourceIndices();
+    if (!order.length) return;
+    const position = Math.max(0, order.indexOf(currentLockupIndex));
+    const nextPosition = ((position + offset) % order.length + order.length) % order.length;
+    showLockupByIndex(order[nextPosition]);
+    return;
+  }
+
+  showAdjacentLogo(offset);
 }
 
 function showAdjacentLogo(offset) {
@@ -2848,6 +4152,38 @@ brandTabButtons.forEach((button, index) => {
   });
 });
 
+gridFilters?.addEventListener("click", (event) => {
+  const button = event.target.closest(".grid-filter");
+  if (!button || !gridFilters.contains(button)) return;
+  const tab = button.closest(".grid-filter-panel")?.dataset.gridFilterTab;
+  const filter = button.dataset.filter;
+  if (!tab || !filter) return;
+  setGridFilter(tab, filter);
+});
+
+gridActions?.querySelectorAll(".grid-action").forEach((button) => {
+  button.addEventListener("click", () => {
+    const tab = button.closest(".grid-action-panel")?.dataset.tab;
+    const action = button.dataset.action;
+    if (!tab || !action) return;
+    handleGridAction(tab, action);
+    button.blur();
+  });
+});
+
+lockedImportInput?.addEventListener("change", async () => {
+  const file = lockedImportInput.files?.[0];
+  const tab = pendingImportTab;
+  pendingImportTab = null;
+  lockedImportInput.value = "";
+  if (!file || !tab) return;
+  try {
+    await importLockedForTab(tab, file);
+  } catch {
+    setStatus(`Could not import ${tab.toLowerCase()}`);
+  }
+});
+
 document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
 
 document.addEventListener("dragenter", (event) => {
@@ -3137,32 +4473,188 @@ function clearSelection() {
   setStatus("Selection cleared");
 }
 
+function ensureColorCombinations() {
+  if (!colorCombinations.length) {
+    colorCombinations = buildColorCombinations();
+  }
+}
+
+/**
+ * Space palette pool: constrained by the Colors tab filter.
+ * - all: any color combination
+ * - locked: pinned swatch hexes only
+ * - generator (Poline/Standard/…): colors from rows matching that source
+ * @returns {boolean} whether a new palette was applied
+ */
+function randomizePaletteFromCombinations() {
+  if (bwModeActive) return false;
+
+  const pool = getActiveColorPool();
+
+  if (pool.filter === "locked") {
+    if (!pool.colors.length) return false;
+    applyPalette(paletteFromCombination({ colors: pool.colors, source: "Locked" }));
+    return true;
+  }
+
+  if (pool.filter !== "all") {
+    // Prefer a random filtered combination so contrast pairs stay coherent;
+    // fall back to the collected hex pool if combinations are missing.
+    if (pool.combinations?.length) {
+      const combination = pool.combinations[Math.floor(Math.random() * pool.combinations.length)];
+      applyPalette(paletteFromCombination(combination));
+      return true;
+    }
+    if (!pool.colors?.length) return false;
+    applyPalette(paletteFromCombination({ colors: pool.colors, source: pool.filter }));
+    return true;
+  }
+
+  if (!pool.combinations?.length) return false;
+  const combination = pool.combinations[Math.floor(Math.random() * pool.combinations.length)];
+  applyPalette(paletteFromCombination(combination));
+  return true;
+}
+
+/** Prefer a different pool entry than `current` when the pool has more than one item. */
+function pickRandomDifferent(pool, current) {
+  if (!pool.length) return undefined;
+  if (pool.length === 1) return pool[0];
+  const others = pool.filter((item) => item !== current);
+  return randomFrom(others.length ? others : pool);
+}
+
+/** Lockup indices for dialog Space: Lockups filter, plus Logos/Type source constraints. */
+function getDialogLockupPool() {
+  const logoSet = new Set(getLockupLogoIds());
+  const typeSet = new Set(getLockupTypeIndices());
+  return getLockupSourceIndices().filter((index) => {
+    const combination = lockupCombinations[index];
+    if (!combination) return false;
+    return logoSet.has(combination.logoId) && typeSet.has(combination.typeIndex);
+  });
+}
+
+/**
+ * Space while expanded preview is open: randomize the shown item (filter-constrained)
+ * and the palette (same as grid Space; skipped in B&W).
+ */
+function randomizeDialogPreview() {
+  if (!dialog.open) return;
+
+  const paletteOk = randomizePaletteFromCombinations();
+  let itemOk = false;
+
+  if (previewMode === "type") {
+    const pool = getTypeGridSourceIndices();
+    const next = pickRandomDifferent(pool, currentTypeIndex);
+    if (next !== undefined) {
+      showTypeByIndex(next);
+      itemOk = true;
+    }
+    if (itemOk && paletteOk) {
+      setStatus("Randomized typeface and palette");
+    } else if (itemOk) {
+      setStatus(emptyColorsFilterStatus("randomized typeface") ?? "Randomized typeface");
+    } else {
+      setStatus(paletteOk
+        ? "Randomized palette"
+        : (emptyColorsFilterStatus() ?? "Nothing to randomize"));
+    }
+    return;
+  }
+
+  if (previewMode === "lockup") {
+    const pool = getDialogLockupPool();
+    const next = pickRandomDifferent(pool, currentLockupIndex);
+    if (next !== undefined) {
+      showLockupByIndex(next);
+      itemOk = true;
+    }
+    if (itemOk && paletteOk) {
+      setStatus("Randomized lockup and palette");
+    } else if (itemOk) {
+      setStatus(emptyColorsFilterStatus("randomized lockup") ?? "Randomized lockup");
+    } else {
+      setStatus(paletteOk
+        ? "Randomized palette"
+        : (emptyColorsFilterStatus() ?? "Nothing to randomize"));
+    }
+    return;
+  }
+
+  // Logo preview (including lockup-mode logo presentation)
+  const pool = getVisibleLogoTiles().map((tile) => tile.dataset.logoId);
+  const next = pickRandomDifferent(pool, currentLogoId);
+  if (next !== undefined) {
+    showLogoById(next);
+    itemOk = true;
+  }
+  if (itemOk && paletteOk) {
+    setStatus("Randomized logo and palette");
+  } else if (itemOk) {
+    setStatus(emptyColorsFilterStatus("randomized logo") ?? "Randomized logo");
+  } else {
+    setStatus(paletteOk
+      ? "Randomized palette"
+      : (emptyColorsFilterStatus() ?? "Nothing to randomize"));
+  }
+}
+
 function randomizeActiveTab() {
   if (activeBrandTab === "Colors") {
     renderColorGrid();
-    setStatus("Randomized color combinations");
+    const paletteOk = randomizePaletteFromCombinations();
+    if (paletteOk) {
+      setStatus("Randomized color combinations and palette");
+    } else {
+      setStatus(emptyColorsFilterStatus("randomized color combinations")
+        ?? "Randomized color combinations");
+    }
     return;
   }
 
   if (activeBrandTab === "Lockups") {
+    if (!lockupsReady()) return;
+    const paletteOk = randomizePaletteFromCombinations();
     renderLockupGrid();
-    setStatus("Randomized lockup combinations");
+    if (paletteOk) {
+      setStatus("Randomized lockup combinations and palette");
+    } else {
+      setStatus(emptyColorsFilterStatus("randomized lockups")
+        ?? "Randomized lockup combinations");
+    }
     return;
   }
 
   if (activeBrandTab === "Type") {
     if (!typeCatalogRevealed) revealTypeCatalog();
+    const paletteOk = randomizePaletteFromCombinations();
     shuffleTypeDisplayOrder();
     refreshTypeGrid();
-    setStatus("Randomized typefaces");
+    if (paletteOk) {
+      setStatus("Randomized typefaces and palette");
+    } else {
+      setStatus(emptyColorsFilterStatus("randomized typefaces")
+        ?? "Randomized typefaces");
+    }
     return;
   }
 
   if (activeBrandTab !== "Logos") return;
 
   const tiles = [...grid.querySelectorAll(".logo-tile")];
-  if (tiles.length < 2) return;
+  if (tiles.length < 2) {
+    const paletteOk = randomizePaletteFromCombinations();
+    updateFaviconForTopLogo();
+    syncLogoGridPresentation();
+    setStatus(paletteOk
+      ? "Randomized palette"
+      : (emptyColorsFilterStatus() ?? "Nothing to randomize"));
+    return;
+  }
 
+  const paletteOk = randomizePaletteFromCombinations();
   const nextIds = permuteIdsWithPinnedSlots(tiles.length, pinnedGridSlots.Logos, getLogoIds());
   const tileById = new Map(tiles.map((tile) => [tile.dataset.logoId, tile]));
   nextIds.forEach((id) => {
