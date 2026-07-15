@@ -22239,6 +22239,302 @@ ${suffix}`;
   // src/typefaces.js
   var typefaces = [{ "id": "42dot-sans", "family": "42dot Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "abeezee", "family": "ABeeZee", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "abel", "family": "Abel", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "abhaya-libre", "family": "Abhaya Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aboreto", "family": "Aboreto", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "abril-fatface", "family": "Abril Fatface", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "abyssinica-sil", "family": "Abyssinica SIL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "aclonica", "family": "Aclonica", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "acme", "family": "Acme", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "actor", "family": "Actor", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "adamina", "family": "Adamina", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "adlam-display", "family": "ADLaM Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "advent-pro", "family": "Advent Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "adwaita-mono", "family": "Adwaita Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "adwaita-sans", "family": "Adwaita Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "afacad", "family": "Afacad", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "afacad-flux", "family": "Afacad Flux", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "agbalumo", "family": "Agbalumo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "agdasima", "family": "Agdasima", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aguafina-script", "family": "Aguafina Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "aileron", "family": "Aileron", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "akatab", "family": "Akatab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "akaya-kanadaka", "family": "Akaya Kanadaka", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "akaya-telivigala", "family": "Akaya Telivigala", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "akronim", "family": "Akronim", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "akshar", "family": "Akshar", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "akt", "family": "Akt", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aktura", "family": "Aktura", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "aladin", "family": "Aladin", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alan-sans", "family": "Alan Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alata", "family": "Alata", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alatsi", "family": "Alatsi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "albert-sans", "family": "Albert Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aldrich", "family": "Aldrich", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alef", "family": "Alef", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alegreya", "family": "Alegreya", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alegreya-sans", "family": "Alegreya Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alegreya-sans-sc", "family": "Alegreya Sans SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alegreya-sc", "family": "Alegreya SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aleo", "family": "Aleo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alex-brush", "family": "Alex Brush", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alexandria", "family": "Alexandria", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alfa-slab-one", "family": "Alfa Slab One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alice", "family": "Alice", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alike", "family": "Alike", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alike-angular", "family": "Alike Angular", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alkalami", "family": "Alkalami", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alkatra", "family": "Alkatra", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "allan", "family": "Allan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "allerta", "family": "Allerta", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "allerta-stencil", "family": "Allerta Stencil", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "allison", "family": "Allison", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "allkin", "family": "Allkin", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "allura", "family": "Allura", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "almarai", "family": "Almarai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "almendra", "family": "Almendra", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "almendra-display", "family": "Almendra Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "almendra-sc", "family": "Almendra SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alpino", "family": "Alpino", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "alumni-sans", "family": "Alumni Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alumni-sans-collegiate-one", "family": "Alumni Sans Collegiate One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "alumni-sans-sc", "family": "Alumni Sans SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "alyamama", "family": "Alyamama", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amarante", "family": "Amarante", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "amaranth", "family": "Amaranth", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amarna", "family": "Amarna", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amatic-sc", "family": "Amatic SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amethysta", "family": "Amethysta", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "amiko", "family": "Amiko", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amiri", "family": "Amiri", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amiri-quran", "family": "Amiri Quran", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "amita", "family": "Amita", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "amulya", "family": "Amulya", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "anaheim", "family": "Anaheim", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ancizar-sans", "family": "Ancizar Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ancizar-serif", "family": "Ancizar Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "andada-pro", "family": "Andada Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "andika", "family": "Andika", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-bangla", "family": "Anek Bangla", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-devanagari", "family": "Anek Devanagari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-gujarati", "family": "Anek Gujarati", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-gurmukhi", "family": "Anek Gurmukhi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-kannada", "family": "Anek Kannada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-latin", "family": "Anek Latin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-malayalam", "family": "Anek Malayalam", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-odia", "family": "Anek Odia", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-tamil", "family": "Anek Tamil", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anek-telugu", "family": "Anek Telugu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "angkor", "family": "Angkor", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "annapurna-sil", "family": "Annapurna SIL", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "annie-use-your-telescope", "family": "Annie Use Your Telescope", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "anonymous-pro", "family": "Anonymous Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anta", "family": "Anta", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "antic", "family": "Antic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "antic-didone", "family": "Antic Didone", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "antic-slab", "family": "Antic Slab", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "anton", "family": "Anton", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "anton-sc", "family": "Anton SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "antonio", "family": "Antonio", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anuphan", "family": "Anuphan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "anybody", "family": "Anybody", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aoboshi-one", "family": "Aoboshi One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "apfel-grotezk", "family": "Apfel Grotezk", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "ar-one-sans", "family": "AR One Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "arapey", "family": "Arapey", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "arbutus", "family": "Arbutus", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "arbutus-slab", "family": "Arbutus Slab", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "architects-daughter", "family": "Architects Daughter", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "archivo", "family": "Archivo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "archivo-black", "family": "Archivo Black", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "archivo-narrow", "family": "Archivo Narrow", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "are-you-serious", "family": "Are You Serious", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "aref-ruqaa", "family": "Aref Ruqaa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "aref-ruqaa-ink", "family": "Aref Ruqaa Ink", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "argentum-sans", "family": "Argentum Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "arima", "family": "Arima", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "arima-madurai", "family": "Arima Madurai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "arimo", "family": "Arimo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "arizonia", "family": "Arizonia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "armata", "family": "Armata", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "array", "family": "Array", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "arsenal", "family": "Arsenal", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "arsenal-sc", "family": "Arsenal SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "artifika", "family": "Artifika", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "arvo", "family": "Arvo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "arya", "family": "Arya", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "asap", "family": "Asap", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "asap-condensed", "family": "Asap Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "asar", "family": "Asar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "asimovian", "family": "Asimovian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "asset", "family": "Asset", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "assistant", "family": "Assistant", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "asta-sans", "family": "Asta Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "astloch", "family": "Astloch", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "asul", "family": "Asul", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "athiti", "family": "Athiti", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "atkinson-hyperlegible", "family": "Atkinson Hyperlegible", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "atkinson-hyperlegible-mono", "family": "Atkinson Hyperlegible Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "atkinson-hyperlegible-next", "family": "Atkinson Hyperlegible Next", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "atma", "family": "Atma", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "atomic-age", "family": "Atomic Age", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "aubrey", "family": "Aubrey", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "audiowide", "family": "Audiowide", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "author", "family": "Author", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "autour-one", "family": "Autour One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "average", "family": "Average", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "average-sans", "family": "Average Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "averia-gruesa-libre", "family": "Averia Gruesa Libre", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "averia-libre", "family": "Averia Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "averia-sans-libre", "family": "Averia Sans Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "averia-serif-libre", "family": "Averia Serif Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "azeret-mono", "family": "Azeret Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "b612", "family": "B612", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "b612-mono", "family": "B612 Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "babylonica", "family": "Babylonica", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bacasime-antique", "family": "Bacasime Antique", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bad-script", "family": "Bad Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "badeen-display", "family": "Badeen Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bagel-fat-one", "family": "Bagel Fat One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bagnard", "family": "Bagnard", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "bagnard-sans", "family": "Bagnard Sans", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "bahiana", "family": "Bahiana", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bahianita", "family": "Bahianita", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bai-jamjuree", "family": "Bai Jamjuree", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bakbak-one", "family": "Bakbak One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ballet", "family": "Ballet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "baloo-2", "family": "Baloo 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-bhai-2", "family": "Baloo Bhai 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-bhaijaan-2", "family": "Baloo Bhaijaan 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-bhaina-2", "family": "Baloo Bhaina 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-chettan-2", "family": "Baloo Chettan 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-da-2", "family": "Baloo Da 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-paaji-2", "family": "Baloo Paaji 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-tamma-2", "family": "Baloo Tamma 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-tammudu-2", "family": "Baloo Tammudu 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baloo-thambi-2", "family": "Baloo Thambi 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "balsamiq-sans", "family": "Balsamiq Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "balthazar", "family": "Balthazar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bangers", "family": "Bangers", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "barlow", "family": "Barlow", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "barlow-condensed", "family": "Barlow Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "barlow-semi-condensed", "family": "Barlow Semi Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "barriecito", "family": "Barriecito", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "barrio", "family": "Barrio", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "basic", "family": "Basic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "baskervville", "family": "Baskervville", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baskervville-sc", "family": "Baskervville SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "battambang", "family": "Battambang", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "baumans", "family": "Baumans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bayon", "family": "Bayon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bbh-bartle", "family": "BBH Bartle", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bbh-bogle", "family": "BBH Bogle", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bbh-hegarty", "family": "BBH Hegarty", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bbh-sans-bartle", "family": "BBH Sans Bartle", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bbh-sans-bogle", "family": "BBH Sans Bogle", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bbh-sans-hegarty", "family": "BBH Sans Hegarty", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "be-vietnam-pro", "family": "Be Vietnam Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "beau-rivage", "family": "Beau Rivage", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bebas-neue", "family": "Bebas Neue", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "beiruti", "family": "Beiruti", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "belanosima", "family": "Belanosima", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "belgrano", "family": "Belgrano", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bellefair", "family": "Bellefair", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "belleza", "family": "Belleza", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bellota", "family": "Bellota", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bellota-text", "family": "Bellota Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "benchnine", "family": "BenchNine", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "benne", "family": "Benne", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bentham", "family": "Bentham", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "berkshire-swash", "family": "Berkshire Swash", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "besley", "family": "Besley", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bespoke-sans", "family": "Bespoke Sans", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bespoke-serif", "family": "Bespoke Serif", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bespoke-slab", "family": "Bespoke Slab", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bespoke-stencil", "family": "Bespoke Stencil", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "betania-patmos", "family": "Betania Patmos", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "betania-patmos-gdl", "family": "Betania Patmos GDL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "betania-patmos-in", "family": "Betania Patmos In", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "betania-patmos-in-gdl", "family": "Betania Patmos In GDL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "beth-ellen", "family": "Beth Ellen", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bevan", "family": "Bevan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bevellier", "family": "Bevellier", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bhutuka-expanded-one", "family": "BhuTuka Expanded One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "big-shoulders", "family": "Big Shoulders", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "big-shoulders-display", "family": "Big Shoulders Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "big-shoulders-stencil", "family": "Big Shoulders Stencil", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "big-shoulders-stencil-display", "family": "Big Shoulders Stencil Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "big-shoulders-stencil-text", "family": "Big Shoulders Stencil Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "big-shoulders-text", "family": "Big Shoulders Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bigshot-one", "family": "Bigshot One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bilbo", "family": "Bilbo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bilbo-swash-caps", "family": "Bilbo Swash Caps", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "biorhyme", "family": "BioRhyme", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "biorhyme-expanded", "family": "BioRhyme Expanded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "birthstone", "family": "Birthstone", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "birthstone-bounce", "family": "Birthstone Bounce", "weight": 500, "loader": "google", "subset": "latin" }, { "id": "biryani", "family": "Biryani", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bitter", "family": "Bitter", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "biz-udgothic", "family": "BIZ UDGothic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "biz-udmincho", "family": "BIZ UDMincho", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "biz-udpgothic", "family": "BIZ UDPGothic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "biz-udpmincho", "family": "BIZ UDPMincho", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bj-cree", "family": "BJ Cree", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "black-and-white-picture", "family": "Black And White Picture", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "black-han-sans", "family": "Black Han Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "black-ops-one", "family": "Black Ops One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "blackout-midnight", "family": "Blackout Midnight", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "blackout-sunrise", "family": "Blackout Sunrise", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "blackout-two-am", "family": "Blackout Two AM", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "blaka", "family": "Blaka", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "blaka-hollow", "family": "Blaka Hollow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "blaka-ink", "family": "Blaka Ink", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "blinker", "family": "Blinker", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bluu-next", "family": "Bluu Next", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "bodoni-moda", "family": "Bodoni Moda", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bodoni-moda-sc", "family": "Bodoni Moda SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bokor", "family": "Bokor", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "boldonse", "family": "Boldonse", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bona-nova", "family": "Bona Nova", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bona-nova-sc", "family": "Bona Nova SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bonbon", "family": "Bonbon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bonheur-royale", "family": "Bonheur Royale", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bonny", "family": "Bonny", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "boogaloo", "family": "Boogaloo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "borel", "family": "Borel", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "boska", "family": "Boska", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bowlby-one", "family": "Bowlby One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bowlby-one-sc", "family": "Bowlby One SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "boxing", "family": "Boxing", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bpmf-huninn", "family": "Bpmf Huninn", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bpmf-iansui", "family": "Bpmf Iansui", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bpmf-zihi-kai-std", "family": "Bpmf Zihi Kai Std", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "braah-one", "family": "Braah One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bravura", "family": "Bravura", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "bravura-text", "family": "Bravura Text", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "brawler", "family": "Brawler", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bree-serif", "family": "Bree Serif", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bricolage-grotesque", "family": "Bricolage Grotesque", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "briem-hand", "family": "Briem Hand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "britney", "family": "Britney", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "bruno-ace", "family": "Bruno Ace", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bruno-ace-sc", "family": "Bruno Ace SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "brygada-1918", "family": "Brygada 1918", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bubblegum-sans", "family": "Bubblegum Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bubbler-one", "family": "Bubbler One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "buda", "family": "Buda", "weight": 300, "loader": "google", "subset": "latin" }, { "id": "buenard", "family": "Buenard", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "bungee", "family": "Bungee", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bungee-shade", "family": "Bungee Shade", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "butcherman", "family": "Butcherman", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "butterfly-kids", "family": "Butterfly Kids", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "bytesized", "family": "Bytesized", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cabin", "family": "Cabin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cabin-condensed", "family": "Cabin Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cabin-sketch", "family": "Cabin Sketch", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cabinet-grotesk", "family": "Cabinet Grotesk", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "cactus-classical-serif", "family": "Cactus Classical Serif", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "caesar-dressing", "family": "Caesar Dressing", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cagliostro", "family": "Cagliostro", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cairo", "family": "Cairo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cairo-play", "family": "Cairo Play", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cal-sans", "family": "Cal Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "caladea", "family": "Caladea", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "calistoga", "family": "Calistoga", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "calligraffitti", "family": "Calligraffitti", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cambay", "family": "Cambay", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cambo", "family": "Cambo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "candal", "family": "Candal", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cantarell", "family": "Cantarell", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cantata-one", "family": "Cantata One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cantora-one", "family": "Cantora One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "caprasimo", "family": "Caprasimo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "capriola", "family": "Capriola", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "caramel", "family": "Caramel", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "carattere", "family": "Carattere", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cardo", "family": "Cardo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "carlito", "family": "Carlito", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "carme", "family": "Carme", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "carrois-gothic", "family": "Carrois Gothic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "carrois-gothic-sc", "family": "Carrois Gothic SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "carter-one", "family": "Carter One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cascadia-code", "family": "Cascadia Code", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cascadia-mono", "family": "Cascadia Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "castoro", "family": "Castoro", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "castoro-titling", "family": "Castoro Titling", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "catamaran", "family": "Catamaran", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "caudex", "family": "Caudex", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cause", "family": "Cause", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "caveat", "family": "Caveat", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "caveat-brush", "family": "Caveat Brush", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cedarville-cursive", "family": "Cedarville Cursive", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ceviche-one", "family": "Ceviche One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chakra-petch", "family": "Chakra Petch", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "changa", "family": "Changa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "changa-one", "family": "Changa One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chango", "family": "Chango", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "charis-sil", "family": "Charis SIL", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "charm", "family": "Charm", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "charmonman", "family": "Charmonman", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chathura", "family": "Chathura", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chau-philomene-one", "family": "Chau Philomene One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chela-one", "family": "Chela One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chelsea-market", "family": "Chelsea Market", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cherish", "family": "Cherish", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cherry-bomb-one", "family": "Cherry Bomb One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cherry-cream-soda", "family": "Cherry Cream Soda", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cherry-swash", "family": "Cherry Swash", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chewy", "family": "Chewy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chicle", "family": "Chicle", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chilanka", "family": "Chilanka", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chillax", "family": "Chillax", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "chiron-goround-tc", "family": "Chiron GoRound TC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chiron-hei-hk", "family": "Chiron Hei HK", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chiron-sung-hk", "family": "Chiron Sung HK", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chivo", "family": "Chivo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chivo-mono", "family": "Chivo Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "chocolate-classical-sans", "family": "Chocolate Classical Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chokokutai", "family": "Chokokutai", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chonburi", "family": "Chonburi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "chubbo", "family": "Chubbo", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "chunk-five", "family": "Chunk Five", "weight": 800, "loader": "fontsource", "subset": "latin" }, { "id": "cinzel", "family": "Cinzel", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cinzel-decorative", "family": "Cinzel Decorative", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "clash-display", "family": "Clash Display", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "clash-grotesk", "family": "Clash Grotesk", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "clear-sans", "family": "Clear Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "clicker-script", "family": "Clicker Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "climate-crisis", "family": "Climate Crisis", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "coda", "family": "Coda", "weight": 800, "loader": "google", "subset": "latin" }, { "id": "coda-caption", "family": "Coda Caption", "weight": 800, "loader": "google", "subset": "latin" }, { "id": "coiny", "family": "Coiny", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "combo", "family": "Combo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "comfortaa", "family": "Comfortaa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "comforter", "family": "Comforter", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "comforter-brush", "family": "Comforter Brush", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "comic-mono", "family": "Comic Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "comic-neue", "family": "Comic Neue", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "comic-relief", "family": "Comic Relief", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "comico", "family": "Comico", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "coming-soon", "family": "Coming Soon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "comme", "family": "Comme", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "commissioner", "family": "Commissioner", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "commit-mono", "family": "Commit Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "concert-one", "family": "Concert One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "condiment", "family": "Condiment", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "contrail-one", "family": "Contrail One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "convergence", "family": "Convergence", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cookie", "family": "Cookie", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cooper-hewitt", "family": "Cooper Hewitt", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "copse", "family": "Copse", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "corben", "family": "Corben", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "corinthia", "family": "Corinthia", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cormorant", "family": "Cormorant", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cormorant-garamond", "family": "Cormorant Garamond", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cormorant-infant", "family": "Cormorant Infant", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cormorant-sc", "family": "Cormorant SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cormorant-unicase", "family": "Cormorant Unicase", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cormorant-upright", "family": "Cormorant Upright", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cossette-texte", "family": "Cossette Texte", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cossette-titre", "family": "Cossette Titre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "courgette", "family": "Courgette", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "courier-prime", "family": "Courier Prime", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cousine", "family": "Cousine", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "coustard", "family": "Coustard", "weight": 900, "loader": "google", "subset": "latin" }, { "id": "covered-by-your-grace", "family": "Covered By Your Grace", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "crafty-girls", "family": "Crafty Girls", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "creepster", "family": "Creepster", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "crete-round", "family": "Crete Round", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "crimson-pro", "family": "Crimson Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "crimson-text", "family": "Crimson Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "croissant-one", "family": "Croissant One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "crushed", "family": "Crushed", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cuprum", "family": "Cuprum", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "cute-font", "family": "Cute Font", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cutive", "family": "Cutive", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "cutive-mono", "family": "Cutive Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dai-banna-sil", "family": "Dai Banna SIL", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "damion", "family": "Damion", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dancing-script", "family": "Dancing Script", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "danfo", "family": "Danfo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dangrek", "family": "Dangrek", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "darker-grotesque", "family": "Darker Grotesque", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "darumadrop-one", "family": "Darumadrop One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "datatype", "family": "Datatype", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "david-libre", "family": "David Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "dawning-of-a-new-day", "family": "Dawning of a New Day", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "days-one", "family": "Days One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dejavu-math", "family": "DejaVu Math", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "dejavu-mono", "family": "DejaVu Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dejavu-sans", "family": "DejaVu Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dejavu-serif", "family": "DejaVu Serif", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dekko", "family": "Dekko", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dela-gothic-one", "family": "Dela Gothic One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "delicious-handrawn", "family": "Delicious Handrawn", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "delius", "family": "Delius", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "delius-swash-caps", "family": "Delius Swash Caps", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "delius-unicase", "family": "Delius Unicase", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "della-respira", "family": "Della Respira", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "denk-one", "family": "Denk One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "devonshire", "family": "Devonshire", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dhurjati", "family": "Dhurjati", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "didact-gothic", "family": "Didact Gothic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "diphylleia", "family": "Diphylleia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "diplomata", "family": "Diplomata", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "diplomata-sc", "family": "Diplomata SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dm-mono", "family": "DM Mono", "weight": 500, "loader": "google", "subset": "latin" }, { "id": "dm-sans", "family": "DM Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "dm-serif-display", "family": "DM Serif Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dm-serif-text", "family": "DM Serif Text", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "do-hyeon", "family": "Do Hyeon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dokdo", "family": "Dokdo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "domine", "family": "Domine", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "donegal-one", "family": "Donegal One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dongle", "family": "Dongle", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "doppio-one", "family": "Doppio One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dorsa", "family": "Dorsa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dosis", "family": "Dosis", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "dr-sugiyama", "family": "Dr Sugiyama", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dseg-weather", "family": "DSEG Weather", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "dseg14-classic", "family": "DSEG14 Classic", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg14-classic-mini", "family": "DSEG14 Classic Mini", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg14-modern", "family": "DSEG14 Modern", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg14-modern-mini", "family": "DSEG14 Modern Mini", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg7-classic", "family": "DSEG7 Classic", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg7-classic-mini", "family": "DSEG7 Classic Mini", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg7-modern", "family": "DSEG7 Modern", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg7-modern-mini", "family": "DSEG7 Modern Mini", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "dseg7-segg-chan", "family": "DSEG7 SEGG CHAN", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "dseg7-segg-chan-mini", "family": "DSEG7 SEGG CHAN Mini", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "duru-sans", "family": "Duru Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dynalight", "family": "Dynalight", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "dynapuff", "family": "DynaPuff", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "eagle-lake", "family": "Eagle Lake", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "east-sea-dokdo", "family": "East Sea Dokdo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "eater", "family": "Eater", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "eb-garamond", "family": "EB Garamond", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "economica", "family": "Economica", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "eczar", "family": "Eczar", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-au-vic-wa-nt-arrows", "family": "Edu AU VIC WA NT Arrows", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-au-vic-wa-nt-dots", "family": "Edu AU VIC WA NT Dots", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-au-vic-wa-nt-hand", "family": "Edu AU VIC WA NT Hand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-au-vic-wa-nt-pre", "family": "Edu AU VIC WA NT Pre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-nsw-act-cursive", "family": "Edu NSW ACT Cursive", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-nsw-act-foundation", "family": "Edu NSW ACT Foundation", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-nsw-act-hand-pre", "family": "Edu NSW ACT Hand Pre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-qld-beginner", "family": "Edu QLD Beginner", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-qld-hand", "family": "Edu QLD Hand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-sa-beginner", "family": "Edu SA Beginner", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-sa-hand", "family": "Edu SA Hand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-tas-beginner", "family": "Edu TAS Beginner", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-vic-wa-nt-beginner", "family": "Edu VIC WA NT Beginner", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-vic-wa-nt-hand", "family": "Edu VIC WA NT Hand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "edu-vic-wa-nt-hand-pre", "family": "Edu VIC WA NT Hand Pre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "el-messiri", "family": "El Messiri", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "electrolize", "family": "Electrolize", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "elms-sans", "family": "Elms Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "elsie", "family": "Elsie", "weight": 900, "loader": "google", "subset": "latin" }, { "id": "elsie-swash-caps", "family": "Elsie Swash Caps", "weight": 900, "loader": "google", "subset": "latin" }, { "id": "emblema-one", "family": "Emblema One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "emilys-candy", "family": "Emilys Candy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "encode-sans", "family": "Encode Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "encode-sans-condensed", "family": "Encode Sans Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "encode-sans-expanded", "family": "Encode Sans Expanded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "encode-sans-sc", "family": "Encode Sans SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "encode-sans-semi-condensed", "family": "Encode Sans Semi Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "encode-sans-semi-expanded", "family": "Encode Sans Semi Expanded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "engagement", "family": "Engagement", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "englebert", "family": "Englebert", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "enriqueta", "family": "Enriqueta", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ephesis", "family": "Ephesis", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "epilogue", "family": "Epilogue", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "epunda-sans", "family": "Epunda Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "epunda-slab", "family": "Epunda Slab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "erica-one", "family": "Erica One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "erode", "family": "Erode", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "esteban", "family": "Esteban", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "estedad", "family": "Estedad", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "estonia", "family": "Estonia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "euphoria-script", "family": "Euphoria Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ewert", "family": "Ewert", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "excon", "family": "Excon", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "exile", "family": "Exile", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "exo", "family": "Exo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "exo-2", "family": "Exo 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "expletus-sans", "family": "Expletus Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "explora", "family": "Explora", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "expose", "family": "Expose", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "faculty-glyphic", "family": "Faculty Glyphic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fahkwang", "family": "Fahkwang", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "familjen-grotesk", "family": "Familjen Grotesk", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fanwood-text", "family": "Fanwood Text", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "farro", "family": "Farro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "farsan", "family": "Farsan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fascinate", "family": "Fascinate", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "faster-one", "family": "Faster One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fasthand", "family": "Fasthand", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fauna-one", "family": "Fauna One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "faustina", "family": "Faustina", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "federant", "family": "Federant", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "federo", "family": "Federo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "felipa", "family": "Felipa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fenix", "family": "Fenix", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "festive", "family": "Festive", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "figtree", "family": "Figtree", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "finger-paint", "family": "Finger Paint", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "finlandica", "family": "Finlandica", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "finlandica-headline", "family": "Finlandica Headline", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "finlandica-text", "family": "Finlandica Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fira-code", "family": "Fira Code", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fira-mono", "family": "Fira Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fira-sans", "family": "Fira Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fira-sans-condensed", "family": "Fira Sans Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fira-sans-extra-condensed", "family": "Fira Sans Extra Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "firago", "family": "FiraGO", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "fjalla-one", "family": "Fjalla One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fjord-one", "family": "Fjord One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "flamenco", "family": "Flamenco", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "flavors", "family": "Flavors", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fleur-de-leah", "family": "Fleur De Leah", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "flow-block", "family": "Flow Block", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "flow-circular", "family": "Flow Circular", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "flow-rounded", "family": "Flow Rounded", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "foldit", "family": "Foldit", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fondamento", "family": "Fondamento", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fontdiner-swanky", "family": "Fontdiner Swanky", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "forum", "family": "Forum", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fragment-mono", "family": "Fragment Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "francois-one", "family": "Francois One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "frank-ruhl-libre", "family": "Frank Ruhl Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fraunces", "family": "Fraunces", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "freckle-face", "family": "Freckle Face", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fredericka-the-great", "family": "Fredericka the Great", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fredoka", "family": "Fredoka", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fredoka-one", "family": "Fredoka One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "freehand", "family": "Freehand", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "freeman", "family": "Freeman", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fresca", "family": "Fresca", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "frijole", "family": "Frijole", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fruktur", "family": "Fruktur", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fugaz-one", "family": "Fugaz One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "fuggles", "family": "Fuggles", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "funnel-display", "family": "Funnel Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "funnel-sans", "family": "Funnel Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fusion-kai-g", "family": "Fusion Kai G", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "fusion-kai-j", "family": "Fusion Kai J", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "fusion-kai-t", "family": "Fusion Kai T", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "fustat", "family": "Fustat", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "fuzzy-bubbles", "family": "Fuzzy Bubbles", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ga-maamli", "family": "Ga Maamli", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gabarito", "family": "Gabarito", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gabriela", "family": "Gabriela", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gaegu", "family": "Gaegu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gafata", "family": "Gafata", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gajraj-one", "family": "Gajraj One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "galada", "family": "Galada", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "galdeano", "family": "Galdeano", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "galindo", "family": "Galindo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gambarino", "family": "Gambarino", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "gambetta", "family": "Gambetta", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "gamja-flower", "family": "Gamja Flower", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gantari", "family": "Gantari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gasoek-one", "family": "Gasoek One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gayathri", "family": "Gayathri", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "geist", "family": "Geist", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "geist-mono", "family": "Geist Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "geist-sans", "family": "Geist Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "gelasio", "family": "Gelasio", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gemunu-libre", "family": "Gemunu Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "general-sans", "family": "General Sans", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "genjyuu-gothic", "family": "Genjyuu Gothic", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "genos", "family": "Genos", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gentium-book-basic", "family": "Gentium Book Basic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gentium-book-plus", "family": "Gentium Book Plus", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gentium-plus", "family": "Gentium Plus", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "geo", "family": "Geo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "geologica", "family": "Geologica", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "geom", "family": "Geom", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "georama", "family": "Georama", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "geostar", "family": "Geostar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "geostar-fill", "family": "Geostar Fill", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "germania-one", "family": "Germania One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gfs-didot", "family": "GFS Didot", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gfs-neohellenic", "family": "GFS Neohellenic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gideon-roman", "family": "Gideon Roman", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gidole", "family": "Gidole", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gidugu", "family": "Gidugu", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gilda-display", "family": "Gilda Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "girassol", "family": "Girassol", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "give-you-glory", "family": "Give You Glory", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "glass-antiqua", "family": "Glass Antiqua", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "glegoo", "family": "Glegoo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gloock", "family": "Gloock", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gloria-hallelujah", "family": "Gloria Hallelujah", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "glory", "family": "Glory", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gluten", "family": "Gluten", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "goblin-one", "family": "Goblin One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gochi-hand", "family": "Gochi Hand", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "goldman", "family": "Goldman", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "golos-text", "family": "Golos Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "google-sans", "family": "Google Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "google-sans-code", "family": "Google Sans Code", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "google-sans-flex", "family": "Google Sans Flex", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gorditas", "family": "Gorditas", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gothic-a1", "family": "Gothic A1", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gotu", "family": "Gotu", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "goudy-bookletter-1911", "family": "Goudy Bookletter 1911", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gowun-batang", "family": "Gowun Batang", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gowun-dodum", "family": "Gowun Dodum", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "graduate", "family": "Graduate", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "grand-hotel", "family": "Grand Hotel", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "grandiflora-one", "family": "Grandiflora One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "grandstander", "family": "Grandstander", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "grape-nuts", "family": "Grape Nuts", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gravitas-one", "family": "Gravitas One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "great-vibes", "family": "Great Vibes", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "grechen-fuemen", "family": "Grechen Fuemen", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "grenze", "family": "Grenze", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "grenze-gotisch", "family": "Grenze Gotisch", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "grey-qo", "family": "Grey Qo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "griffy", "family": "Griffy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gruppo", "family": "Gruppo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gudea", "family": "Gudea", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gugi", "family": "Gugi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gulzar", "family": "Gulzar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gupter", "family": "Gupter", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "gurajada", "family": "Gurajada", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gveret-levin", "family": "Gveret Levin", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "gwendolyn", "family": "Gwendolyn", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "habibi", "family": "Habibi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hachi-maru-pop", "family": "Hachi Maru Pop", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hahmlet", "family": "Hahmlet", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "halant", "family": "Halant", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hammersmith-one", "family": "Hammersmith One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hanalei", "family": "Hanalei", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hanalei-fill", "family": "Hanalei Fill", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "handjet", "family": "Handjet", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "handlee", "family": "Handlee", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hanken-grotesk", "family": "Hanken Grotesk", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hanuman", "family": "Hanuman", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "happy-monkey", "family": "Happy Monkey", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "harmattan", "family": "Harmattan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hauora-sans", "family": "Hauora Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "headland-one", "family": "Headland One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hedvig-letters-sans", "family": "Hedvig Letters Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hedvig-letters-serif", "family": "Hedvig Letters Serif", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "heebo", "family": "Heebo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "henny-penny", "family": "Henny Penny", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hepta-slab", "family": "Hepta Slab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "herr-von-muellerhoff", "family": "Herr Von Muellerhoff", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hi-melody", "family": "Hi Melody", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hina-mincho", "family": "Hina Mincho", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hind", "family": "Hind", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hind-guntur", "family": "Hind Guntur", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hind-madurai", "family": "Hind Madurai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hind-mysuru", "family": "Hind Mysuru", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hind-siliguri", "family": "Hind Siliguri", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hind-vadodara", "family": "Hind Vadodara", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "holtwood-one-sc", "family": "Holtwood One SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "homemade-apple", "family": "Homemade Apple", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "homenaje", "family": "Homenaje", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "honk", "family": "Honk", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hoover", "family": "Hoover", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "host-grotesk", "family": "Host Grotesk", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "hubballi", "family": "Hubballi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hubot-sans", "family": "Hubot Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "huninn", "family": "Huninn", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "hurricane", "family": "Hurricane", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ia-writer-duo", "family": "iA Writer Duo", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "ia-writer-mono", "family": "iA Writer Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "ia-writer-quattro", "family": "iA Writer Quattro", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "iansui", "family": "Iansui", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ibarra-real-nova", "family": "Ibarra Real Nova", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-mono", "family": "IBM Plex Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans", "family": "IBM Plex Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-arabic", "family": "IBM Plex Sans Arabic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-condensed", "family": "IBM Plex Sans Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-devanagari", "family": "IBM Plex Sans Devanagari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-hebrew", "family": "IBM Plex Sans Hebrew", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-jp", "family": "IBM Plex Sans JP", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-kr", "family": "IBM Plex Sans KR", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-thai", "family": "IBM Plex Sans Thai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-sans-thai-looped", "family": "IBM Plex Sans Thai Looped", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ibm-plex-serif", "family": "IBM Plex Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "iceberg", "family": "Iceberg", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "iceland", "family": "Iceland", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "idiqlat", "family": "Idiqlat", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-double-pica", "family": "IM Fell Double Pica", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-double-pica-sc", "family": "IM Fell Double Pica SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-dw-pica", "family": "IM Fell DW Pica", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-dw-pica-sc", "family": "IM Fell DW Pica SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-english", "family": "IM Fell English", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-english-sc", "family": "IM Fell English SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-french-canon", "family": "IM Fell French Canon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-french-canon-sc", "family": "IM Fell French Canon SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-great-primer", "family": "IM Fell Great Primer", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "im-fell-great-primer-sc", "family": "IM Fell Great Primer SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "imbue", "family": "Imbue", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "imperial-script", "family": "Imperial Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "imprima", "family": "Imprima", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "inclusive-sans", "family": "Inclusive Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inconsolata", "family": "Inconsolata", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inder", "family": "Inder", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "indie-flower", "family": "Indie Flower", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ingrid-darling", "family": "Ingrid Darling", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "inika", "family": "Inika", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inknut-antiqua", "family": "Inknut Antiqua", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inria-sans", "family": "Inria Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inria-serif", "family": "Inria Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inspiration", "family": "Inspiration", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "instrument-sans", "family": "Instrument Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "instrument-serif", "family": "Instrument Serif", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "intel-one-mono", "family": "Intel One Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inter", "family": "Inter", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "inter-tight", "family": "Inter Tight", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "iosevka", "family": "Iosevka", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "iosevka-aile", "family": "Iosevka Aile", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "iosevka-charon", "family": "Iosevka Charon", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "iosevka-charon-mono", "family": "Iosevka Charon Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "iosevka-curly", "family": "Iosevka Curly", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "iosevka-curly-slab", "family": "Iosevka Curly Slab", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "iosevka-etoile", "family": "Iosevka Etoile", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "irish-grover", "family": "Irish Grover", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "island-moments", "family": "Island Moments", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "istok-web", "family": "Istok Web", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "italiana", "family": "Italiana", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "italianno", "family": "Italianno", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "itim", "family": "Itim", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jacquard-12", "family": "Jacquard 12", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jacquard-24", "family": "Jacquard 24", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jacquarda-bastarda-9", "family": "Jacquarda Bastarda 9", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jacques-francois", "family": "Jacques Francois", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jacques-francois-shadow", "family": "Jacques Francois Shadow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jaini", "family": "Jaini", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jaini-purva", "family": "Jaini Purva", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jaldi", "family": "Jaldi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "jaro", "family": "Jaro", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jersey-10", "family": "Jersey 10", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jersey-15", "family": "Jersey 15", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jersey-20", "family": "Jersey 20", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jersey-25", "family": "Jersey 25", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jetbrains-mono", "family": "JetBrains Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "jim-nightshade", "family": "Jim Nightshade", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "joan", "family": "Joan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jockey-one", "family": "Jockey One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jolly-lodger", "family": "Jolly Lodger", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jomhuria", "family": "Jomhuria", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jomolhari", "family": "Jomolhari", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "josefin-sans", "family": "Josefin Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "josefin-slab", "family": "Josefin Slab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "jost", "family": "Jost", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "joti-one", "family": "Joti One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jua", "family": "Jua", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "judson", "family": "Judson", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "julee", "family": "Julee", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "julius-sans-one", "family": "Julius Sans One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "junction", "family": "Junction", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "junge", "family": "Junge", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "jura", "family": "Jura", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "just-another-hand", "family": "Just Another Hand", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "just-me-again-down-here", "family": "Just Me Again Down Here", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "k2d", "family": "K2D", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kablammo", "family": "Kablammo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kadwa", "family": "Kadwa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kaisei-decol", "family": "Kaisei Decol", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kaisei-harunoumi", "family": "Kaisei HarunoUmi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kaisei-opti", "family": "Kaisei Opti", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kaisei-tokumin", "family": "Kaisei Tokumin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kalam", "family": "Kalam", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kalnia", "family": "Kalnia", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kalnia-glaze", "family": "Kalnia Glaze", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kameron", "family": "Kameron", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kanchenjunga", "family": "Kanchenjunga", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kanit", "family": "Kanit", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kantumruy-pro", "family": "Kantumruy Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kapakana", "family": "Kapakana", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "karantina", "family": "Karantina", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "karla", "family": "Karla", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "karma", "family": "Karma", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "karmilla", "family": "Karmilla", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "katibeh", "family": "Katibeh", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kaushan-script", "family": "Kaushan Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kavivanar", "family": "Kavivanar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kavoon", "family": "Kavoon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kay-pho-du", "family": "Kay Pho Du", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kdam-thmor-pro", "family": "Kdam Thmor Pro", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "keania-one", "family": "Keania One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kedebideri", "family": "Kedebideri", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kelly-slab", "family": "Kelly Slab", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kenia", "family": "Kenia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "khand", "family": "Khand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "khula", "family": "Khula", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kihim", "family": "Kihim", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "kings", "family": "Kings", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kirang-haerang", "family": "Kirang Haerang", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kite-one", "family": "Kite One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kiwi-maru", "family": "Kiwi Maru", "weight": 500, "loader": "google", "subset": "latin" }, { "id": "klee-one", "family": "Klee One", "weight": 600, "loader": "google", "subset": "latin" }, { "id": "knewave", "family": "Knewave", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kodchasan", "family": "Kodchasan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kode-mono", "family": "Kode Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "koh-santepheap", "family": "Koh Santepheap", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kohinoor-zerone", "family": "Kohinoor Zerone", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "koho", "family": "KoHo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kola", "family": "Kola", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "kolker-brush", "family": "Kolker Brush", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "konkhmer-sleokchher", "family": "Konkhmer Sleokchher", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kosugi", "family": "Kosugi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kosugi-maru", "family": "Kosugi Maru", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kotta-one", "family": "Kotta One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "koulen", "family": "Koulen", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kranky", "family": "Kranky", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kreon", "family": "Kreon", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kristi", "family": "Kristi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "krona-one", "family": "Krona One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "krub", "family": "Krub", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kufam", "family": "Kufam", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kulim-park", "family": "Kulim Park", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kumar-one", "family": "Kumar One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kumar-one-outline", "family": "Kumar One Outline", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "kumbh-sans", "family": "Kumbh Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "kurale", "family": "Kurale", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "la-belle-aurore", "family": "La Belle Aurore", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "labrada", "family": "Labrada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lacquer", "family": "Lacquer", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "laila", "family": "Laila", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lakki-reddy", "family": "Lakki Reddy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lalezar", "family": "Lalezar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lancelot", "family": "Lancelot", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "langar", "family": "Langar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lateef", "family": "Lateef", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lato", "family": "Lato", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lavishly-yours", "family": "Lavishly Yours", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "league-gothic", "family": "League Gothic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "league-mono", "family": "League Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "league-script", "family": "League Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "league-spartan", "family": "League Spartan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "leckerli-one", "family": "Leckerli One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ledger", "family": "Ledger", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lekton", "family": "Lekton", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lemon", "family": "Lemon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lemonada", "family": "Lemonada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend", "family": "Lexend", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-deca", "family": "Lexend Deca", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-exa", "family": "Lexend Exa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-giga", "family": "Lexend Giga", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-mega", "family": "Lexend Mega", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-peta", "family": "Lexend Peta", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-tera", "family": "Lexend Tera", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lexend-zetta", "family": "Lexend Zetta", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lextrall", "family": "Lextrall", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "libertinus-keyboard", "family": "Libertinus Keyboard", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "libertinus-math", "family": "Libertinus Math", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "libertinus-mono", "family": "Libertinus Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "libertinus-sans", "family": "Libertinus Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "libertinus-serif", "family": "Libertinus Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "libertinus-serif-display", "family": "Libertinus Serif Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "libre-baskerville", "family": "Libre Baskerville", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "libre-bodoni", "family": "Libre Bodoni", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "libre-caslon-condensed", "family": "Libre Caslon Condensed", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "libre-caslon-display", "family": "Libre Caslon Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "libre-caslon-text", "family": "Libre Caslon Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "libre-franklin", "family": "Libre Franklin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "licorice", "family": "Licorice", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "life-savers", "family": "Life Savers", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lilex", "family": "Lilex", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lilita-one", "family": "Lilita One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lily-script-one", "family": "Lily Script One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "limelight", "family": "Limelight", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "linden-hill", "family": "Linden Hill", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "line-seed-jp", "family": "LINE Seed JP", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lisu-bosa", "family": "Lisu Bosa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "liter", "family": "Liter", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "literata", "family": "Literata", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "liu-jian-mao-cao", "family": "Liu Jian Mao Cao", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "livvic", "family": "Livvic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lobster", "family": "Lobster", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lobster-two", "family": "Lobster Two", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "londrina-outline", "family": "Londrina Outline", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "londrina-shadow", "family": "Londrina Shadow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "londrina-sketch", "family": "Londrina Sketch", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "londrina-solid", "family": "Londrina Solid", "weight": 900, "loader": "google", "subset": "latin" }, { "id": "long-cang", "family": "Long Cang", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lora", "family": "Lora", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "love-light", "family": "Love Light", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "love-ya-like-a-sister", "family": "Love Ya Like A Sister", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "loved-by-the-king", "family": "Loved by the King", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lovers-quarrel", "family": "Lovers Quarrel", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "luckiest-guy", "family": "Luckiest Guy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lugrasimo", "family": "Lugrasimo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lumanosimo", "family": "Lumanosimo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lunasima", "family": "Lunasima", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lusitana", "family": "Lusitana", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lustria", "family": "Lustria", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "luxurious-roman", "family": "Luxurious Roman", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "luxurious-script", "family": "Luxurious Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lxgw-marker-gothic", "family": "LXGW Marker Gothic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "lxgw-wenkai", "family": "LXGW WenKai", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "lxgw-wenkai-mono-tc", "family": "LXGW WenKai Mono TC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "lxgw-wenkai-tc", "family": "LXGW WenKai TC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-1", "family": "M PLUS 1", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-1-code", "family": "M PLUS 1 Code", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-1p", "family": "M PLUS 1p", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-2", "family": "M PLUS 2", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-code-latin", "family": "M PLUS Code Latin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-rounded-1c", "family": "M PLUS Rounded 1c", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "m-plus-u", "family": "M PLUS U", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ma-shan-zheng", "family": "Ma Shan Zheng", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "macondo", "family": "Macondo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "macondo-swash-caps", "family": "Macondo Swash Caps", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mada", "family": "Mada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "madimi-one", "family": "Madimi One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "magra", "family": "Magra", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "maiden-orange", "family": "Maiden Orange", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "maitree", "family": "Maitree", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "major-mono-display", "family": "Major Mono Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mako", "family": "Mako", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mali", "family": "Mali", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mallanna", "family": "Mallanna", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "maname", "family": "Maname", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mandali", "family": "Mandali", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "manjari", "family": "Manjari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "manrope", "family": "Manrope", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mansalva", "family": "Mansalva", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "manuale", "family": "Manuale", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "manufacturing-consent", "family": "Manufacturing Consent", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "maple-mono", "family": "Maple Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "marcellus", "family": "Marcellus", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "marcellus-sc", "family": "Marcellus SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "marck-script", "family": "Marck Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "margarine", "family": "Margarine", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "marhey", "family": "Marhey", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "markazi-text", "family": "Markazi Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "marko-one", "family": "Marko One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "marmelad", "family": "Marmelad", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "martel", "family": "Martel", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "martel-sans", "family": "Martel Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "martian-mono", "family": "Martian Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "marvel", "family": "Marvel", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "matangi", "family": "Matangi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mate", "family": "Mate", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mate-sc", "family": "Mate SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "matemasie", "family": "Matemasie", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "maven-pro", "family": "Maven Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mclaren", "family": "McLaren", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mea-culpa", "family": "Mea Culpa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "meddon", "family": "Meddon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "medievalsharp", "family": "MedievalSharp", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "medula-one", "family": "Medula One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "meera-inimai", "family": "Meera Inimai", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "megrim", "family": "Megrim", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "meie-script", "family": "Meie Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "melodrama", "family": "Melodrama", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "menbere", "family": "Menbere", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "meow-script", "family": "Meow Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "merienda", "family": "Merienda", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "merienda-one", "family": "Merienda One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "merriweather", "family": "Merriweather", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "merriweather-sans", "family": "Merriweather Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "metal", "family": "Metal", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "metal-mania", "family": "Metal Mania", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "metamorphous", "family": "Metamorphous", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "metrophobic", "family": "Metrophobic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "metropolis", "family": "Metropolis", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "michroma", "family": "Michroma", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "micro-5", "family": "Micro 5", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "milonga", "family": "Milonga", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "miltonian", "family": "Miltonian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "miltonian-tattoo", "family": "Miltonian Tattoo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mina", "family": "Mina", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mingzat", "family": "Mingzat", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "miniver", "family": "Miniver", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "miranda-sans", "family": "Miranda Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "miriam-libre", "family": "Miriam Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mirza", "family": "Mirza", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "miss-fajardose", "family": "Miss Fajardose", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mitr", "family": "Mitr", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mochiy-pop-one", "family": "Mochiy Pop One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mochiy-pop-p-one", "family": "Mochiy Pop P One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "modak", "family": "Modak", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "modern-antiqua", "family": "Modern Antiqua", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "moderustic", "family": "Moderustic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mogra", "family": "Mogra", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mohave", "family": "Mohave", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "moirai-one", "family": "Moirai One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "molengo", "family": "Molengo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "molle", "family": "Molle", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "momo-signature", "family": "Momo Signature", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "momo-trust-display", "family": "Momo Trust Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "momo-trust-sans", "family": "Momo Trust Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mona-sans", "family": "Mona Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "monaspace-argon", "family": "Monaspace Argon", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "monaspace-krypton", "family": "Monaspace Krypton", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "monaspace-neon", "family": "Monaspace Neon", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "monaspace-radon", "family": "Monaspace Radon", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "monaspace-xenon", "family": "Monaspace Xenon", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "monda", "family": "Monda", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "monofett", "family": "Monofett", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "monomakh", "family": "Monomakh", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "monomaniac-one", "family": "Monomaniac One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mononoki", "family": "Mononoki", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "monoton", "family": "Monoton", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "monsieur-la-doulaise", "family": "Monsieur La Doulaise", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "montaga", "family": "Montaga", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "montagu-slab", "family": "Montagu Slab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "montecarlo", "family": "MonteCarlo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "montez", "family": "Montez", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "montserrat", "family": "Montserrat", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "montserrat-alternates", "family": "Montserrat Alternates", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "montserrat-subrayada", "family": "Montserrat Subrayada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "moo-lah-lah", "family": "Moo Lah Lah", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mooli", "family": "Mooli", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "moon-dance", "family": "Moon Dance", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "moul", "family": "Moul", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "moulpali", "family": "Moulpali", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mountains-of-christmas", "family": "Mountains of Christmas", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mouse-memoirs", "family": "Mouse Memoirs", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mozilla-headline", "family": "Mozilla Headline", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mozilla-text", "family": "Mozilla Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mr-bedfort", "family": "Mr Bedfort", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mr-dafoe", "family": "Mr Dafoe", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mr-de-haviland", "family": "Mr De Haviland", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mrs-saint-delafield", "family": "Mrs Saint Delafield", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mrs-sheppards", "family": "Mrs Sheppards", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ms-madi", "family": "Ms Madi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mukta", "family": "Mukta", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mukta-mahee", "family": "Mukta Mahee", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mukta-malar", "family": "Mukta Malar", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mukta-vaani", "family": "Mukta Vaani", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "mulish", "family": "Mulish", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "murecho", "family": "Murecho", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "museomoderno", "family": "MuseoModerno", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "my-soul", "family": "My Soul", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mynerve", "family": "Mynerve", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "mystery-quest", "family": "Mystery Quest", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "namdhinggo", "family": "Namdhinggo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nanum-brush-script", "family": "Nanum Brush Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nanum-gothic", "family": "Nanum Gothic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nanum-gothic-coding", "family": "Nanum Gothic Coding", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nanum-myeongjo", "family": "Nanum Myeongjo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nanum-pen-script", "family": "Nanum Pen Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "narnoor", "family": "Narnoor", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nata-sans", "family": "Nata Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "national-park", "family": "National Park", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nebula-sans", "family": "Nebula Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "neco", "family": "Neco", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "neonderthaw", "family": "Neonderthaw", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nerko-one", "family": "Nerko One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "neucha", "family": "Neucha", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "neuton", "family": "Neuton", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "new-amsterdam", "family": "New Amsterdam", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "new-rocker", "family": "New Rocker", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "new-tegomin", "family": "New Tegomin", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "new-title", "family": "New Title", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "news-cycle", "family": "News Cycle", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "newsreader", "family": "Newsreader", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "niconne", "family": "Niconne", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nippo", "family": "Nippo", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "niramit", "family": "Niramit", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nixie-one", "family": "Nixie One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nobile", "family": "Nobile", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nokora", "family": "Nokora", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "norican", "family": "Norican", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "norwester", "family": "Norwester", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "nosifer", "family": "Nosifer", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "notable", "family": "Notable", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nothing-you-could-do", "family": "Nothing You Could Do", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noticia-text", "family": "Noticia Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-kufi-arabic", "family": "Noto Kufi Arabic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-mono", "family": "Noto Mono", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "noto-music", "family": "Noto Music", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-naskh-arabic", "family": "Noto Naskh Arabic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-nastaliq-urdu", "family": "Noto Nastaliq Urdu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-rashi-hebrew", "family": "Noto Rashi Hebrew", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans", "family": "Noto Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-adlam", "family": "Noto Sans Adlam", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-adlam-unjoined", "family": "Noto Sans Adlam Unjoined", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-anatolian-hieroglyphs", "family": "Noto Sans Anatolian Hieroglyphs", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-arabic", "family": "Noto Sans Arabic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-armenian", "family": "Noto Sans Armenian", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-avestan", "family": "Noto Sans Avestan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-balinese", "family": "Noto Sans Balinese", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-bamum", "family": "Noto Sans Bamum", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-bassa-vah", "family": "Noto Sans Bassa Vah", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-batak", "family": "Noto Sans Batak", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-bengali", "family": "Noto Sans Bengali", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-bhaiksuki", "family": "Noto Sans Bhaiksuki", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-brahmi", "family": "Noto Sans Brahmi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-buginese", "family": "Noto Sans Buginese", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-buhid", "family": "Noto Sans Buhid", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-canadian-aboriginal", "family": "Noto Sans Canadian Aboriginal", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-carian", "family": "Noto Sans Carian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-caucasian-albanian", "family": "Noto Sans Caucasian Albanian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-chakma", "family": "Noto Sans Chakma", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-cham", "family": "Noto Sans Cham", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-cherokee", "family": "Noto Sans Cherokee", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-chorasmian", "family": "Noto Sans Chorasmian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-coptic", "family": "Noto Sans Coptic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-cuneiform", "family": "Noto Sans Cuneiform", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-cypriot", "family": "Noto Sans Cypriot", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-cypro-minoan", "family": "Noto Sans Cypro Minoan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-deseret", "family": "Noto Sans Deseret", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-devanagari", "family": "Noto Sans Devanagari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-display", "family": "Noto Sans Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-duployan", "family": "Noto Sans Duployan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-egyptian-hieroglyphs", "family": "Noto Sans Egyptian Hieroglyphs", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-elbasan", "family": "Noto Sans Elbasan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-elymaic", "family": "Noto Sans Elymaic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-ethiopic", "family": "Noto Sans Ethiopic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-georgian", "family": "Noto Sans Georgian", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-glagolitic", "family": "Noto Sans Glagolitic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-gothic", "family": "Noto Sans Gothic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-grantha", "family": "Noto Sans Grantha", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-gujarati", "family": "Noto Sans Gujarati", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-gunjala-gondi", "family": "Noto Sans Gunjala Gondi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-gurmukhi", "family": "Noto Sans Gurmukhi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-hanifi-rohingya", "family": "Noto Sans Hanifi Rohingya", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-hanunoo", "family": "Noto Sans Hanunoo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-hatran", "family": "Noto Sans Hatran", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-hebrew", "family": "Noto Sans Hebrew", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-hk", "family": "Noto Sans HK", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-imperial-aramaic", "family": "Noto Sans Imperial Aramaic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-indic-siyaq-numbers", "family": "Noto Sans Indic Siyaq Numbers", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-inscriptional-pahlavi", "family": "Noto Sans Inscriptional Pahlavi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-inscriptional-parthian", "family": "Noto Sans Inscriptional Parthian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-javanese", "family": "Noto Sans Javanese", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-jp", "family": "Noto Sans JP", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-kaithi", "family": "Noto Sans Kaithi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-kannada", "family": "Noto Sans Kannada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-kawi", "family": "Noto Sans Kawi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-kayah-li", "family": "Noto Sans Kayah Li", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-kharoshthi", "family": "Noto Sans Kharoshthi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-khmer", "family": "Noto Sans Khmer", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-khojki", "family": "Noto Sans Khojki", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-khudawadi", "family": "Noto Sans Khudawadi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-kr", "family": "Noto Sans KR", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-lao", "family": "Noto Sans Lao", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-lao-looped", "family": "Noto Sans Lao Looped", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-lepcha", "family": "Noto Sans Lepcha", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-limbu", "family": "Noto Sans Limbu", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-linear-a", "family": "Noto Sans Linear A", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-linear-b", "family": "Noto Sans Linear B", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-lisu", "family": "Noto Sans Lisu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-lydian", "family": "Noto Sans Lydian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mahajani", "family": "Noto Sans Mahajani", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-malayalam", "family": "Noto Sans Malayalam", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mandaic", "family": "Noto Sans Mandaic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-manichaean", "family": "Noto Sans Manichaean", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-marchen", "family": "Noto Sans Marchen", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-masaram-gondi", "family": "Noto Sans Masaram Gondi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-math", "family": "Noto Sans Math", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mayan-numerals", "family": "Noto Sans Mayan Numerals", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-medefaidrin", "family": "Noto Sans Medefaidrin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-meetei-mayek", "family": "Noto Sans Meetei Mayek", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mende-kikakui", "family": "Noto Sans Mende Kikakui", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-meroitic", "family": "Noto Sans Meroitic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-miao", "family": "Noto Sans Miao", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-modi", "family": "Noto Sans Modi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mongolian", "family": "Noto Sans Mongolian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mono", "family": "Noto Sans Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-mro", "family": "Noto Sans Mro", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-multani", "family": "Noto Sans Multani", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-myanmar", "family": "Noto Sans Myanmar", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-nabataean", "family": "Noto Sans Nabataean", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-nag-mundari", "family": "Noto Sans Nag Mundari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-nandinagari", "family": "Noto Sans Nandinagari", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-new-tai-lue", "family": "Noto Sans New Tai Lue", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-newa", "family": "Noto Sans Newa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-nko", "family": "Noto Sans NKo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-nko-unjoined", "family": "Noto Sans NKo Unjoined", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-nushu", "family": "Noto Sans Nushu", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-ogham", "family": "Noto Sans Ogham", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-ol-chiki", "family": "Noto Sans Ol Chiki", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-hungarian", "family": "Noto Sans Old Hungarian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-italic", "family": "Noto Sans Old Italic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-north-arabian", "family": "Noto Sans Old North Arabian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-permic", "family": "Noto Sans Old Permic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-persian", "family": "Noto Sans Old Persian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-sogdian", "family": "Noto Sans Old Sogdian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-south-arabian", "family": "Noto Sans Old South Arabian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-old-turkic", "family": "Noto Sans Old Turkic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-oriya", "family": "Noto Sans Oriya", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-osage", "family": "Noto Sans Osage", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-osmanya", "family": "Noto Sans Osmanya", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-pahawh-hmong", "family": "Noto Sans Pahawh Hmong", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-palmyrene", "family": "Noto Sans Palmyrene", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-pau-cin-hau", "family": "Noto Sans Pau Cin Hau", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-phagspa", "family": "Noto Sans PhagsPa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-phoenician", "family": "Noto Sans Phoenician", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-psalter-pahlavi", "family": "Noto Sans Psalter Pahlavi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-rejang", "family": "Noto Sans Rejang", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-runic", "family": "Noto Sans Runic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-samaritan", "family": "Noto Sans Samaritan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-saurashtra", "family": "Noto Sans Saurashtra", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sc", "family": "Noto Sans SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sharada", "family": "Noto Sans Sharada", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-shavian", "family": "Noto Sans Shavian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-siddham", "family": "Noto Sans Siddham", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-signwriting", "family": "Noto Sans SignWriting", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sinhala", "family": "Noto Sans Sinhala", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sogdian", "family": "Noto Sans Sogdian", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sora-sompeng", "family": "Noto Sans Sora Sompeng", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-soyombo", "family": "Noto Sans Soyombo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sundanese", "family": "Noto Sans Sundanese", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-sunuwar", "family": "Noto Sans Sunuwar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-syloti-nagri", "family": "Noto Sans Syloti Nagri", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-symbols", "family": "Noto Sans Symbols", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-symbols-2", "family": "Noto Sans Symbols 2", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-syriac", "family": "Noto Sans Syriac", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-syriac-eastern", "family": "Noto Sans Syriac Eastern", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-syriac-western", "family": "Noto Sans Syriac Western", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tagalog", "family": "Noto Sans Tagalog", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tagbanwa", "family": "Noto Sans Tagbanwa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tai-le", "family": "Noto Sans Tai Le", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tai-tham", "family": "Noto Sans Tai Tham", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tai-viet", "family": "Noto Sans Tai Viet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-takri", "family": "Noto Sans Takri", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tamil", "family": "Noto Sans Tamil", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tamil-supplement", "family": "Noto Sans Tamil Supplement", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tangsa", "family": "Noto Sans Tangsa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tc", "family": "Noto Sans TC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-telugu", "family": "Noto Sans Telugu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-thaana", "family": "Noto Sans Thaana", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-thai", "family": "Noto Sans Thai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-thai-looped", "family": "Noto Sans Thai Looped", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tifinagh", "family": "Noto Sans Tifinagh", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-tirhuta", "family": "Noto Sans Tirhuta", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-ugaritic", "family": "Noto Sans Ugaritic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-vai", "family": "Noto Sans Vai", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-vithkuqi", "family": "Noto Sans Vithkuqi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-sans-wancho", "family": "Noto Sans Wancho", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-warang-citi", "family": "Noto Sans Warang Citi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-yi", "family": "Noto Sans Yi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-sans-zanabazar-square", "family": "Noto Sans Zanabazar Square", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif", "family": "Noto Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-ahom", "family": "Noto Serif Ahom", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-armenian", "family": "Noto Serif Armenian", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-balinese", "family": "Noto Serif Balinese", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-bengali", "family": "Noto Serif Bengali", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-devanagari", "family": "Noto Serif Devanagari", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-display", "family": "Noto Serif Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-dives-akuru", "family": "Noto Serif Dives Akuru", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-dogra", "family": "Noto Serif Dogra", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-ethiopic", "family": "Noto Serif Ethiopic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-georgian", "family": "Noto Serif Georgian", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-grantha", "family": "Noto Serif Grantha", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-gujarati", "family": "Noto Serif Gujarati", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-gurmukhi", "family": "Noto Serif Gurmukhi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-hebrew", "family": "Noto Serif Hebrew", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-hentaigana", "family": "Noto Serif Hentaigana", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-hk", "family": "Noto Serif HK", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-jp", "family": "Noto Serif JP", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-kannada", "family": "Noto Serif Kannada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-khitan-small-script", "family": "Noto Serif Khitan Small Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-khmer", "family": "Noto Serif Khmer", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-khojki", "family": "Noto Serif Khojki", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-kr", "family": "Noto Serif KR", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-lao", "family": "Noto Serif Lao", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-makasar", "family": "Noto Serif Makasar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-malayalam", "family": "Noto Serif Malayalam", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-np-hmong", "family": "Noto Serif NP Hmong", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-old-uyghur", "family": "Noto Serif Old Uyghur", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-oriya", "family": "Noto Serif Oriya", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-ottoman-siyaq", "family": "Noto Serif Ottoman Siyaq", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-sc", "family": "Noto Serif SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-sinhala", "family": "Noto Serif Sinhala", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-tamil", "family": "Noto Serif Tamil", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-tangut", "family": "Noto Serif Tangut", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-tc", "family": "Noto Serif TC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-telugu", "family": "Noto Serif Telugu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-thai", "family": "Noto Serif Thai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-tibetan", "family": "Noto Serif Tibetan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-todhri", "family": "Noto Serif Todhri", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "noto-serif-toto", "family": "Noto Serif Toto", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-vithkuqi", "family": "Noto Serif Vithkuqi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-serif-yezidi", "family": "Noto Serif Yezidi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-traditional-nushu", "family": "Noto Traditional Nushu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "noto-znamenny-musical-notation", "family": "Noto Znamenny Musical Notation", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-cut", "family": "Nova Cut", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-flat", "family": "Nova Flat", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-mono", "family": "Nova Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-oval", "family": "Nova Oval", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-round", "family": "Nova Round", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-script", "family": "Nova Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-slim", "family": "Nova Slim", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nova-square", "family": "Nova Square", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ntr", "family": "NTR", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "numans", "family": "Numans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "nunito", "family": "Nunito", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nunito-sans", "family": "Nunito Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "nuosu-sil", "family": "Nuosu SIL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "odibee-sans", "family": "Odibee Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "odor-mean-chey", "family": "Odor Mean Chey", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "offside", "family": "Offside", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "oi", "family": "Oi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ojuju", "family": "Ojuju", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "old-standard-tt", "family": "Old Standard TT", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "oldenburg", "family": "Oldenburg", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ole", "family": "Ole", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "oleo-script", "family": "Oleo Script", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "oleo-script-swash-caps", "family": "Oleo Script Swash Caps", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "onest", "family": "Onest", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "oooh-baby", "family": "Oooh Baby", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "open-runde", "family": "Open Runde", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "open-sans", "family": "Open Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "open-sauce-one", "family": "Open Sauce One", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "open-sauce-sans", "family": "Open Sauce Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "open-sauce-two", "family": "Open Sauce Two", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "opendyslexic", "family": "OpenDyslexic", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "oranienbaum", "family": "Oranienbaum", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "orbit", "family": "Orbit", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "orbitron", "family": "Orbitron", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "oregano", "family": "Oregano", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "orelega-one", "family": "Orelega One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "orienta", "family": "Orienta", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "original-surfer", "family": "Original Surfer", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ostrich-sans", "family": "Ostrich Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "oswald", "family": "Oswald", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "outfit", "family": "Outfit", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "over-the-rainbow", "family": "Over the Rainbow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "overlock", "family": "Overlock", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "overlock-sc", "family": "Overlock SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "overpass", "family": "Overpass", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "overpass-mono", "family": "Overpass Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ovo", "family": "Ovo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "oxanium", "family": "Oxanium", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "oxygen", "family": "Oxygen", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "oxygen-mono", "family": "Oxygen Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pacifico", "family": "Pacifico", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "padauk", "family": "Padauk", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "padyakke-expanded-one", "family": "Padyakke Expanded One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "palanquin", "family": "Palanquin", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "palanquin-dark", "family": "Palanquin Dark", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "palette-mosaic", "family": "Palette Mosaic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pally", "family": "Pally", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "panchang", "family": "Panchang", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "pangolin", "family": "Pangolin", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "paprika", "family": "Paprika", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "paquito", "family": "Paquito", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "parastoo", "family": "Parastoo", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "parisienne", "family": "Parisienne", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "parkinsans", "family": "Parkinsans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "passero-one", "family": "Passero One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "passion-one", "family": "Passion One", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "passions-conflict", "family": "Passions Conflict", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pathway-extreme", "family": "Pathway Extreme", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pathway-gothic-one", "family": "Pathway Gothic One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "patrick-hand", "family": "Patrick Hand", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "patrick-hand-sc", "family": "Patrick Hand SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pattaya", "family": "Pattaya", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "patua-one", "family": "Patua One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pavanam", "family": "Pavanam", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "paytone-one", "family": "Paytone One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "peace-sans", "family": "Peace Sans", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "peddana", "family": "Peddana", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pencerio", "family": "Pencerio", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "peralta", "family": "Peralta", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "permanent-marker", "family": "Permanent Marker", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "petemoss", "family": "Petemoss", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "petit-formal-script", "family": "Petit Formal Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "petrona", "family": "Petrona", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "philosopher", "family": "Philosopher", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "phudu", "family": "Phudu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "piazzolla", "family": "Piazzolla", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "piedra", "family": "Piedra", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pilcrow-rounded", "family": "Pilcrow Rounded", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "pinyon-script", "family": "Pinyon Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pirata-one", "family": "Pirata One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pitagon-sans", "family": "Pitagon Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "pitagon-sans-mono", "family": "Pitagon Sans Mono", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "pitagon-sans-text", "family": "Pitagon Sans Text", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "pitagon-serif", "family": "Pitagon Serif", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "plaster", "family": "Plaster", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "platypi", "family": "Platypi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "play", "family": "Play", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playball", "family": "Playball", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playfair", "family": "Playfair", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playfair-display", "family": "Playfair Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playfair-display-sc", "family": "Playfair Display SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playpen-sans", "family": "Playpen Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playpen-sans-arabic", "family": "Playpen Sans Arabic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playpen-sans-deva", "family": "Playpen Sans Deva", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playpen-sans-hebrew", "family": "Playpen Sans Hebrew", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playpen-sans-thai", "family": "Playpen Sans Thai", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "playwrite-ar", "family": "Playwrite AR", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-at", "family": "Playwrite AT", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-au-nsw", "family": "Playwrite AU NSW", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-au-qld", "family": "Playwrite AU QLD", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-au-sa", "family": "Playwrite AU SA", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-au-tas", "family": "Playwrite AU TAS", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-au-vic", "family": "Playwrite AU VIC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-be-vlg", "family": "Playwrite BE VLG", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-be-wal", "family": "Playwrite BE WAL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-br", "family": "Playwrite BR", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-ca", "family": "Playwrite CA", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-cl", "family": "Playwrite CL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-co", "family": "Playwrite CO", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-cu", "family": "Playwrite CU", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-cz", "family": "Playwrite CZ", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-de-grund", "family": "Playwrite DE Grund", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-de-la", "family": "Playwrite DE LA", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-de-sas", "family": "Playwrite DE SAS", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-de-va", "family": "Playwrite DE VA", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-dk-loopet", "family": "Playwrite DK Loopet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-dk-uloopet", "family": "Playwrite DK Uloopet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-es", "family": "Playwrite ES", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-es-deco", "family": "Playwrite ES Deco", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-fr-moderne", "family": "Playwrite FR Moderne", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-fr-trad", "family": "Playwrite FR Trad", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-gb-j", "family": "Playwrite GB J", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-gb-s", "family": "Playwrite GB S", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-hr", "family": "Playwrite HR", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-hr-lijeva", "family": "Playwrite HR Lijeva", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-hu", "family": "Playwrite HU", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-id", "family": "Playwrite ID", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-ie", "family": "Playwrite IE", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-in", "family": "Playwrite IN", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-is", "family": "Playwrite IS", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-it-moderna", "family": "Playwrite IT Moderna", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-it-trad", "family": "Playwrite IT Trad", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-mx", "family": "Playwrite MX", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-ng-modern", "family": "Playwrite NG Modern", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-nl", "family": "Playwrite NL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-no", "family": "Playwrite NO", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-nz", "family": "Playwrite NZ", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-nz-basic", "family": "Playwrite NZ Basic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-pe", "family": "Playwrite PE", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-pl", "family": "Playwrite PL", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-pt", "family": "Playwrite PT", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-ro", "family": "Playwrite RO", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-sk", "family": "Playwrite SK", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-tz", "family": "Playwrite TZ", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-us-modern", "family": "Playwrite US Modern", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-us-trad", "family": "Playwrite US Trad", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-vn", "family": "Playwrite VN", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "playwrite-za", "family": "Playwrite ZA", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "plein", "family": "Plein", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "plus-jakarta-sans", "family": "Plus Jakarta Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pochaevsk", "family": "Pochaevsk", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "podkova", "family": "Podkova", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "poetsen-one", "family": "Poetsen One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "poiret-one", "family": "Poiret One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "poller-one", "family": "Poller One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "poltawski-nowy", "family": "Poltawski Nowy", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "poly", "family": "Poly", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pompiere", "family": "Pompiere", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ponnala", "family": "Ponnala", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ponomar", "family": "Ponomar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pontano-sans", "family": "Pontano Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "poor-story", "family": "Poor Story", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "poppins", "family": "Poppins", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "port-lligat-sans", "family": "Port Lligat Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "port-lligat-slab", "family": "Port Lligat Slab", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "potta-one", "family": "Potta One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pragati-narrow", "family": "Pragati Narrow", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "praise", "family": "Praise", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pramukh-rounded", "family": "Pramukh Rounded", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "prata", "family": "Prata", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "preahvihear", "family": "Preahvihear", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "press-start-2p", "family": "Press Start 2P", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pretendard", "family": "Pretendard", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "pridi", "family": "Pridi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "princess-sofia", "family": "Princess Sofia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "prociono", "family": "Prociono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "prompt", "family": "Prompt", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "prosto-one", "family": "Prosto One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "protest-guerrilla", "family": "Protest Guerrilla", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "protest-revolution", "family": "Protest Revolution", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "protest-riot", "family": "Protest Riot", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "protest-strike", "family": "Protest Strike", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "proza-libre", "family": "Proza Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pt-mono", "family": "PT Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pt-sans", "family": "PT Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pt-sans-caption", "family": "PT Sans Caption", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pt-sans-narrow", "family": "PT Sans Narrow", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pt-serif", "family": "PT Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "pt-serif-caption", "family": "PT Serif Caption", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "public-sans", "family": "Public Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "puppies-play", "family": "Puppies Play", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "puritan", "family": "Puritan", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "purple-purse", "family": "Purple Purse", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "pushster", "family": "Pushster", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "qahiri", "family": "Qahiri", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "quando", "family": "Quando", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "quantico", "family": "Quantico", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "quattrocento", "family": "Quattrocento", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "quattrocento-sans", "family": "Quattrocento Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "questrial", "family": "Questrial", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "quicksand", "family": "Quicksand", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "quilon", "family": "Quilon", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "quintessential", "family": "Quintessential", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "qwigley", "family": "Qwigley", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "qwitcher-grypen", "family": "Qwitcher Grypen", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "racing-sans-one", "family": "Racing Sans One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "radio-canada", "family": "Radio Canada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "radio-canada-big", "family": "Radio Canada Big", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "radley", "family": "Radley", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rajdhani", "family": "Rajdhani", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rakkas", "family": "Rakkas", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "raleway", "family": "Raleway", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ramabhadra", "family": "Ramabhadra", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ramaraja", "family": "Ramaraja", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rambla", "family": "Rambla", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rammetto-one", "family": "Rammetto One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rampart-one", "family": "Rampart One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ramsina", "family": "Ramsina", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ranade", "family": "Ranade", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "ranchers", "family": "Ranchers", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rancho", "family": "Rancho", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ranga", "family": "Ranga", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rasa", "family": "Rasa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rationale", "family": "Rationale", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ravi-prakash", "family": "Ravi Prakash", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "readex-pro", "family": "Readex Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "recia", "family": "Recia", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "recursive", "family": "Recursive", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "red-hat-display", "family": "Red Hat Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "red-hat-mono", "family": "Red Hat Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "red-hat-text", "family": "Red Hat Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "red-rose", "family": "Red Rose", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "redacted", "family": "Redacted", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "redacted-script", "family": "Redacted Script", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "redaction", "family": "Redaction", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "redaction-10", "family": "Redaction 10", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "redaction-100", "family": "Redaction 100", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "redaction-20", "family": "Redaction 20", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "redaction-35", "family": "Redaction 35", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "redaction-50", "family": "Redaction 50", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "redaction-70", "family": "Redaction 70", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "reddit-mono", "family": "Reddit Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "reddit-sans", "family": "Reddit Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "reddit-sans-condensed", "family": "Reddit Sans Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "redressed", "family": "Redressed", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "reem-kufi", "family": "Reem Kufi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "reem-kufi-fun", "family": "Reem Kufi Fun", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "reem-kufi-ink", "family": "Reem Kufi Ink", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "reenie-beanie", "family": "Reenie Beanie", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "reggae-one", "family": "Reggae One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rem", "family": "REM", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rethink-sans", "family": "Rethink Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "revalia", "family": "Revalia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rhodium-libre", "family": "Rhodium Libre", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ribeye", "family": "Ribeye", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ribeye-marrow", "family": "Ribeye Marrow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "righteous", "family": "Righteous", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "risque", "family": "Risque", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "road-rage", "family": "Road Rage", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "roboto", "family": "Roboto", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "roboto-condensed", "family": "Roboto Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "roboto-flex", "family": "Roboto Flex", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "roboto-mono", "family": "Roboto Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "roboto-serif", "family": "Roboto Serif", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "roboto-slab", "family": "Roboto Slab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rochester", "family": "Rochester", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rock-3d", "family": "Rock 3D", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rock-salt", "family": "Rock Salt", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rocknroll-one", "family": "RocknRoll One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rokkitt", "family": "Rokkitt", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "romanesco", "family": "Romanesco", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ropa-sans", "family": "Ropa Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rosaline", "family": "Rosaline", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "rosario", "family": "Rosario", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rosarivo", "family": "Rosarivo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rouge-script", "family": "Rouge Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "roundo", "family": "Roundo", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "rowan", "family": "Rowan", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "rowdies", "family": "Rowdies", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rozha-one", "family": "Rozha One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik", "family": "Rubik", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rubik-80s-fade", "family": "Rubik 80s Fade", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-beastly", "family": "Rubik Beastly", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-broken-fax", "family": "Rubik Broken Fax", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-bubbles", "family": "Rubik Bubbles", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-burned", "family": "Rubik Burned", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-dirt", "family": "Rubik Dirt", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-distressed", "family": "Rubik Distressed", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-doodle-shadow", "family": "Rubik Doodle Shadow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-doodle-triangles", "family": "Rubik Doodle Triangles", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-gemstones", "family": "Rubik Gemstones", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-glitch", "family": "Rubik Glitch", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-glitch-pop", "family": "Rubik Glitch Pop", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-iso", "family": "Rubik Iso", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-maps", "family": "Rubik Maps", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-mono-one", "family": "Rubik Mono One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-moonrocks", "family": "Rubik Moonrocks", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-one", "family": "Rubik One", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "rubik-scribble", "family": "Rubik Scribble", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-spray-paint", "family": "Rubik Spray Paint", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-storm", "family": "Rubik Storm", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-vinyl", "family": "Rubik Vinyl", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rubik-wet-paint", "family": "Rubik Wet Paint", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ruda", "family": "Ruda", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rufina", "family": "Rufina", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ruge-boogie", "family": "Ruge Boogie", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ruluko", "family": "Ruluko", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "rum-raisin", "family": "Rum Raisin", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ruslan-display", "family": "Ruslan Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "russo-one", "family": "Russo One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ruthie", "family": "Ruthie", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ruwudu", "family": "Ruwudu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "rx-100", "family": "RX100", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "rye", "family": "Rye", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sacramento", "family": "Sacramento", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sahitya", "family": "Sahitya", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sail", "family": "Sail", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "saira", "family": "Saira", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "saira-condensed", "family": "Saira Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "saira-extra-condensed", "family": "Saira Extra Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "saira-semi-condensed", "family": "Saira Semi Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "saira-stencil", "family": "Saira Stencil", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "saira-stencil-one", "family": "Saira Stencil One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "salsa", "family": "Salsa", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sanchez", "family": "Sanchez", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sancreek", "family": "Sancreek", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sankofa-display", "family": "Sankofa Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sansation", "family": "Sansation", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sansita", "family": "Sansita", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sansita-swashed", "family": "Sansita Swashed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sarabun", "family": "Sarabun", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sarala", "family": "Sarala", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sarina", "family": "Sarina", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sarpanch", "family": "Sarpanch", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sassy-frass", "family": "Sassy Frass", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "satisfy", "family": "Satisfy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "satoshi", "family": "Satoshi", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "savate", "family": "Savate", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sawarabi-gothic", "family": "Sawarabi Gothic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sawarabi-mincho", "family": "Sawarabi Mincho", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "scada", "family": "Scada", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "scheherazade-new", "family": "Scheherazade New", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "schibsted-grotesk", "family": "Schibsted Grotesk", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "schoolbell", "family": "Schoolbell", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "science-gothic", "family": "Science Gothic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "scope-one", "family": "Scope One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "seaweed-script", "family": "Seaweed Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "secular-one", "family": "Secular One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sedan", "family": "Sedan", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sedan-sc", "family": "Sedan SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sedgwick-ave", "family": "Sedgwick Ave", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sedgwick-ave-display", "family": "Sedgwick Ave Display", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "segment", "family": "Segment", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "sekuya", "family": "Sekuya", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sen", "family": "Sen", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "send-flowers", "family": "Send Flowers", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sentient", "family": "Sentient", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "sevillana", "family": "Sevillana", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "seymour-one", "family": "Seymour One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shadows-into-light", "family": "Shadows Into Light", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shadows-into-light-two", "family": "Shadows Into Light Two", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shafarik", "family": "Shafarik", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shalimar", "family": "Shalimar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shantell-sans", "family": "Shantell Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "shanti", "family": "Shanti", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "share", "family": "Share", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "share-tech", "family": "Share Tech", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "share-tech-mono", "family": "Share Tech Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sharpie", "family": "Sharpie", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "shippori-antique", "family": "Shippori Antique", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shippori-antique-b1", "family": "Shippori Antique B1", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shippori-mincho", "family": "Shippori Mincho", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "shippori-mincho-b1", "family": "Shippori Mincho B1", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "shizuru", "family": "Shizuru", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shojumaru", "family": "Shojumaru", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "short-stack", "family": "Short Stack", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "shrikhand", "family": "Shrikhand", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sigmar", "family": "Sigmar", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sigmar-one", "family": "Sigmar One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "signika", "family": "Signika", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "signika-negative", "family": "Signika Negative", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "silkscreen", "family": "Silkscreen", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "simonetta", "family": "Simonetta", "weight": 900, "loader": "google", "subset": "latin" }, { "id": "sintony", "family": "Sintony", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sirin-stencil", "family": "Sirin Stencil", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sirivennela", "family": "Sirivennela", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "six-caps", "family": "Six Caps", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "skranji", "family": "Skranji", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "slabo-13px", "family": "Slabo 13px", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "slabo-27px", "family": "Slabo 27px", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "slackey", "family": "Slackey", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "slackside-one", "family": "Slackside One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "smokum", "family": "Smokum", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "smooch", "family": "Smooch", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "smooch-sans", "family": "Smooch Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "smythe", "family": "Smythe", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sn-pro", "family": "SN Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sniglet", "family": "Sniglet", "weight": 800, "loader": "google", "subset": "latin" }, { "id": "snippet", "family": "Snippet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "snowburst-one", "family": "Snowburst One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sofadi-one", "family": "Sofadi One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sofia", "family": "Sofia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sofia-sans", "family": "Sofia Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sofia-sans-condensed", "family": "Sofia Sans Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sofia-sans-extra-condensed", "family": "Sofia Sans Extra Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sofia-sans-semi-condensed", "family": "Sofia Sans Semi Condensed", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "solitreo", "family": "Solitreo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "solway", "family": "Solway", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sometype-mono", "family": "Sometype Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sono", "family": "Sono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sonsie-one", "family": "Sonsie One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sora", "family": "Sora", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sorts-mill-goudy", "family": "Sorts Mill Goudy", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sour-gummy", "family": "Sour Gummy", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "source-code-pro", "family": "Source Code Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "source-sans-3", "family": "Source Sans 3", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "source-sans-pro", "family": "Source Sans Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "source-serif-4", "family": "Source Serif 4", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "source-serif-pro", "family": "Source Serif Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "space-grotesk", "family": "Space Grotesk", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "space-mono", "family": "Space Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "special-elite", "family": "Special Elite", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "special-gothic", "family": "Special Gothic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "special-gothic-condensed-one", "family": "Special Gothic Condensed One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "special-gothic-expanded-one", "family": "Special Gothic Expanded One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "spectral", "family": "Spectral", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "spectral-sc", "family": "Spectral SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "spicy-rice", "family": "Spicy Rice", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "spinnaker", "family": "Spinnaker", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "spirax", "family": "Spirax", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "splash", "family": "Splash", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "spline-sans", "family": "Spline Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "spline-sans-mono", "family": "Spline Sans Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "squada-one", "family": "Squada One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "square-peg", "family": "Square Peg", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sree-krushnadevaraya", "family": "Sree Krushnadevaraya", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sriracha", "family": "Sriracha", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "srisakdi", "family": "Srisakdi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "staatliches", "family": "Staatliches", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stack-sans-headline", "family": "Stack Sans Headline", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "stack-sans-notch", "family": "Stack Sans Notch", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "stack-sans-text", "family": "Stack Sans Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "stalemate", "family": "Stalemate", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stalinist-one", "family": "Stalinist One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stardom", "family": "Stardom", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "stardos-stencil", "family": "Stardos Stencil", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "stick", "family": "Stick", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stick-no-bills", "family": "Stick No Bills", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "stint-ultra-condensed", "family": "Stint Ultra Condensed", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stint-ultra-expanded", "family": "Stint Ultra Expanded", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stix-two-math", "family": "STIX Two Math", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "stix-two-text", "family": "STIX Two Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "stoke", "family": "Stoke", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "story-script", "family": "Story Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "strait", "family": "Strait", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "strichpunkt-sans", "family": "Strichpunkt Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "style-script", "family": "Style Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "styro", "family": "Styro", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "sue-ellen-francisco", "family": "Sue Ellen Francisco", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "suez-one", "family": "Suez One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "sulphur-point", "family": "Sulphur Point", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sumana", "family": "Sumana", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "sunshiney", "family": "Sunshiney", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "supermercado-one", "family": "Supermercado One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "supreme", "family": "Supreme", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "sura", "family": "Sura", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "suranna", "family": "Suranna", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "suravaram", "family": "Suravaram", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "suse", "family": "SUSE", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "suse-mono", "family": "SUSE Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "suwannaphum", "family": "Suwannaphum", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "swanky-and-moo-moo", "family": "Swanky and Moo Moo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "switzer", "family": "Switzer", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "syncopate", "family": "Syncopate", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "syne", "family": "Syne", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "syne-italic", "family": "Syne Italic", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "syne-mono", "family": "Syne Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "syne-tactile", "family": "Syne Tactile", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "synonym", "family": "Synonym", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "tabular", "family": "Tabular", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "tac-one", "family": "Tac One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tagesschrift", "family": "Tagesschrift", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tai-heritage-pro", "family": "Tai Heritage Pro", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tajawal", "family": "Tajawal", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tangerine", "family": "Tangerine", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tanker", "family": "Tanker", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "tapestry", "family": "Tapestry", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "taprom", "family": "Taprom", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tasa-explorer", "family": "TASA Explorer", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tasa-orbiter", "family": "TASA Orbiter", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tauri", "family": "Tauri", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "taviraj", "family": "Taviraj", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "teachers", "family": "Teachers", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "technor", "family": "Technor", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "teko", "family": "Teko", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tektur", "family": "Tektur", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "telex", "family": "Telex", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "telma", "family": "Telma", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "tenali-ramakrishna", "family": "Tenali Ramakrishna", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tenor-sans", "family": "Tenor Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "text-me-one", "family": "Text Me One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "texturina", "family": "Texturina", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "thasadith", "family": "Thasadith", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "the-girl-next-door", "family": "The Girl Next Door", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "the-nautigal", "family": "The Nautigal", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tienne", "family": "Tienne", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tiktok-sans", "family": "TikTok Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tillana", "family": "Tillana", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tilt-neon", "family": "Tilt Neon", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tilt-prism", "family": "Tilt Prism", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tilt-warp", "family": "Tilt Warp", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "timmana", "family": "Timmana", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tinos", "family": "Tinos", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tiny5", "family": "Tiny5", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-bangla", "family": "Tiro Bangla", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-devanagari-hindi", "family": "Tiro Devanagari Hindi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-devanagari-marathi", "family": "Tiro Devanagari Marathi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-devanagari-sanskrit", "family": "Tiro Devanagari Sanskrit", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-gurmukhi", "family": "Tiro Gurmukhi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-kannada", "family": "Tiro Kannada", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-tamil", "family": "Tiro Tamil", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tiro-telugu", "family": "Tiro Telugu", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tirra", "family": "Tirra", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "titan-one", "family": "Titan One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "titillium-web", "family": "Titillium Web", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tomorrow", "family": "Tomorrow", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tourney", "family": "Tourney", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "trade-winds", "family": "Trade Winds", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "train-one", "family": "Train One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "trench-slab", "family": "Trench Slab", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "triodion", "family": "Triodion", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "trirong", "family": "Trirong", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "trispace", "family": "Trispace", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "trocchi", "family": "Trocchi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "trochut", "family": "Trochut", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "truculenta", "family": "Truculenta", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "trykker", "family": "Trykker", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "tsukimi-rounded", "family": "Tsukimi Rounded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tuffy", "family": "Tuffy", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "tulpen-one", "family": "Tulpen One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "turret-road", "family": "Turret Road", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "twinkle-star", "family": "Twinkle Star", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ubuntu", "family": "Ubuntu", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ubuntu-condensed", "family": "Ubuntu Condensed", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ubuntu-mono", "family": "Ubuntu Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ubuntu-sans", "family": "Ubuntu Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ubuntu-sans-mono", "family": "Ubuntu Sans Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "uchen", "family": "Uchen", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "ultra", "family": "Ultra", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "unbounded", "family": "Unbounded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "uncial-antiqua", "family": "Uncial Antiqua", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "uncut-sans", "family": "Uncut Sans", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "underdog", "family": "Underdog", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "unica-one", "family": "Unica One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "unifont", "family": "Unifont", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "unifontex", "family": "UnifontEX", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "unifrakturcook", "family": "UnifrakturCook", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "unifrakturmaguntia", "family": "UnifrakturMaguntia", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "unkempt", "family": "Unkempt", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "unlock", "family": "Unlock", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "unna", "family": "Unna", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "uoqmunthenkhung", "family": "UoqMunThenKhung", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "updock", "family": "Updock", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "urbanist", "family": "Urbanist", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vampiro-one", "family": "Vampiro One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "varela", "family": "Varela", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "varela-round", "family": "Varela Round", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "varta", "family": "Varta", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vast-shadow", "family": "Vast Shadow", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "vazirmatn", "family": "Vazirmatn", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vend-sans", "family": "Vend Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vesper-libre", "family": "Vesper Libre", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "viaoda-libre", "family": "Viaoda Libre", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "vibes", "family": "Vibes", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "vibur", "family": "Vibur", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "victor-mono", "family": "Victor Mono", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vidaloka", "family": "Vidaloka", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "viga", "family": "Viga", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "vina-sans", "family": "Vina Sans", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "voces", "family": "Voces", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "volkhov", "family": "Volkhov", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vollkorn", "family": "Vollkorn", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "vollkorn-sc", "family": "Vollkorn SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "voltaire", "family": "Voltaire", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "vt323", "family": "VT323", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "vujahday-script", "family": "Vujahday Script", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "waiting-for-the-sunrise", "family": "Waiting for the Sunrise", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "wallpoet", "family": "Wallpoet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "walter-turncoat", "family": "Walter Turncoat", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "warnes", "family": "Warnes", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "water-brush", "family": "Water Brush", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "waterfall", "family": "Waterfall", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "wavefont", "family": "Wavefont", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "wdxl-lubrifont-jp-n", "family": "WDXL Lubrifont JP N", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "wdxl-lubrifont-sc", "family": "WDXL Lubrifont SC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "wdxl-lubrifont-tc", "family": "WDXL Lubrifont TC", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "wellfleet", "family": "Wellfleet", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "wendy-one", "family": "Wendy One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "whisper", "family": "Whisper", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "win95fa", "family": "WIN95FA", "weight": 400, "loader": "fontsource", "subset": "latin" }, { "id": "windsong", "family": "WindSong", "weight": 500, "loader": "google", "subset": "latin" }, { "id": "winky-rough", "family": "Winky Rough", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "winky-sans", "family": "Winky Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "wittgenstein", "family": "Wittgenstein", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "wix-madefor-display", "family": "Wix Madefor Display", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "wix-madefor-text", "family": "Wix Madefor Text", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "work-sans", "family": "Work Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "xanh-mono", "family": "Xanh Mono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yakuhanjp", "family": "YakuHanJP", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "yakuhanjps", "family": "YakuHanJPs", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "yakuhanmp", "family": "YakuHanMP", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "yakuhanmps", "family": "YakuHanMPs", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "yakuhanrp", "family": "YakuHanRP", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "yakuhanrps", "family": "YakuHanRPs", "weight": 700, "loader": "fontsource", "subset": "latin" }, { "id": "yaldevi", "family": "Yaldevi", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "yanone-kaffeesatz", "family": "Yanone Kaffeesatz", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "yantramanav", "family": "Yantramanav", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "yarndings-12", "family": "Yarndings 12", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yarndings-20", "family": "Yarndings 20", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yatra-one", "family": "Yatra One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yellowtail", "family": "Yellowtail", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yeon-sung", "family": "Yeon Sung", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yeseva-one", "family": "Yeseva One", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yesteryear", "family": "Yesteryear", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yomogi", "family": "Yomogi", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "young-serif", "family": "Young Serif", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yrsa", "family": "Yrsa", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ysabeau", "family": "Ysabeau", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ysabeau-infant", "family": "Ysabeau Infant", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ysabeau-office", "family": "Ysabeau Office", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "ysabeau-sc", "family": "Ysabeau SC", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "yuji-boku", "family": "Yuji Boku", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yuji-hentaigana-akari", "family": "Yuji Hentaigana Akari", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yuji-hentaigana-akebono", "family": "Yuji Hentaigana Akebono", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yuji-mai", "family": "Yuji Mai", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yuji-syuku", "family": "Yuji Syuku", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "yusei-magic", "family": "Yusei Magic", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zain", "family": "Zain", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zalando-sans", "family": "Zalando Sans", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zalando-sans-expanded", "family": "Zalando Sans Expanded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zalando-sans-semiexpanded", "family": "Zalando Sans SemiExpanded", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zcool-kuaile", "family": "ZCOOL KuaiLe", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zcool-qingke-huangyou", "family": "ZCOOL QingKe HuangYou", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zcool-xiaowei", "family": "ZCOOL XiaoWei", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zen-antique", "family": "Zen Antique", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zen-antique-soft", "family": "Zen Antique Soft", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zen-dots", "family": "Zen Dots", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zen-kaku-gothic-antique", "family": "Zen Kaku Gothic Antique", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zen-kaku-gothic-new", "family": "Zen Kaku Gothic New", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zen-kurenaido", "family": "Zen Kurenaido", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zen-loop", "family": "Zen Loop", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zen-maru-gothic", "family": "Zen Maru Gothic", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zen-old-mincho", "family": "Zen Old Mincho", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zen-tokyo-zoo", "family": "Zen Tokyo Zoo", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zeyada", "family": "Zeyada", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zhi-mang-xing", "family": "Zhi Mang Xing", "weight": 400, "loader": "google", "subset": "latin" }, { "id": "zilla-slab", "family": "Zilla Slab", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zilla-slab-highlight", "family": "Zilla Slab Highlight", "weight": 700, "loader": "google", "subset": "latin" }, { "id": "zina", "family": "Zina", "weight": 700, "loader": "fontshare", "subset": "latin" }, { "id": "zodiak", "family": "Zodiak", "weight": 700, "loader": "fontshare", "subset": "latin" }];
 
+  // src/design-md.js
+  var SEMANTIC_COLOR_ROLES = ["primary", "secondary", "tertiary", "neutral"];
+  var TYPE_ROLES = [
+    { key: "headline-lg", fontSize: "32px", lineHeight: 1.15, letterSpacing: "-0.02em" },
+    { key: "body-md", fontSize: "16px", lineHeight: 1.6 },
+    { key: "label-md", fontSize: "14px", lineHeight: 1.3, letterSpacing: "0.02em" },
+    { key: "headline-md", fontSize: "24px", lineHeight: 1.2, letterSpacing: "-0.01em" },
+    { key: "body-sm", fontSize: "14px", lineHeight: 1.5 },
+    { key: "label-sm", fontSize: "12px", lineHeight: 1.2, letterSpacing: "0.04em" }
+  ];
+  function yamlScalar(value) {
+    if (value == null) return '""';
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+    if (typeof value === "boolean") return value ? "true" : "false";
+    const text = String(value);
+    if (text === "") return '""';
+    const needsQuotes = text.startsWith("#") || text.includes(":") || text.includes("#") || text.includes("{") || text.includes("}") || text.includes("[") || text.includes("]") || text.includes(",") || text.includes("&") || text.includes("*") || text.includes("!") || text.includes("|") || text.includes(">") || text.includes("'") || text.includes('"') || text.includes("\n") || text.includes("\r") || /^\s|\s$/.test(text) || /^(true|false|null|yes|no|on|off)$/i.test(text) || /^[-+]?(\d+(\.\d+)?|\.\d+)$/.test(text);
+    if (!needsQuotes) return text;
+    return `"${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+  }
+  function yamlBlock(obj, indent = 0) {
+    const pad = "  ".repeat(indent);
+    const lines = [];
+    for (const [key, value] of Object.entries(obj)) {
+      if (value == null) continue;
+      if (typeof value === "object" && !Array.isArray(value)) {
+        lines.push(`${pad}${key}:`);
+        lines.push(yamlBlock(value, indent + 1));
+        continue;
+      }
+      lines.push(`${pad}${key}: ${yamlScalar(value)}`);
+    }
+    return lines.join("\n");
+  }
+  function normalizeHex(color) {
+    if (color == null) return null;
+    const text = String(color).trim();
+    if (!text) return null;
+    return text.startsWith("#") ? text.toUpperCase() : `#${text}`.toUpperCase();
+  }
+  function colorLabel(hex, colorNames = {}) {
+    const key = normalizeHex(hex)?.toLowerCase();
+    const name = key ? colorNames[key] : null;
+    const display = normalizeHex(hex) ?? String(hex);
+    return name ? `${name} (${display})` : display;
+  }
+  function slugToken(value, fallback = "token") {
+    const slug = String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return slug || fallback;
+  }
+  function collectPaletteColors(lockedColors = []) {
+    const tokens = {};
+    const proseRows = [];
+    lockedColors.forEach((row, rowIndex) => {
+      const colors = Array.isArray(row.colors) ? row.colors.map(normalizeHex).filter(Boolean) : [];
+      if (!colors.length && row.swatches && typeof row.swatches === "object") {
+        for (const index of [0, 1, 2, 3]) {
+          const hex = normalizeHex(row.swatches[String(index)]);
+          if (hex) colors[index] = hex;
+        }
+      }
+      const usable = colors.filter(Boolean);
+      if (!usable.length) return;
+      proseRows.push({
+        source: row.source ?? "Locked",
+        colors: usable
+      });
+      usable.forEach((hex, swatchIndex) => {
+        if (rowIndex === 0 && swatchIndex < SEMANTIC_COLOR_ROLES.length) {
+          const role = SEMANTIC_COLOR_ROLES[swatchIndex];
+          if (!tokens[role]) tokens[role] = hex;
+          return;
+        }
+        const key = `palette-${rowIndex + 1}-${swatchIndex + 1}`;
+        tokens[key] = hex;
+      });
+    });
+    return { tokens, proseRows };
+  }
+  function collectTypography(lockedTypefaces = []) {
+    const tokens = {};
+    const proseFaces = [];
+    lockedTypefaces.forEach((face, index) => {
+      if (!face?.family) return;
+      const role = TYPE_ROLES[index] ?? {
+        key: `type-${index + 1}`,
+        fontSize: "16px",
+        lineHeight: 1.4
+      };
+      const weight = Number(face.weight);
+      tokens[role.key] = {
+        fontFamily: face.family,
+        fontSize: role.fontSize,
+        fontWeight: Number.isFinite(weight) ? weight : 400,
+        lineHeight: role.lineHeight,
+        ...role.letterSpacing ? { letterSpacing: role.letterSpacing } : {}
+      };
+      proseFaces.push({
+        role: role.key,
+        family: face.family,
+        weight: Number.isFinite(weight) ? weight : 400,
+        loader: face.loader
+      });
+    });
+    if (proseFaces.length === 1 && !tokens["body-md"]) {
+      const face = proseFaces[0];
+      tokens["body-md"] = {
+        fontFamily: face.family,
+        fontSize: "16px",
+        fontWeight: Math.min(face.weight, 500),
+        lineHeight: 1.6
+      };
+    }
+    return { tokens, proseFaces };
+  }
+  function buildOverview({ logos, typefaces: typefaces2, lockups, proseRows, palette }) {
+    const parts = [
+      "Visual identity selections exported from Brandy (locked palette, type, marks, and lockups)."
+    ];
+    if (palette?.ink || palette?.paper) {
+      parts.push(
+        `Current UI ink/paper context: ink ${normalizeHex(palette.ink) ?? palette.ink}, paper ${normalizeHex(palette.paper) ?? palette.paper}` + (palette.source ? ` (${palette.source})` : "") + "."
+      );
+    }
+    if (proseRows.length) {
+      parts.push(
+        `Locked color ${proseRows.length === 1 ? "row" : "rows"}: ${proseRows.length}.`
+      );
+    }
+    if (typefaces2.length) {
+      const names = typefaces2.map((face) => face.family).filter(Boolean);
+      parts.push(`Locked typefaces: ${names.join(", ")}.`);
+    }
+    if (logos.length) {
+      const names = logos.map((logo) => logo.name || logo.id).filter(Boolean);
+      parts.push(
+        `Locked logos/marks: ${names.join(", ")}. Full SVG markup ships in the companion Brandy JSON export.`
+      );
+    }
+    if (lockups.length) {
+      const summaries = lockups.map((entry) => {
+        const mark = entry.logo?.name || entry.logoId || "mark";
+        const face = entry.typeface?.family || "typeface";
+        return `${mark} + ${face}`;
+      });
+      parts.push(`Locked lockups: ${summaries.join("; ")}.`);
+    }
+    return parts.join("\n\n");
+  }
+  function buildColorsSection({ tokens, proseRows, palette, colorNames }) {
+    const lines = [
+      "Palette values come from Brandy locked swatches, plus the active ink/paper UI context."
+    ];
+    if (palette?.ink) {
+      lines.push(
+        `- **Ink (${normalizeHex(palette.ink)}):** Primary drawing/text color for marks and UI chrome.`
+      );
+    }
+    if (palette?.paper) {
+      lines.push(
+        `- **Paper (${normalizeHex(palette.paper)}):** Page/background surface behind marks and type.`
+      );
+    }
+    proseRows.forEach((row, index) => {
+      const swatches = row.colors.map((hex, swatchIndex) => {
+        const role = index === 0 && swatchIndex < SEMANTIC_COLOR_ROLES.length ? SEMANTIC_COLOR_ROLES[swatchIndex] : `palette-${index + 1}-${swatchIndex + 1}`;
+        return `**${role}** ${colorLabel(hex, colorNames)}`;
+      }).join(", ");
+      lines.push(`- **Row ${index + 1}** (${row.source}): ${swatches}.`);
+    });
+    const extras = Object.entries(tokens).filter(([key]) => !SEMANTIC_COLOR_ROLES.includes(key) && key !== "ink" && key !== "paper" && key !== "surface" && key !== "on-surface" && key !== "background" && key !== "on-background");
+    if (extras.length && !proseRows.length) {
+      for (const [key, hex] of extras) {
+        lines.push(`- **${key}:** ${colorLabel(hex, colorNames)}.`);
+      }
+    }
+    return lines.join("\n");
+  }
+  function buildTypographySection(proseFaces) {
+    if (!proseFaces.length) return "";
+    const lines = [
+      "Type roles are mapped from Brandy locked typefaces. Sizes are suggested defaults for agent use; family and weight are authoritative."
+    ];
+    for (const face of proseFaces) {
+      const source = face.loader ? ` via ${face.loader}` : "";
+      lines.push(
+        `- **${face.role}:** ${face.family} (${face.weight})${source}.`
+      );
+    }
+    return lines.join("\n");
+  }
+  function buildComponentsSection({ logos, lockups }) {
+    const lines = [];
+    if (logos.length) {
+      lines.push("### Logos");
+      lines.push(
+        "Locked marks selected in Brandy. Prefer these assets for brand presence; SVG source lives in the companion JSON export."
+      );
+      for (const logo of logos) {
+        const label = logo.name || logo.id || "Logo";
+        lines.push(`- **${label}**${logo.id ? ` (\`${logo.id}\`)` : ""}`);
+      }
+    }
+    if (lockups.length) {
+      if (lines.length) lines.push("");
+      lines.push("### Lockups");
+      lines.push(
+        "Approved logo + typeface pairings. Keep mark and wordmark relationships consistent with these combinations."
+      );
+      lockups.forEach((entry, index) => {
+        const mark = entry.logo?.name || entry.logoId || "mark";
+        const face = entry.typeface?.family ? `${entry.typeface.family}${entry.typeface.weight != null ? ` ${entry.typeface.weight}` : ""}` : "typeface";
+        lines.push(`- **Lockup ${index + 1}:** ${mark} with ${face}.`);
+      });
+    }
+    return lines.join("\n");
+  }
+  function buildDesignMd(context = {}) {
+    const palette = context.palette ?? {};
+    const logos = Array.isArray(context.logos) ? context.logos : [];
+    const typefaces2 = Array.isArray(context.typefaces) ? context.typefaces : [];
+    const lockups = Array.isArray(context.lockups) ? context.lockups : [];
+    const colorNames = context.colorNames ?? {};
+    const { tokens: colorTokensFromLocks, proseRows } = collectPaletteColors(context.colors);
+    const { tokens: typographyTokens, proseFaces } = collectTypography(typefaces2);
+    const colors = { ...colorTokensFromLocks };
+    const ink = normalizeHex(palette.ink);
+    const paper = normalizeHex(palette.paper);
+    if (ink) {
+      colors.ink = ink;
+      if (!colors["on-surface"]) colors["on-surface"] = ink;
+      if (!colors["on-background"]) colors["on-background"] = ink;
+    }
+    if (paper) {
+      colors.paper = paper;
+      if (!colors.surface) colors.surface = paper;
+      if (!colors.background) colors.background = paper;
+      if (!colors.neutral) colors.neutral = paper;
+    }
+    if (!colors.primary && ink) colors.primary = ink;
+    const frontMatter = {
+      version: "alpha",
+      name: context.name || "Brandy",
+      description: context.description || "Design tokens generated from locked Brandy brand selections."
+    };
+    if (Object.keys(colors).length) frontMatter.colors = colors;
+    if (Object.keys(typographyTokens).length) frontMatter.typography = typographyTokens;
+    if (colors.primary && (colors.paper || colors.surface || ink)) {
+      frontMatter.components = {
+        "button-primary": {
+          backgroundColor: "{colors.primary}",
+          textColor: paper && colors.primary !== paper ? "{colors.paper}" : ink ? "{colors.ink}" : "{colors.on-surface}"
+        }
+      };
+    }
+    const sections = [];
+    sections.push("## Overview");
+    sections.push(buildOverview({
+      logos,
+      typefaces: proseFaces,
+      lockups,
+      proseRows,
+      palette
+    }));
+    if (Object.keys(colors).length) {
+      sections.push("## Colors");
+      sections.push(buildColorsSection({
+        tokens: colors,
+        proseRows,
+        palette,
+        colorNames
+      }));
+    }
+    if (proseFaces.length) {
+      sections.push("## Typography");
+      sections.push(buildTypographySection(proseFaces));
+    }
+    const componentsBody = buildComponentsSection({ logos, lockups });
+    if (componentsBody || frontMatter.components) {
+      sections.push("## Components");
+      sections.push(
+        componentsBody || "Primary actions use the locked primary color against the paper surface."
+      );
+    }
+    return `---
+${yamlBlock(frontMatter)}
+---
+
+${sections.join("\n\n")}
+`;
+  }
+  function designMdFilename(name = "Brandy") {
+    const slug = slugToken(name, "brandy");
+    return slug === "brandy" ? "DESIGN.md" : `${slug}-DESIGN.md`;
+  }
+
   // node_modules/@paper-design/shaders/dist/vertex-shader.js
   var vertexShaderSource = `#version 300 es
 precision mediump float;
@@ -24459,29 +24755,51 @@ void main() {
   var uploadPanel = document.querySelector("#logo-upload");
   var uploadEmpty = document.querySelector("#logo-upload-empty");
   var typeUploadEmpty = document.querySelector("#type-upload-empty");
+  var lockupUploadEmpty = document.querySelector("#lockup-upload-empty");
   var uploadInput = document.querySelector("#logo-file-input");
   var typeUploadInput = document.querySelector("#type-file-input");
-  var uploadButton = document.querySelector("#logo-file-button");
-  var typeUploadButton = document.querySelector("#type-file-button");
   var placeholderButton = document.querySelector("#placeholder-button");
   var typeExploreButton = document.querySelector("#type-explore-button");
-  var uploadAddButton = document.querySelector("#logo-add-button");
+  var lockupTryButton = document.querySelector("#lockup-try-button");
   var uploadFeedback = document.querySelector("#upload-feedback");
   var typeUploadFeedback = document.querySelector("#type-upload-feedback");
   var dropOverlay = document.querySelector("#drop-overlay");
   var dropOverlayTitle = document.querySelector("#drop-overlay-title");
   var dropOverlayHint = document.querySelector("#drop-overlay-hint");
-  var shuffleButton = document.querySelector("#shuffle-button");
-  var infoButton = document.querySelector("#info-button");
   var brandTabButtons = [...document.querySelectorAll(".brand-tab")];
+  function brandTabName(button) {
+    return button.dataset.brandTab ?? button.textContent.trim();
+  }
+  function isBrandTabDisabled(button) {
+    return button.classList.contains("brand-tab--soon");
+  }
+  function nextEnabledBrandTabIndex(fromIndex, step) {
+    const count = brandTabButtons.length;
+    for (let i2 = 1; i2 <= count; i2 += 1) {
+      const index = (fromIndex + step * i2 + count) % count;
+      if (!isBrandTabDisabled(brandTabButtons[index])) return index;
+    }
+    return fromIndex;
+  }
+  function firstEnabledBrandTabIndex() {
+    return brandTabButtons.findIndex((button) => !isBrandTabDisabled(button));
+  }
+  function lastEnabledBrandTabIndex() {
+    for (let i2 = brandTabButtons.length - 1; i2 >= 0; i2 -= 1) {
+      if (!isBrandTabDisabled(brandTabButtons[i2])) return i2;
+    }
+    return 0;
+  }
   var typeGrid = document.querySelector("#type-grid");
   var colorGrid = document.querySelector("#color-grid");
   var lockupGrid = document.querySelector("#lockup-grid");
+  var gridFilters = document.querySelector("#grid-filters");
+  var gridActions = document.querySelector("#grid-actions");
+  var lockedImportInput = document.querySelector("#locked-import-input");
+  var pendingImportTab = null;
   var dialog = document.querySelector("#logo-dialog");
-  var infoDialog = document.querySelector("#info-dialog");
   var fullscreenLogo = document.querySelector("#fullscreen-logo");
   var closeButton = dialog.querySelector(".close-button");
-  var infoCloseButton = infoDialog.querySelector(".info-close-button");
   var previousButton = dialog.querySelector(".nav-button--previous");
   var nextButton = dialog.querySelector(".nav-button--next");
   var defaultProjectId = "00000000-0000-4000-8000-000000000001";
@@ -24502,8 +24820,6 @@ void main() {
   }) : null;
   var session = null;
   var currentProfile = null;
-  var canVote = false;
-  var clientVotes = /* @__PURE__ */ new Map();
   var adminVoteRows = [];
   var statusElement = null;
   var accessPanel = null;
@@ -24524,15 +24840,102 @@ void main() {
   var defaultPalette = { ink: "#000000", paper: "#ffffff", ratio: 21, source: "Default" };
   var invertedPalette = { ink: "#ffffff", paper: "#000000", ratio: 21, source: "Inverted" };
   var currentPalette = defaultPalette;
-  var paletteBeforeColors = null;
+  var bwModeActive = false;
+  var preBwPalette = null;
   var currentShaderIndex = -1;
   var selectedFont = "Helvetica";
   var activeBrandTab = "Colors";
   var typeCatalogRevealed = false;
+  var lockupCatalogRevealed = false;
+  var logoPlaceholdersChosen = false;
+  var typeCatalogChosen = false;
+  var lockupCatalogChosen = false;
+  var SESSION_PREFIX = "brandy:";
+  var SESSION_KEYS = {
+    activeTab: `${SESSION_PREFIX}active-tab`,
+    typeCatalog: `${SESSION_PREFIX}type-catalog`,
+    lockupCatalog: `${SESSION_PREFIX}lockup-catalog`,
+    logoPlaceholders: `${SESSION_PREFIX}logo-placeholders`,
+    reloadPending: `${SESSION_PREFIX}reload-pending`
+  };
+  var BRAND_TABS = /* @__PURE__ */ new Set(["Colors", "Logos", "Type", "Lockups"]);
+  function saveSessionState() {
+    try {
+      sessionStorage.setItem(SESSION_KEYS.activeTab, activeBrandTab);
+      sessionStorage.setItem(SESSION_KEYS.typeCatalog, String(typeCatalogChosen));
+      sessionStorage.setItem(SESSION_KEYS.lockupCatalog, String(lockupCatalogChosen));
+      sessionStorage.setItem(SESSION_KEYS.logoPlaceholders, String(logoPlaceholdersChosen));
+    } catch {
+    }
+  }
+  function clearSessionState() {
+    try {
+      for (const key of Object.values(SESSION_KEYS)) {
+        sessionStorage.removeItem(key);
+      }
+    } catch {
+    }
+  }
+  function isHardRefresh(nav) {
+    if (!nav || nav.type !== "reload") return false;
+    if (nav.deliveryType === "cache") return false;
+    return nav.transferSize > 0;
+  }
+  function shouldRestoreSessionState() {
+    const [nav] = performance.getEntriesByType("navigation");
+    const reloadPending = sessionStorage.getItem(SESSION_KEYS.reloadPending) === "1";
+    sessionStorage.removeItem(SESSION_KEYS.reloadPending);
+    if (!nav || nav.type !== "reload" || !reloadPending || isHardRefresh(nav)) {
+      return false;
+    }
+    return true;
+  }
+  function readSessionState() {
+    const tab = sessionStorage.getItem(SESSION_KEYS.activeTab);
+    return {
+      activeBrandTab: BRAND_TABS.has(tab) ? tab : "Colors",
+      typeCatalogChosen: sessionStorage.getItem(SESSION_KEYS.typeCatalog) === "true",
+      lockupCatalogChosen: sessionStorage.getItem(SESSION_KEYS.lockupCatalog) === "true",
+      logoPlaceholdersChosen: sessionStorage.getItem(SESSION_KEYS.logoPlaceholders) === "true"
+    };
+  }
+  function applyRestoredBrandTab(tabName) {
+    const button = brandTabButtons.find((entry) => brandTabName(entry) === tabName);
+    if (!button || isBrandTabDisabled(button)) return;
+    brandTabButtons.forEach((btn) => {
+      const isSelected = btn === button;
+      btn.setAttribute("aria-pressed", String(isSelected));
+      if (!isBrandTabDisabled(btn)) btn.tabIndex = isSelected ? 0 : -1;
+    });
+    activeBrandTab = tabName;
+  }
+  function restoreSessionState() {
+    if (!shouldRestoreSessionState()) {
+      clearSessionState();
+      return;
+    }
+    const saved = readSessionState();
+    if (saved.typeCatalogChosen) {
+      typeCatalogChosen = true;
+      typeCatalogRevealed = true;
+    }
+    if (saved.lockupCatalogChosen) {
+      lockupCatalogChosen = true;
+      lockupCatalogRevealed = true;
+    }
+    if (saved.logoPlaceholdersChosen) {
+      logoPlaceholdersChosen = true;
+      populatePlaceholderLogos();
+    }
+    applyRestoredBrandTab(saved.activeBrandTab);
+  }
   var typeDisplayOrder = null;
   var uploadedTypefaces = [];
   var activeFontReads = 0;
   var lockupMode = false;
+  var previewMode = "logo";
+  var currentTypeIndex = -1;
+  var currentLockupIndex = -1;
   var shaderMount = null;
   var fullscreenShaderMount = null;
   var perIconShaderMounts = /* @__PURE__ */ new Map();
@@ -24551,7 +24954,8 @@ void main() {
   var lockupText = "EEG";
   var lockupCanvas = document.createElement("canvas");
   var colorCombinationCount = 720;
-  var colorRowGap = 72;
+  var colorSwatchGap = 24;
+  var gridLockControlSize = 30;
   var colorCombinations = [];
   var colorRowPool = /* @__PURE__ */ new Map();
   var colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
@@ -24573,6 +24977,677 @@ void main() {
     Type: /* @__PURE__ */ new Map(),
     Lockups: /* @__PURE__ */ new Map()
   };
+  var TYPEFACE_REGISTRY_ORDER = ["google", "fontshare", "fontsource", "bunny", "local"];
+  var TYPEFACE_REGISTRY_LABELS = {
+    google: "Google",
+    fontshare: "Fontshare",
+    fontsource: "Fontsource",
+    bunny: "Bunny",
+    local: "Local"
+  };
+  var EDITOR_PICK_TYPEFACE_IDS = /* @__PURE__ */ new Set([
+    // Geometric / modern sans
+    "bricolage-grotesque",
+    "space-grotesk",
+    "syne",
+    // Humanist / editorial sans
+    "instrument-sans",
+    "schibsted-grotesk",
+    // Display / condensed sans
+    "clash-display",
+    "bebas-neue",
+    "oswald",
+    "unbounded",
+    // Editorial & classic serif
+    "fraunces",
+    "newsreader",
+    "libre-baskerville",
+    "instrument-serif",
+    // Display serif
+    "gloock",
+    "playfair-display",
+    // Slab
+    "montagu-slab",
+    "rokkitt",
+    // Mono
+    "jetbrains-mono",
+    "space-mono"
+  ]);
+  var gridFilterState = {
+    Colors: "all",
+    Logos: "all",
+    Type: "all",
+    Lockups: "all"
+  };
+  function gridFilterForTab(tab) {
+    return gridFilterState[tab] ?? "all";
+  }
+  function isEditorPickTypeface(face) {
+    return EDITOR_PICK_TYPEFACE_IDS.has(face.id);
+  }
+  function getTypefaceRegistries() {
+    const loaders = new Set(typefaces.map((face) => face.loader));
+    return TYPEFACE_REGISTRY_ORDER.filter((loader) => loaders.has(loader));
+  }
+  function initTypeRegistryFilters() {
+    const panel = gridFilters?.querySelector('.grid-filter-panel[data-grid-filter-tab="Type"]');
+    if (!panel || panel.dataset.registryFiltersBuilt === "true") return;
+    for (const loader of getTypefaceRegistries()) {
+      const button = document.createElement("button");
+      button.className = "grid-filter grid-filter--registry";
+      button.type = "button";
+      button.dataset.filter = loader;
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = TYPEFACE_REGISTRY_LABELS[loader] ?? loader;
+      panel.appendChild(button);
+    }
+    panel.dataset.registryFiltersBuilt = "true";
+  }
+  function getColorGeneratorTitles() {
+    return ["Standard", ...paletteSources.map(([name]) => name)];
+  }
+  function initColorGeneratorFilters() {
+    const panel = gridFilters?.querySelector('.grid-filter-panel[data-grid-filter-tab="Colors"]');
+    if (!panel || panel.dataset.generatorFiltersBuilt === "true") return;
+    for (const title of getColorGeneratorTitles()) {
+      const button = document.createElement("button");
+      button.className = "grid-filter grid-filter--generator";
+      button.type = "button";
+      button.dataset.filter = title;
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = title;
+      panel.appendChild(button);
+    }
+    panel.dataset.generatorFiltersBuilt = "true";
+  }
+  function pinnedLogoIds() {
+    return new Set(orderedPinnedValues(pinnedGridSlots.Logos));
+  }
+  function isLogoPinned(logoId2) {
+    return pinnedLogoIds().has(logoId2);
+  }
+  function pinnedTypefaceKeys() {
+    return new Set(orderedPinnedValues(pinnedGridSlots.Type).map((key) => JSON.stringify(key)));
+  }
+  function isTypefacePinned(face) {
+    return pinnedTypefaceKeys().has(JSON.stringify(typefaceLoadKey(face)));
+  }
+  function isLockupCombinationPinned(index, combination) {
+    if (pinnedGridSlots.Lockups.has(index)) return true;
+    const combo = { logoId: combination.logoId, typeIndex: combination.typeIndex };
+    return orderedPinnedValues(pinnedGridSlots.Lockups).some((entry) => pinValuesEqual(entry, combo));
+  }
+  function getColorRowSourceIndices() {
+    const all = colorCombinations.map((_2, index) => index);
+    const filter = gridFilterForTab("Colors");
+    if (filter === "locked") {
+      return all.filter((index) => isColorRowPinned(index));
+    }
+    if (filter !== "all") {
+      return all.filter((index) => colorCombinations[index]?.source === filter);
+    }
+    return all;
+  }
+  function getTypeGridSourceIndices() {
+    const faces = getTypefacesForGrid();
+    const all = faces.map((_2, index) => index);
+    const filter = gridFilterForTab("Type");
+    if (filter === "locked") {
+      return all.filter((index) => isTypefacePinned(faces[index]));
+    }
+    if (filter === "editors-picks") {
+      return all.filter((index) => isEditorPickTypeface(faces[index]));
+    }
+    if (filter !== "all") {
+      return all.filter((index) => faces[index].loader === filter);
+    }
+    return all;
+  }
+  function getLockupSourceIndices() {
+    const all = lockupCombinations.map((_2, index) => index);
+    if (gridFilterForTab("Lockups") !== "locked") return all;
+    return all.filter((index) => isLockupCombinationPinned(index, lockupCombinations[index]));
+  }
+  function activeBrandGridElement() {
+    if (activeBrandTab === "Colors") return colorGrid;
+    if (activeBrandTab === "Logos") return grid;
+    if (activeBrandTab === "Type") return typeGrid;
+    if (activeBrandTab === "Lockups") return lockupGrid;
+    return null;
+  }
+  function gridFiltersHaveGutter() {
+    const sheetRect = logoSheet.getBoundingClientRect();
+    return (window.innerWidth - sheetRect.width) / 2 >= 72;
+  }
+  function syncGridFilterUi() {
+    if (!gridFilters) return;
+    const activeGrid = activeBrandGridElement();
+    const show = BRAND_TABS.has(activeBrandTab) && activeGrid && !activeGrid.hidden && gridFiltersHaveGutter();
+    gridFilters.hidden = !show;
+    gridFilters.querySelectorAll(".grid-filter-panel").forEach((panel) => {
+      panel.classList.toggle("is-active", panel.dataset.gridFilterTab === activeBrandTab);
+    });
+    gridFilters.querySelectorAll(".grid-filter").forEach((button) => {
+      const tab = button.closest(".grid-filter-panel")?.dataset.gridFilterTab;
+      if (!tab) return;
+      button.setAttribute("aria-pressed", String(gridFilterForTab(tab) === button.dataset.filter));
+    });
+  }
+  function syncGridFiltersPosition() {
+    if (!gridFilters || gridFilters.hidden) return;
+    const activeGrid = activeBrandGridElement();
+    if (!activeGrid || activeGrid.hidden) return;
+    const sheetRect = logoSheet.getBoundingClientRect();
+    const gridRect = activeGrid.getBoundingClientRect();
+    const gutterCenterX = gridRect.left / 2;
+    const brandTabs = uploadPanel.querySelector(".brand-tabs");
+    const contentTop = (brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom) + brandContentGap;
+    const centerY = contentTop + Math.max(0, window.innerHeight - contentTop) / 2;
+    gridFilters.style.left = `${gutterCenterX - sheetRect.left}px`;
+    gridFilters.style.top = `${centerY - sheetRect.top}px`;
+  }
+  function isBwInverted() {
+    const ink = currentPalette.ink.toLowerCase();
+    const paper = currentPalette.paper.toLowerCase();
+    return ink === invertedPalette.ink.toLowerCase() && paper === invertedPalette.paper.toLowerCase();
+  }
+  function syncBwButtons() {
+    if (!gridActions) return;
+    const inverted = bwModeActive && isBwInverted();
+    gridActions.querySelectorAll('[data-action="toggle-bw"]').forEach((button) => {
+      button.setAttribute("aria-pressed", String(bwModeActive));
+      button.classList.toggle("is-active", bwModeActive);
+      button.classList.toggle("is-inverted", inverted);
+    });
+  }
+  function syncGridActionsUi() {
+    if (!gridActions) return;
+    const activeGrid = activeBrandGridElement();
+    const show = BRAND_TABS.has(activeBrandTab) && activeGrid && !activeGrid.hidden && gridFiltersHaveGutter();
+    gridActions.hidden = !show;
+    gridActions.querySelectorAll(".grid-action-panel").forEach((panel) => {
+      panel.classList.toggle("is-active", panel.dataset.tab === activeBrandTab);
+    });
+    syncBwButtons();
+  }
+  function syncGridActionsPosition() {
+    if (!gridActions || gridActions.hidden) return;
+    const activeGrid = activeBrandGridElement();
+    if (!activeGrid || activeGrid.hidden) return;
+    const sheetRect = logoSheet.getBoundingClientRect();
+    const gridRect = activeGrid.getBoundingClientRect();
+    const gutterCenterX = (window.innerWidth + gridRect.right) / 2;
+    const brandTabs = uploadPanel.querySelector(".brand-tabs");
+    const contentTop = (brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom) + brandContentGap;
+    const centerY = contentTop + Math.max(0, window.innerHeight - contentTop) / 2;
+    gridActions.style.left = `${gutterCenterX - sheetRect.left}px`;
+    gridActions.style.top = `${centerY - sheetRect.top}px`;
+  }
+  function downloadDataFile(filename, data, mimeType = "application/json") {
+    const url = URL.createObjectURL(new Blob([data], { type: mimeType }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+  function downloadJsonFile(filename, payload) {
+    downloadDataFile(filename, JSON.stringify(payload, null, 2));
+  }
+  function downloadTextFile(filename, text, mimeType = "text/markdown") {
+    downloadDataFile(filename, text, mimeType);
+  }
+  function lockedColorExportRows() {
+    if (!pinnedGridSlots.Colors.size) return [];
+    return [...pinnedGridSlots.Colors.entries()].sort((left, right) => left[0] - right[0]).map(([slot, locks]) => {
+      if (!locks?.size) return null;
+      const combination = colorCombinations[slot];
+      const colors = combination?.colors?.length === 4 ? combination.colors.map((color) => parseColor(color)) : [0, 1, 2, 3].map((index) => parseColor(locks.get(index) ?? "#888888"));
+      return {
+        slot,
+        source: combination?.source ?? "Pinned",
+        colors,
+        swatches: colorSwatchesFromLocks(locks)
+      };
+    }).filter(Boolean);
+  }
+  function lockedLogoExportRows() {
+    return orderedPinnedValues(pinnedGridSlots.Logos).map((id) => {
+      const logo = uploadedLogos.get(id);
+      if (!logo?.markup) return null;
+      return { id: logo.id, name: logo.name, markup: logo.markup };
+    }).filter(Boolean);
+  }
+  function lockedTypefaceExportRows() {
+    const faces = getTypefaces();
+    return orderedPinnedValues(pinnedGridSlots.Type).map((key) => {
+      const face = faces.find((entry) => typefaceLoadKey(entry) === key);
+      return typefaceExportRecord(face);
+    }).filter(Boolean);
+  }
+  function lockedLockupExportRows() {
+    const faces = getTypefaces();
+    return orderedPinnedValues(pinnedGridSlots.Lockups).map((combination) => {
+      const face = faces[combination.typeIndex];
+      const uploaded = uploadedLogos.get(combination.logoId);
+      const logo = uploaded ? { id: uploaded.id, name: uploaded.name, markup: uploaded.markup } : {
+        id: combination.logoId,
+        name: logoName(combination.logoId),
+        markup: logoMarkup(combination.logoId)
+      };
+      return {
+        logoId: combination.logoId,
+        typeIndex: combination.typeIndex,
+        typeface: typefaceExportRecord(face),
+        logo: logo.markup ? logo : null
+      };
+    });
+  }
+  function designMdColorNames(hexes) {
+    const names = {};
+    for (const hex of hexes) {
+      const key = colorNameKey(hex);
+      const name = colorNameCache.get(key);
+      if (name) names[key] = name;
+    }
+    return names;
+  }
+  function collectDesignMdContext() {
+    const colors = lockedColorExportRows();
+    const logos = lockedLogoExportRows().map(({ id, name }) => ({ id, name }));
+    const typefacesLocked = lockedTypefaceExportRows();
+    const lockups = lockedLockupExportRows().map((entry) => ({
+      logoId: entry.logoId,
+      logo: entry.logo ? { id: entry.logo.id, name: entry.logo.name } : null,
+      typeface: entry.typeface
+    }));
+    const hexes = [
+      currentPalette.ink,
+      currentPalette.paper,
+      ...colors.flatMap((row) => row.colors ?? [])
+    ];
+    return {
+      name: "Brandy",
+      description: "Design tokens generated from locked Brandy brand selections.",
+      palette: {
+        ink: parseColor(currentPalette.ink),
+        paper: parseColor(currentPalette.paper),
+        source: currentPalette.source
+      },
+      colors,
+      logos,
+      typefaces: typefacesLocked,
+      lockups,
+      colorNames: designMdColorNames(hexes)
+    };
+  }
+  function downloadDesignMdCompanion() {
+    const markdown = buildDesignMd(collectDesignMdContext());
+    window.setTimeout(() => {
+      downloadTextFile(designMdFilename("Brandy"), markdown, "text/markdown;charset=utf-8");
+    }, 120);
+  }
+  function clearLockedForTab(tab) {
+    const pinnedMap = pinnedGridSlots[tab];
+    if (!pinnedMap?.size) {
+      setStatus("No locked items");
+      return;
+    }
+    pinnedMap.clear();
+    if (tab === "Colors") {
+      renderColorGrid();
+    } else if (tab === "Logos") {
+      applyLogosPinnedOrder();
+    } else if (tab === "Type") {
+      applyTypePinnedOrder();
+    } else if (tab === "Lockups") {
+      renderLockupGrid();
+    }
+    setStatus("Cleared locked items");
+  }
+  var LOCKED_EXPORT_VERSION = 1;
+  var LOCKED_EXPORT_TABS = /* @__PURE__ */ new Set(["Colors", "Logos", "Type", "Lockups"]);
+  function lockedExportPayload(tab, locked) {
+    return { version: LOCKED_EXPORT_VERSION, tab, locked };
+  }
+  function nothingLockedToExport() {
+    setStatus("Nothing locked to export");
+  }
+  function typefaceExportRecord(face) {
+    if (!face) return null;
+    return {
+      id: face.id,
+      family: face.family,
+      weight: face.weight,
+      loader: face.loader
+    };
+  }
+  function findTypefaceIndexByRecord(record) {
+    if (!record || typeof record !== "object") return -1;
+    const faces = getTypefaces();
+    const weight = Number(record.weight);
+    return faces.findIndex((face) => face.id === record.id && face.loader === record.loader && Number(face.weight) === weight);
+  }
+  function colorSwatchesFromLocks(locks) {
+    const swatches = {};
+    for (const [swatchIndex, hex] of locks.entries()) {
+      swatches[String(swatchIndex)] = parseColor(hex);
+    }
+    return swatches;
+  }
+  function locksFromColorSwatches(swatches, colors = []) {
+    const locks = /* @__PURE__ */ new Map();
+    if (swatches && typeof swatches === "object" && !Array.isArray(swatches)) {
+      for (const [key, hex] of Object.entries(swatches)) {
+        const swatchIndex = Number(key);
+        if (!Number.isInteger(swatchIndex) || swatchIndex < 0 || swatchIndex > 3) continue;
+        locks.set(swatchIndex, parseColor(hex));
+      }
+    }
+    if (!locks.size && Array.isArray(colors) && colors.length === 4) {
+      colors.forEach((color, swatchIndex) => {
+        locks.set(swatchIndex, parseColor(color));
+      });
+    }
+    return locks;
+  }
+  function exportLogos() {
+    const locked = lockedLogoExportRows();
+    if (!locked.length) {
+      nothingLockedToExport();
+      return;
+    }
+    downloadJsonFile("brandy-logos-locked.json", lockedExportPayload("Logos", locked));
+    downloadDesignMdCompanion();
+    setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "logo" : "logos"}`);
+  }
+  function exportTypefaces() {
+    const locked = lockedTypefaceExportRows();
+    if (!locked.length) {
+      nothingLockedToExport();
+      return;
+    }
+    downloadJsonFile("brandy-type-locked.json", lockedExportPayload("Type", locked));
+    downloadDesignMdCompanion();
+    setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "typeface" : "typefaces"}`);
+  }
+  function exportColors() {
+    const locked = lockedColorExportRows();
+    if (!locked.length) {
+      nothingLockedToExport();
+      return;
+    }
+    downloadJsonFile("brandy-colors-locked.json", lockedExportPayload("Colors", locked));
+    downloadDesignMdCompanion();
+    setStatus(`Exported ${locked.length} locked color ${locked.length === 1 ? "row" : "rows"}`);
+  }
+  function exportLockups() {
+    const locked = lockedLockupExportRows();
+    if (!locked.length) {
+      nothingLockedToExport();
+      return;
+    }
+    downloadJsonFile("brandy-lockups-locked.json", lockedExportPayload("Lockups", locked));
+    downloadDesignMdCompanion();
+    setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "lockup" : "lockups"}`);
+  }
+  async function readLockedExportFile(file, expectedTab) {
+    const text = await file.text();
+    const payload = JSON.parse(text);
+    if (!payload || typeof payload !== "object") {
+      throw new Error("Invalid export file");
+    }
+    if (payload.tab != null && payload.tab !== expectedTab) {
+      throw new Error(`Expected ${expectedTab} export`);
+    }
+    const locked = Array.isArray(payload.locked) ? payload.locked : Array.isArray(payload.logos) ? payload.logos : Array.isArray(payload.typefaces) ? payload.typefaces : Array.isArray(payload.combinations) ? payload.combinations : null;
+    if (!Array.isArray(locked) || !locked.length) {
+      throw new Error("No locked items in file");
+    }
+    return { ...payload, tab: expectedTab, locked };
+  }
+  function ensureLogoFromExport(logo) {
+    if (!logo?.markup) return null;
+    const placeholderIndex = lockupPlaceholderIndex(logo.id);
+    if (placeholderIndex >= 0) {
+      revealLockupCatalog();
+      return logo.id;
+    }
+    if (logo.id && uploadedLogos.has(logo.id)) {
+      return logo.id;
+    }
+    let id = typeof logo.id === "string" && logo.id && !uploadedLogos.has(logo.id) ? logo.id : allocateLogoId(logo.name || "imported.svg");
+    if (/^\d+$/.test(String(id))) {
+      id = logoId(id);
+      if (uploadedLogos.has(id)) {
+        id = allocateLogoId(logo.name || "imported.svg");
+      } else {
+        nextLogoNumber = Math.max(nextLogoNumber, Number(id) + 1);
+      }
+    }
+    const markup = sanitizeSvgMarkup(logo.markup, id);
+    uploadedLogos.set(id, { id, name: logo.name || id, markup });
+    const exists = [...grid.querySelectorAll(".logo-tile")].some((tile) => tile.dataset.logoId === id);
+    if (!exists) {
+      createLogoTile(id, logo.name || id, grid.children.length);
+    }
+    return id;
+  }
+  function ensureTypefaceFromExport(record) {
+    if (!record || typeof record !== "object") return -1;
+    let index = findTypefaceIndexByRecord(record);
+    if (index >= 0) return index;
+    if (record.loader === "local") {
+      return -1;
+    }
+    revealTypeCatalog();
+    return findTypefaceIndexByRecord(record);
+  }
+  async function importColorsFromFile(file) {
+    const payload = await readLockedExportFile(file, "Colors");
+    ensureColorCombinations();
+    const imported = payload.locked.map((entry) => {
+      const colors = Array.isArray(entry?.colors) ? entry.colors : Array.isArray(entry) ? entry : null;
+      if (!Array.isArray(colors) || colors.length !== 4) {
+        throw new Error("Each locked color row must include 4 colors");
+      }
+      const normalized = colors.map((color) => parseColor(color));
+      const locks = locksFromColorSwatches(entry?.swatches, normalized);
+      if (!locks.size) {
+        throw new Error("Each locked color row must include swatch locks");
+      }
+      return {
+        colors: normalized,
+        source: typeof entry?.source === "string" ? entry.source : "Pinned",
+        locks
+      };
+    });
+    const nextCombinations = colorCombinations.slice();
+    while (nextCombinations.length < colorCombinationCount) {
+      nextCombinations.push(generateColorCombination());
+    }
+    pinnedGridSlots.Colors.clear();
+    imported.forEach((entry, index) => {
+      nextCombinations[index] = { colors: entry.colors, source: entry.source };
+      pinnedGridSlots.Colors.set(index, entry.locks);
+    });
+    colorCombinations = nextCombinations.slice(0, colorCombinationCount);
+    colorRowPool.clear();
+    colorGrid.replaceChildren();
+    colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+    applyColorsPinnedOrder();
+    if (!colorRowPool.size) {
+      updateColorGridWindow(true);
+    }
+    setStatus(`Imported ${imported.length} locked color ${imported.length === 1 ? "row" : "rows"}`);
+  }
+  async function importLogosFromFile(file) {
+    const payload = await readLockedExportFile(file, "Logos");
+    const restoredIds = [];
+    for (const entry of payload.locked) {
+      if (!entry?.markup) {
+        throw new Error("Each locked logo must include SVG markup");
+      }
+      const id = ensureLogoFromExport(entry);
+      if (id) restoredIds.push(id);
+    }
+    if (!restoredIds.length) {
+      throw new Error("No logos restored");
+    }
+    resetPinnedMap(pinnedGridSlots.Logos, restoredIds);
+    updateUploadUi();
+    syncBrandTabView();
+    applyLogosPinnedOrder();
+    syncLogoGridPresentation();
+    setStatus(`Imported ${restoredIds.length} locked ${restoredIds.length === 1 ? "logo" : "logos"}`);
+  }
+  async function importTypefacesFromFile(file) {
+    const payload = await readLockedExportFile(file, "Type");
+    const needsCatalog = payload.locked.some((entry) => entry?.loader && entry.loader !== "local");
+    if (needsCatalog) revealTypeCatalog();
+    const keys = [];
+    for (const entry of payload.locked) {
+      const index = ensureTypefaceFromExport(entry);
+      if (index < 0) continue;
+      const face = getTypefaces()[index];
+      if (face) keys.push(typefaceLoadKey(face));
+    }
+    if (!keys.length) {
+      throw new Error("No typefaces restored");
+    }
+    resetPinnedMap(pinnedGridSlots.Type, keys);
+    resetTypeDisplayOrder();
+    applyTypePinnedOrder();
+    syncBrandTabView();
+    setStatus(`Imported ${keys.length} locked ${keys.length === 1 ? "typeface" : "typefaces"}`);
+  }
+  async function importLockupsFromFile(file) {
+    const payload = await readLockedExportFile(file, "Lockups");
+    const combinations = [];
+    for (const entry of payload.locked) {
+      if (!entry || typeof entry !== "object") {
+        throw new Error("Invalid lockup entry");
+      }
+      let nextLogoId = typeof entry.logoId === "string" ? entry.logoId : null;
+      if (entry.logo?.markup) {
+        nextLogoId = ensureLogoFromExport({ ...entry.logo, id: entry.logo.id || nextLogoId }) || nextLogoId;
+      } else if (lockupPlaceholderIndex(nextLogoId) >= 0) {
+        revealLockupCatalog();
+      }
+      if (!nextLogoId) {
+        throw new Error("Each lockup must include a logoId");
+      }
+      let typeIndex = Number.isFinite(entry.typeIndex) ? entry.typeIndex : -1;
+      if (entry.typeface) {
+        const resolved = ensureTypefaceFromExport(entry.typeface);
+        if (resolved >= 0) typeIndex = resolved;
+      }
+      if (!Number.isFinite(typeIndex) || typeIndex < 0) {
+        throw new Error("Each lockup must include a resolvable typeface");
+      }
+      combinations.push({ logoId: nextLogoId, typeIndex });
+    }
+    if (!combinations.length) {
+      throw new Error("No lockups restored");
+    }
+    if (!typeCatalogRevealed && uploadedTypefaces.length === 0) {
+      revealTypeCatalog();
+    }
+    const nextCombinations = Array.from({ length: lockupCombinationCount }, (_2, index) => {
+      const source = combinations[index % combinations.length];
+      return { logoId: source.logoId, typeIndex: source.typeIndex };
+    });
+    combinations.forEach((combination, index) => {
+      nextCombinations[index] = { ...combination };
+    });
+    lockupCombinations = nextCombinations;
+    resetPinnedMap(pinnedGridSlots.Lockups, combinations);
+    updateUploadUi();
+    syncBrandTabView();
+    applyLockupsPinnedOrder();
+    setStatus(`Imported ${combinations.length} locked ${combinations.length === 1 ? "lockup" : "lockups"}`);
+  }
+  async function importLockedForTab(tab, file) {
+    if (tab === "Colors") await importColorsFromFile(file);
+    else if (tab === "Logos") await importLogosFromFile(file);
+    else if (tab === "Type") await importTypefacesFromFile(file);
+    else if (tab === "Lockups") await importLockupsFromFile(file);
+  }
+  function importForTab(tab) {
+    if (!LOCKED_EXPORT_TABS.has(tab)) return;
+    pendingImportTab = tab;
+    lockedImportInput?.click();
+  }
+  function exportForTab(tab) {
+    if (tab === "Logos") exportLogos();
+    else if (tab === "Type") exportTypefaces();
+    else if (tab === "Colors") exportColors();
+    else if (tab === "Lockups") exportLockups();
+  }
+  function handleGridAction(tab, action) {
+    if (action === "clear-locked") {
+      clearLockedForTab(tab);
+      return;
+    }
+    if (action === "toggle-bw") {
+      toggleDefaultPalette();
+      return;
+    }
+    if (action === "import") {
+      importForTab(tab);
+      return;
+    }
+    if (action === "export") {
+      exportForTab(tab);
+    }
+  }
+  function applyLogoGridFilter() {
+    const filter = gridFilterForTab("Logos");
+    const pinnedIds = pinnedLogoIds();
+    grid.querySelectorAll(".logo-tile").forEach((tile) => {
+      tile.hidden = filter === "locked" && !pinnedIds.has(tile.dataset.logoId);
+    });
+  }
+  function resetFilteredGridWindow(tab) {
+    if (tab === "Colors") {
+      colorRowPool.clear();
+      colorGrid.replaceChildren();
+      colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+      updateColorGridWindow(true);
+      return;
+    }
+    if (tab === "Type") {
+      typeTilePool.clear();
+      typeGrid.replaceChildren();
+      typeGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+      updateTypeGridWindow(true);
+      return;
+    }
+    if (tab === "Lockups") {
+      lockupTilePool.clear();
+      lockupGrid.replaceChildren();
+      lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+      updateLockupGridWindow(true);
+      return;
+    }
+    if (tab === "Logos") {
+      applyLogoGridFilter();
+    }
+  }
+  function setGridFilter(tab, filter) {
+    if (gridFilterForTab(tab) === filter) return;
+    gridFilterState[tab] = filter;
+    syncGridFilterUi();
+    resetFilteredGridWindow(tab);
+    requestAnimationFrame(syncGridFiltersPosition);
+    requestAnimationFrame(syncGridActionsPosition);
+    requestAnimationFrame(validateKeyboardGridSelection);
+  }
+  function maybeRefreshGridFilter(tab) {
+    if (gridFilterForTab(tab) === "locked") {
+      resetFilteredGridWindow(tab);
+    }
+  }
   function gridLockIconMarkup(locked) {
     const body = `<path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"/>`;
     const shackle = locked ? `<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M8 11V8a4 4 0 0 1 8 0v3"/>` : `<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M8 11V8a4 4 0 1 1 8 0"/>`;
@@ -24581,7 +25656,7 @@ void main() {
   function syncGridLockControl(container, tab, slotIndex) {
     const button = container.querySelector(".grid-lock-control");
     if (!button) return;
-    const locked = pinnedGridSlots[tab].has(slotIndex);
+    const locked = tab === "Logos" ? isLogoPinned(container.dataset.logoId) : pinnedGridSlots[tab].has(slotIndex);
     container.classList.toggle("is-grid-locked", locked);
     button.classList.toggle("is-locked", locked);
     button.setAttribute("aria-pressed", String(locked));
@@ -24620,9 +25695,246 @@ void main() {
     if (tileRect.height <= 0) return;
     const inkTop = gridItemInkTop(tile);
     if (inkTop == null) return;
-    const outlineTop = 6;
+    const outlineTop = 12;
     const midY = (outlineTop + inkTop) / 2;
     lock.style.top = `${Math.round(midY)}px`;
+  }
+  function colorSwatchInkTop(swatch) {
+    const label = swatch.querySelector(".color-swatch-label");
+    const title = swatch.querySelector(".color-swatch-title");
+    const hex = swatch.querySelector(".color-swatch-hex");
+    if (!label || !title) return null;
+    const wasHidden = getComputedStyle(label).display === "none";
+    if (wasHidden) swatch.classList.add("is-measuring-label");
+    const swatchRect = swatch.getBoundingClientRect();
+    const titleRect = title.getBoundingClientRect();
+    let top = titleRect.height > 0 ? titleRect.top - swatchRect.top : null;
+    if (top == null && hex) {
+      const hexRect = hex.getBoundingClientRect();
+      if (hexRect.height > 0) top = hexRect.top - swatchRect.top;
+    }
+    if (wasHidden) swatch.classList.remove("is-measuring-label");
+    return top;
+  }
+  function getColorSwatchLockControl(swatch) {
+    const locks = swatch.querySelectorAll(".grid-lock-control");
+    for (let index = 1; index < locks.length; index += 1) {
+      locks[index].remove();
+    }
+    return locks[0] ?? null;
+  }
+  function positionColorSwatchLockControl(swatch) {
+    const lock = getColorSwatchLockControl(swatch);
+    if (!lock) return;
+    const swatchRect = swatch.getBoundingClientRect();
+    if (swatchRect.height <= 0) {
+      swatch.classList.remove("is-lock-positioned");
+      return;
+    }
+    const inkTop = colorSwatchInkTop(swatch);
+    if (inkTop == null) {
+      swatch.classList.remove("is-lock-positioned");
+      return;
+    }
+    lock.style.top = `${Math.round(inkTop / 2)}px`;
+    swatch.classList.add("is-lock-positioned");
+  }
+  function positionColorRowLockControls(row) {
+    row.querySelectorAll(".color-swatch").forEach((swatch) => {
+      positionColorSwatchLockControl(swatch);
+    });
+  }
+  function scheduleColorRowLockReposition(sourceIndices) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        for (const index of sourceIndices) {
+          const row = colorRowPool.get(index);
+          if (row) positionColorRowLockControls(row);
+        }
+      });
+    });
+  }
+  function isColorSwatchLocked(rowIndex, swatchIndex) {
+    return pinnedGridSlots.Colors.get(rowIndex)?.has(swatchIndex) ?? false;
+  }
+  function isColorRowFullyLocked(rowIndex) {
+    const locks = pinnedGridSlots.Colors.get(rowIndex);
+    if (!locks || locks.size < 4) return false;
+    return [0, 1, 2, 3].every((swatchIndex) => locks.has(swatchIndex));
+  }
+  function isColorRowPinned(rowIndex) {
+    const locks = pinnedGridSlots.Colors.get(rowIndex);
+    return locks != null && locks.size > 0;
+  }
+  function getLockedColorHexes() {
+    const colors = [];
+    const seen = /* @__PURE__ */ new Set();
+    for (const locks of pinnedGridSlots.Colors.values()) {
+      for (const hex of locks.values()) {
+        const normalized = parseColor(hex);
+        if (seen.has(normalized)) continue;
+        seen.add(normalized);
+        colors.push(normalized);
+      }
+    }
+    return colors;
+  }
+  function getActiveColorPool() {
+    ensureColorCombinations();
+    const filter = gridFilterForTab("Colors");
+    if (filter === "all") {
+      return { filter: "all", colors: null, combinations: colorCombinations };
+    }
+    if (filter === "locked") {
+      return { filter, colors: getLockedColorHexes(), combinations: null };
+    }
+    const colors = [];
+    const seen = /* @__PURE__ */ new Set();
+    const combinations = [];
+    for (const index of getColorRowSourceIndices()) {
+      const combination = colorCombinations[index];
+      if (!combination?.colors?.length) continue;
+      combinations.push(combination);
+      for (const hex of combination.colors) {
+        const normalized = parseColor(hex);
+        if (seen.has(normalized)) continue;
+        seen.add(normalized);
+        colors.push(normalized);
+      }
+    }
+    return { filter, colors, combinations };
+  }
+  function getActiveTypefaceIndices() {
+    const faces = getTypefaces();
+    const all = faces.map((_2, index) => index);
+    if (!all.length) return [];
+    const filter = gridFilterForTab("Type");
+    if (filter === "all") return all;
+    if (filter === "locked") {
+      return all.filter((index) => isTypefacePinned(faces[index]));
+    }
+    if (filter === "editors-picks") {
+      return all.filter((index) => isEditorPickTypeface(faces[index]));
+    }
+    return all.filter((index) => faces[index].loader === filter);
+  }
+  function getActiveLogoIds() {
+    let logos;
+    if (uploadedLogos.size) {
+      logos = getLogoIds();
+    } else if (lockupCatalogRevealed) {
+      logos = coolshapePlaceholders.map((_2, index) => `lockup-ph:${index}`);
+    } else {
+      return [];
+    }
+    if (gridFilterForTab("Logos") === "locked") {
+      const logoSet = new Set(logos);
+      return orderedPinnedValues(pinnedGridSlots.Logos).filter((id) => logoSet.has(id));
+    }
+    return logos;
+  }
+  function emptyColorsFilterStatus(continuation) {
+    const filter = gridFilterForTab("Colors");
+    if (filter === "all") return null;
+    const label = filter === "locked" ? "locked colors" : `${filter} colors`;
+    return continuation ? `No ${label} \u2014 ${continuation}` : `No ${label}`;
+  }
+  function getColorRowLockControl(row) {
+    return row.querySelector(":scope > .grid-lock-control");
+  }
+  function syncColorSwatchLockControl(swatch, rowIndex, swatchIndex) {
+    const button = getColorSwatchLockControl(swatch);
+    if (!button) return;
+    const locked = isColorSwatchLocked(rowIndex, swatchIndex);
+    swatch.classList.toggle("is-grid-locked", locked);
+    button.classList.toggle("is-locked", locked);
+    button.setAttribute("aria-pressed", String(locked));
+    button.setAttribute("aria-label", locked ? "Unlock color" : "Lock color in place");
+    button.innerHTML = gridLockIconMarkup(locked);
+    positionColorSwatchLockControl(swatch);
+  }
+  function syncColorRowLockControl(row, rowIndex) {
+    const button = getColorRowLockControl(row);
+    if (!button) return;
+    const locked = isColorRowFullyLocked(rowIndex);
+    row.classList.toggle("is-grid-locked", locked);
+    button.classList.toggle("is-locked", locked);
+    button.setAttribute("aria-pressed", String(locked));
+    button.setAttribute("aria-label", locked ? "Unlock row" : "Lock row in place");
+    button.innerHTML = gridLockIconMarkup(locked);
+  }
+  function syncColorRowLockControls(row, slotIndex) {
+    row.querySelectorAll(".color-swatch").forEach((swatch, swatchIndex) => {
+      syncColorSwatchLockControl(swatch, slotIndex, swatchIndex);
+    });
+    syncColorRowLockControl(row, slotIndex);
+  }
+  function attachColorRowLockControl(row) {
+    const existing = getColorRowLockControl(row);
+    if (existing) {
+      syncColorRowLockControl(row, Number(row.dataset.colorIndex));
+      return;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "grid-lock-control";
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const rowIndex = Number(row.dataset.colorIndex);
+      const combination = colorCombinations[rowIndex];
+      if (!combination?.colors?.length) return;
+      if (isColorRowFullyLocked(rowIndex)) {
+        pinnedGridSlots.Colors.delete(rowIndex);
+        setStatus("Unlocked");
+      } else {
+        const nextLocks = pinnedGridSlots.Colors.get(rowIndex) ?? /* @__PURE__ */ new Map();
+        combination.colors.forEach((color, swatchIndex) => {
+          nextLocks.set(swatchIndex, parseColor(color));
+        });
+        pinnedGridSlots.Colors.set(rowIndex, nextLocks);
+        setStatus("Locked in place");
+      }
+      applyColorsPinnedOrder();
+      button.blur();
+    });
+    row.prepend(button);
+    syncColorRowLockControl(row, Number(row.dataset.colorIndex));
+  }
+  function attachColorSwatchLockControl(swatch, row, swatchIndex) {
+    const existing = getColorSwatchLockControl(swatch);
+    if (existing) {
+      syncColorSwatchLockControl(swatch, Number(row.dataset.colorIndex), swatchIndex);
+      return;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "grid-lock-control";
+    button.setAttribute("aria-pressed", "false");
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const rowIndex = Number(row.dataset.colorIndex);
+      const rowLocks = pinnedGridSlots.Colors.get(rowIndex);
+      if (rowLocks?.has(swatchIndex)) {
+        rowLocks.delete(swatchIndex);
+        if (rowLocks.size === 0) pinnedGridSlots.Colors.delete(rowIndex);
+        setStatus("Unlocked");
+      } else {
+        const combination = colorCombinations[rowIndex];
+        const color = combination?.colors?.[swatchIndex];
+        if (color == null) return;
+        const nextLocks = rowLocks ?? /* @__PURE__ */ new Map();
+        nextLocks.set(swatchIndex, parseColor(color));
+        pinnedGridSlots.Colors.set(rowIndex, nextLocks);
+        setStatus("Locked in place");
+      }
+      applyColorsPinnedOrder();
+      button.blur();
+    });
+    swatch.append(button);
+    syncColorSwatchLockControl(swatch, Number(row.dataset.colorIndex), swatchIndex);
   }
   function attachGridLockControl(container, tab, getSlotIndex, getPinValue) {
     const button = document.createElement("button");
@@ -24632,18 +25944,22 @@ void main() {
     button.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const slotIndex = getSlotIndex();
       const map = pinnedGridSlots[tab];
-      if (map.has(slotIndex)) {
-        map.delete(slotIndex);
+      const value = getPinValue();
+      if (value == null) return;
+      const ordered = orderedPinnedValues(map);
+      const existing = pinValueIndex(value, ordered);
+      if (existing >= 0) {
+        resetPinnedMap(
+          map,
+          ordered.filter((entry) => !pinValuesEqual(entry, value))
+        );
         setStatus("Unlocked");
       } else {
-        const value = getPinValue();
-        if (value == null) return;
-        map.set(slotIndex, value);
+        resetPinnedMap(map, [...ordered, clonePinValue(value)]);
         setStatus("Locked in place");
       }
-      syncGridLockControl(container, tab, slotIndex);
+      applyGridPinnedOrder(tab);
       button.blur();
     });
     container.append(button);
@@ -24679,54 +25995,138 @@ void main() {
     }
     return result;
   }
+  function orderedPinnedValues(pinnedMap) {
+    return [...pinnedMap.entries()].sort((left, right) => left[0] - right[0]).map(([, value]) => value);
+  }
+  function pinValuesEqual(left, right) {
+    if (left === right) return true;
+    if (left && right && typeof left === "object" && typeof right === "object") {
+      return JSON.stringify(left) === JSON.stringify(right);
+    }
+    return false;
+  }
+  function clonePinValue(value) {
+    return value && typeof value === "object" ? structuredClone(value) : value;
+  }
+  function resetPinnedMap(pinnedMap, orderedValues) {
+    pinnedMap.clear();
+    orderedValues.forEach((value, index) => {
+      pinnedMap.set(index, clonePinValue(value));
+    });
+  }
+  function pinValueIndex(value, orderedValues) {
+    return orderedValues.findIndex((entry) => pinValuesEqual(entry, value));
+  }
+  function reorderItemsPinnedFirst(items, getPinValue, pinnedMap) {
+    const pinnedOrdered = orderedPinnedValues(pinnedMap);
+    const pinnedItems = pinnedOrdered.map((pinValue) => items.find((item) => pinValuesEqual(getPinValue(item), pinValue))).filter(Boolean);
+    const unpinnedItems = items.filter((item) => pinValueIndex(getPinValue(item), pinnedOrdered) < 0);
+    return pinnedItems.concat(unpinnedItems);
+  }
+  function applyLogosPinnedOrder() {
+    const tiles = [...grid.querySelectorAll(".logo-tile")];
+    if (!tiles.length) return;
+    reorderItemsPinnedFirst(
+      tiles,
+      (tile) => tile.dataset.logoId,
+      pinnedGridSlots.Logos
+    ).forEach((tile) => {
+      grid.append(tile);
+    });
+    syncLogoTileLockControls();
+    updateFaviconForTopLogo();
+    scheduleLogoShaderMask();
+    schedulePerIconShaderSync();
+    applyLogoGridFilter();
+    maybeRefreshGridFilter("Logos");
+  }
+  function applyTypePinnedOrder() {
+    const faces = getTypefaces();
+    if (!faces.length) return;
+    const currentOrder = typeDisplayOrder?.length === faces.length ? typeDisplayOrder : faces.map((_2, index) => index);
+    const items = currentOrder.map((catalogIndex) => ({
+      catalogIndex,
+      key: typefaceLoadKey(faces[catalogIndex])
+    }));
+    typeDisplayOrder = reorderItemsPinnedFirst(
+      items,
+      (item) => item.key,
+      pinnedGridSlots.Type
+    ).map((item) => item.catalogIndex);
+    refreshTypeGrid();
+    maybeRefreshGridFilter("Type");
+  }
+  function applyColorsPinnedOrder() {
+    if (!colorCombinations.length) return;
+    const lockedRows = [];
+    const unlockedRows = [];
+    for (let index = 0; index < colorCombinations.length; index += 1) {
+      if (isColorRowPinned(index)) {
+        lockedRows.push(index);
+      } else {
+        unlockedRows.push(index);
+      }
+    }
+    const newOrder = lockedRows.concat(unlockedRows);
+    const unchanged = newOrder.every((oldIndex, newIndex) => oldIndex === newIndex);
+    if (unchanged) {
+      for (const [index, row] of colorRowPool) {
+        syncColorRowLockControls(row, index);
+      }
+      return;
+    }
+    const nextCombinations = newOrder.map((oldIndex) => colorCombinations[oldIndex]);
+    const oldToNew = /* @__PURE__ */ new Map();
+    newOrder.forEach((oldIndex, newIndex) => {
+      oldToNew.set(oldIndex, newIndex);
+    });
+    const nextLocks = /* @__PURE__ */ new Map();
+    for (const [oldIndex, locks] of pinnedGridSlots.Colors) {
+      const newIndex = oldToNew.get(oldIndex);
+      if (newIndex != null) {
+        nextLocks.set(newIndex, locks);
+      }
+    }
+    colorCombinations = nextCombinations;
+    pinnedGridSlots.Colors.clear();
+    for (const [newIndex, locks] of nextLocks) {
+      pinnedGridSlots.Colors.set(newIndex, locks);
+    }
+    colorRowPool.clear();
+    colorGrid.replaceChildren();
+    colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
+    updateColorGridWindow(true);
+    maybeRefreshGridFilter("Colors");
+  }
+  function applyLockupsPinnedOrder() {
+    if (!lockupCombinations.length) return;
+    lockupCombinations = reorderItemsPinnedFirst(
+      lockupCombinations,
+      (combination) => ({ logoId: combination.logoId, typeIndex: combination.typeIndex }),
+      pinnedGridSlots.Lockups
+    );
+    lockupTilePool.clear();
+    lockupGrid.replaceChildren();
+    lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
+    updateLockupGridWindow(true);
+    maybeRefreshGridFilter("Lockups");
+  }
+  function applyGridPinnedOrder(tab) {
+    if (tab === "Logos") applyLogosPinnedOrder();
+    else if (tab === "Type") applyTypePinnedOrder();
+    else if (tab === "Colors") applyColorsPinnedOrder();
+    else if (tab === "Lockups") applyLockupsPinnedOrder();
+  }
   function logoTileSlotIndex(tile) {
     return [...grid.querySelectorAll(".logo-tile")].indexOf(tile);
   }
   var brandContentGap = 72;
-  function contentTopInset(tile, content) {
-    if (!tile || !content) return 0;
-    const tileRect = tile.getBoundingClientRect();
-    const svg = content.matches?.("svg") ? content : content.querySelector?.("svg");
-    if (svg instanceof SVGSVGElement) {
-      try {
-        const bbox = svg.getBBox();
-        const ctm = svg.getScreenCTM();
-        if (ctm && bbox.height > 0 && bbox.width > 0) {
-          const point = svg.createSVGPoint();
-          point.x = bbox.x;
-          point.y = bbox.y;
-          const screen = point.matrixTransform(ctm);
-          return Math.max(0, screen.y - tileRect.top);
-        }
-      } catch {
-      }
-    }
-    return Math.max(0, content.getBoundingClientRect().top - tileRect.top);
-  }
-  function firstRowContentInset(container, tileSelector, contentSelector) {
-    const tiles = [...container.querySelectorAll(tileSelector)];
-    if (!tiles.length) return 0;
-    const firstTop = tiles[0].getBoundingClientRect().top;
-    const firstRow = tiles.filter((tile) => Math.abs(tile.getBoundingClientRect().top - firstTop) < 1);
-    let minInset = Infinity;
-    firstRow.forEach((tile) => {
-      const content = tile.querySelector(contentSelector);
-      const inset = contentTopInset(tile, content);
-      if (inset < minInset) minInset = inset;
-    });
-    return Number.isFinite(minInset) ? minInset : 0;
-  }
   function syncBrandGridOffset() {
-    let inset = 0;
-    if (activeBrandTab === "Logos" && !grid.hidden) {
-      inset = firstRowContentInset(grid, ".logo-tile", ".logo-art svg, .logo-art");
-    } else if (activeBrandTab === "Type" && !typeGrid.hidden) {
-      inset = firstRowContentInset(typeGrid, ".type-tile", ".type-specimen");
-    } else if (activeBrandTab === "Lockups" && !lockupGrid.hidden) {
-      inset = firstRowContentInset(lockupGrid, ".lockup-tile", ".lockup-content");
-    }
-    const offset = Math.max(0, brandContentGap - inset);
-    document.documentElement.style.setProperty("--brand-grid-offset", `${offset}px`);
+    document.documentElement.style.setProperty("--brand-grid-offset", `${brandContentGap}px`);
+    syncGridFilterUi();
+    syncGridFiltersPosition();
+    syncGridActionsUi();
+    syncGridActionsPosition();
   }
   var lockupFontFamilies = {
     Helvetica: 'Helvetica, "Helvetica Neue", Arial, sans-serif',
@@ -24743,10 +26143,22 @@ void main() {
   function logoId(id) {
     return String(id).padStart(3, "0");
   }
+  function lockupPlaceholderIndex(id) {
+    const match = String(id).match(/^lockup-ph:(\d+)$/);
+    return match ? Number(match[1]) : -1;
+  }
   function logoMarkup(id) {
+    const placeholderIndex = lockupPlaceholderIndex(id);
+    if (placeholderIndex >= 0) {
+      return coolshapePlaceholders[placeholderIndex]?.markup ?? "";
+    }
     return uploadedLogos.get(logoId(id))?.markup ?? "";
   }
   function logoName(id) {
+    const placeholderIndex = lockupPlaceholderIndex(id);
+    if (placeholderIndex >= 0) {
+      return coolshapePlaceholders[placeholderIndex]?.name ?? `Placeholder ${placeholderIndex + 1}`;
+    }
     return uploadedLogos.get(logoId(id))?.name ?? `Logo ${logoId(id)}`;
   }
   function logoFaviconHref(id) {
@@ -24848,16 +26260,10 @@ void main() {
     exportCsvButton.addEventListener("click", exportAdminCsv);
   }
   function gridBaseColumns() {
-    return window.matchMedia("(max-width: 720px)").matches ? 4 : 8;
-  }
-  function gridColumnsForScale(scale) {
-    const baseColumns = gridBaseColumns();
-    const maxColumns = baseColumns <= 4 ? 11 : 15;
-    const progress = (Math.min(maxLogoScale, Math.max(minLogoScale, scale)) - minLogoScale) / (maxLogoScale - minLogoScale);
-    return Math.max(1, Math.round(maxColumns - progress * (maxColumns - 1)));
+    return window.matchMedia("(max-width: 720px)").matches ? 2 : 4;
   }
   function updateGridColumns() {
-    document.documentElement.style.setProperty("--grid-columns", String(gridColumnsForScale(gridLogoScale)));
+    document.documentElement.style.setProperty("--grid-columns", String(gridBaseColumns()));
   }
   function clampLogoScale(nextScale) {
     return Math.min(maxLogoScale, Math.max(minLogoScale, Math.round(nextScale * 100) / 100));
@@ -24875,7 +26281,9 @@ void main() {
     fullscreenLogoScale = clampLogoScale(nextScale);
     document.documentElement.style.setProperty("--fullscreen-logo-scale", String(fullscreenLogoScale));
     if (!dialog.open) return;
-    if (lockupMode) {
+    if (previewMode === "type") {
+      scheduleFullscreenTypeLayout();
+    } else if (isFullscreenLockup()) {
       scheduleLockupLayout();
     } else {
       mountFullscreenShader();
@@ -25060,22 +26468,18 @@ void main() {
     syncBrandGridOffset();
   }
   function typeGridColumns() {
-    if (window.matchMedia("(max-width: 720px)").matches) return 2;
-    return Number.parseInt(
-      getComputedStyle(document.documentElement).getPropertyValue("--grid-columns"),
-      10
-    ) || gridColumnsForScale(gridLogoScale);
+    return lockupGridColumns();
   }
   function lockupGridColumns() {
     if (window.matchMedia("(max-width: 720px)").matches) return 2;
     return 4;
   }
   function measureTypeGridMetrics() {
-    const faces = getTypefacesForGrid();
+    const indices = getTypeGridSourceIndices();
     const columns = Math.max(1, typeGridColumns());
     const width = typeGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
     const cellSize = width / columns;
-    const rows = Math.ceil(faces.length / columns);
+    const rows = Math.ceil(indices.length / columns);
     return {
       columns,
       cellSize,
@@ -25103,6 +26507,10 @@ void main() {
     specimen.dataset.fontWeight = String(face.weight);
     specimen.style.fontFamily = `"${face.family}", sans-serif`;
     specimen.style.fontWeight = String(face.weight);
+    button.addEventListener("click", () => {
+      if (mobileDialogMedia.matches) return;
+      openTypeDialog(index);
+    });
     button.append(specimen);
     tile.append(button);
     attachGridLockControl(
@@ -25117,6 +26525,15 @@ void main() {
   }
   function updateTypeGridWindow(force = false) {
     if (typeGrid.hidden || activeBrandTab !== "Type") return;
+    const indices = getTypeGridSourceIndices();
+    if (!indices.length) {
+      typeGrid.style.height = "0px";
+      for (const [index, tile] of typeTilePool) {
+        tile.remove();
+        typeTilePool.delete(index);
+      }
+      return;
+    }
     const metrics = measureTypeGridMetrics();
     if (metrics.cellSize <= 0) return;
     typeGrid.style.height = `${metrics.totalHeight}px`;
@@ -25131,27 +26548,30 @@ void main() {
     );
     const faces = getTypefacesForGrid();
     const startIndex = startRow * metrics.columns;
-    const endIndex = Math.min(faces.length, (endRow + 1) * metrics.columns);
+    const endIndex = Math.min(indices.length, (endRow + 1) * metrics.columns);
     const sameWindow = !force && startIndex === typeGridWindow.startIndex && endIndex === typeGridWindow.endIndex && metrics.columns === typeGridWindow.columns && Math.abs(metrics.cellSize - typeGridWindow.cellSize) < 0.5;
     if (sameWindow) return;
+    const visibleSourceIndices = new Set(indices.slice(startIndex, endIndex));
     for (const [index, tile] of typeTilePool) {
-      if (index < startIndex || index >= endIndex) {
+      if (!visibleSourceIndices.has(index)) {
         tile.remove();
         typeTilePool.delete(index);
       }
     }
-    for (let index = startIndex; index < endIndex; index += 1) {
-      const face = faces[index];
+    for (let displayIndex = startIndex; displayIndex < endIndex; displayIndex += 1) {
+      const sourceIndex = indices[displayIndex];
+      const face = faces[sourceIndex];
       if (!face) continue;
-      let tile = typeTilePool.get(index);
+      let tile = typeTilePool.get(sourceIndex);
       if (tile) {
-        positionTypeTile(tile, index, metrics.columns, metrics.cellSize);
-        syncGridLockControl(tile, "Type", index);
+        positionTypeTile(tile, displayIndex, metrics.columns, metrics.cellSize);
+        syncGridLockControl(tile, "Type", sourceIndex);
         continue;
       }
-      tile = createTypeTile(face, index, metrics.columns, metrics.cellSize);
-      typeTilePool.set(index, tile);
+      tile = createTypeTile(face, sourceIndex, metrics.columns, metrics.cellSize);
+      typeTilePool.set(sourceIndex, tile);
       typeGrid.append(tile);
+      positionTypeTile(tile, displayIndex, metrics.columns, metrics.cellSize);
     }
     typeGridWindow = {
       columns: metrics.columns,
@@ -25176,11 +26596,14 @@ void main() {
   function buildColorCombinations() {
     const used = /* @__PURE__ */ new Set();
     const combinations = new Array(colorCombinationCount);
-    for (const [slot, combination] of pinnedGridSlots.Colors) {
-      if (slot >= 0 && slot < colorCombinationCount) {
-        combinations[slot] = structuredClone(combination);
-        used.add(combination.colors.join("/"));
-      }
+    const previous = colorCombinations;
+    for (let index = 0; index < colorCombinationCount; index += 1) {
+      const locks = pinnedGridSlots.Colors.get(index);
+      if (!locks?.size) continue;
+      if (index < 0 || index >= colorCombinationCount) continue;
+      const combination = generateColorCombinationWithLocks(locks, previous[index]);
+      combinations[index] = combination;
+      used.add(combination.colors.join("/"));
     }
     for (let index = 0; index < colorCombinationCount; index += 1) {
       if (combinations[index]) continue;
@@ -25198,10 +26621,12 @@ void main() {
     return combinations;
   }
   function measureColorGridMetrics() {
-    const width = colorGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
-    const rowHeight = width / 4;
-    const rowStride = rowHeight + colorRowGap;
-    const totalHeight = colorCombinations.length > 0 ? colorCombinations.length * rowHeight + Math.max(0, colorCombinations.length - 1) * colorRowGap : 0;
+    const indices = getColorRowSourceIndices();
+    const gridWidth = colorGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
+    const width = gridWidth - colorSwatchGap - gridLockControlSize;
+    const rowHeight = (width - colorSwatchGap * 3) / 4;
+    const rowStride = rowHeight + colorSwatchGap;
+    const totalHeight = indices.length > 0 ? indices.length * rowHeight + Math.max(0, indices.length - 1) * colorSwatchGap : 0;
     return { width, rowHeight, rowStride, totalHeight };
   }
   function positionColorRow(row, index, rowHeight, rowStride) {
@@ -25229,7 +26654,10 @@ void main() {
     const name = colorNameCache.get(key);
     if (!name) return;
     colorGrid.querySelectorAll(".color-swatch").forEach((swatch) => {
-      if (swatch.dataset.colorHex === key) applyColorNameToSwatch(swatch);
+      if (swatch.dataset.colorHex === key) {
+        applyColorNameToSwatch(swatch);
+        positionColorSwatchLockControl(swatch);
+      }
     });
   }
   async function fetchColorNames(colors) {
@@ -25271,9 +26699,9 @@ void main() {
   function ensureColorNames(colors) {
     return fetchColorNames(colors).catch(() => void 0);
   }
-  function prefetchVisibleColorNames(startIndex, endIndex) {
+  function prefetchVisibleColorNames(sourceIndices) {
     const colors = [];
-    for (let index = startIndex; index < endIndex; index += 1) {
+    for (const index of sourceIndices) {
       const combination = colorCombinations[index];
       if (combination) colors.push(...combination.colors);
     }
@@ -25371,7 +26799,8 @@ void main() {
     swatch.addEventListener("pointerdown", (event) => {
       if (event.button !== 0) return;
       if (event.target.closest(".color-swatch-hex")) return;
-      if (colorDragSession) finishColorDrag(true);
+      if (event.target.closest(".grid-lock-control")) return;
+      if (colorDragSession) finishColorDrag(colorDragSession.hasDragged);
       event.preventDefault();
       event.stopPropagation();
       setSwatchHexEditable(swatch.querySelector(".color-swatch-hex"), false);
@@ -25391,6 +26820,9 @@ void main() {
         s: s2,
         v,
         pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        hasDragged: false,
         nameTimer: 0,
         onKey(event2) {
           if (event2.key === "Escape") {
@@ -25399,23 +26831,29 @@ void main() {
           }
         },
         onScroll() {
-          finishColorDrag(true);
+          finishColorDrag(session2.hasDragged);
         }
       };
-      swatch.classList.add("is-adjusting");
       swatch.setPointerCapture(event.pointerId);
       colorDragSession = session2;
-      syncSwatchFromPointer(session2, event.clientX, event.clientY);
       document.addEventListener("keydown", session2.onKey, true);
       window.addEventListener("scroll", session2.onScroll, true);
     });
     swatch.addEventListener("pointermove", (event) => {
       if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
-      syncSwatchFromPointer(colorDragSession, event.clientX, event.clientY);
+      const session2 = colorDragSession;
+      if (!session2.hasDragged) {
+        const dx = event.clientX - session2.startX;
+        const dy = event.clientY - session2.startY;
+        if (Math.hypot(dx, dy) < 4) return;
+        session2.hasDragged = true;
+        session2.swatch.classList.add("is-adjusting");
+      }
+      syncSwatchFromPointer(session2, event.clientX, event.clientY);
     });
     swatch.addEventListener("pointerup", (event) => {
       if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
-      finishColorDrag(true);
+      finishColorDrag(colorDragSession.hasDragged);
     });
     swatch.addEventListener("pointercancel", (event) => {
       if (colorDragSession?.swatch !== swatch || !swatch.hasPointerCapture(event.pointerId)) return;
@@ -25437,8 +26875,9 @@ void main() {
         "aria-label",
         `${combination.source} combination ${combination.colors.join(", ")}`
       );
-      if (pinnedGridSlots.Colors.has(rowIndex)) {
-        pinnedGridSlots.Colors.set(rowIndex, structuredClone(combination));
+      const rowLocks = pinnedGridSlots.Colors.get(rowIndex);
+      if (rowLocks?.has(swatchIndex)) {
+        rowLocks.set(swatchIndex, normalized);
       }
     }
     const title = swatch.querySelector(".color-swatch-title");
@@ -25512,6 +26951,7 @@ void main() {
       "aria-label",
       `${combination.source} combination ${combination.colors.join(", ")}`
     );
+    attachColorRowLockControl(row);
     combination.colors.forEach((color, swatchIndex) => {
       const swatch = document.createElement("span");
       const label = document.createElement("span");
@@ -25531,8 +26971,10 @@ void main() {
       applyColorNameToSwatch(swatch);
       bindSwatchHexEditor(hex, swatch, row, swatchIndex);
       bindSwatchDragAdjust(swatch, row, swatchIndex);
+      attachColorSwatchLockControl(swatch, row, swatchIndex);
       swatch.addEventListener("mouseenter", () => {
         ensureColorNames([swatch.dataset.colorHex]);
+        positionColorSwatchLockControl(swatch);
       });
       row.append(swatch);
     });
@@ -25545,12 +26987,7 @@ void main() {
         setStatus(`${combination.source} combination`);
       }
     });
-    attachGridLockControl(
-      row,
-      "Colors",
-      () => Number(row.dataset.colorIndex),
-      () => structuredClone(colorCombinations[Number(row.dataset.colorIndex)])
-    );
+    syncColorRowLockControls(row, index);
     positionColorRow(row, index, rowHeight, rowStride);
     return row;
   }
@@ -25559,6 +26996,15 @@ void main() {
     if (!colorCombinations.length) return;
     if (colorDragSession && !document.body.contains(colorDragSession.swatch)) {
       colorDragSession = null;
+    }
+    const indices = getColorRowSourceIndices();
+    if (!indices.length) {
+      colorGrid.style.height = "0px";
+      for (const [index, row] of colorRowPool) {
+        row.remove();
+        colorRowPool.delete(index);
+      }
+      return;
     }
     const metrics = measureColorGridMetrics();
     if (metrics.rowHeight <= 0) return;
@@ -25569,29 +27015,34 @@ void main() {
     const visibleBottom = visibleTop + window.innerHeight;
     const startIndex = Math.max(0, Math.floor((visibleTop - buffer) / metrics.rowStride));
     const endIndex = Math.min(
-      colorCombinations.length,
+      indices.length,
       Math.ceil((visibleBottom + buffer) / metrics.rowStride)
     );
     const sameWindow = !force && startIndex === colorGridWindow.startIndex && endIndex === colorGridWindow.endIndex && Math.abs(metrics.rowHeight - colorGridWindow.rowHeight) < 0.5;
     if (sameWindow) return;
+    const visibleSourceIndices = new Set(indices.slice(startIndex, endIndex));
     for (const [index, row] of colorRowPool) {
-      if (index < startIndex || index >= endIndex) {
+      if (!visibleSourceIndices.has(index)) {
         row.remove();
         colorRowPool.delete(index);
       }
     }
-    for (let index = startIndex; index < endIndex; index += 1) {
-      const combination = colorCombinations[index];
+    for (let displayIndex = startIndex; displayIndex < endIndex; displayIndex += 1) {
+      const sourceIndex = indices[displayIndex];
+      const combination = colorCombinations[sourceIndex];
       if (!combination) continue;
-      let row = colorRowPool.get(index);
+      let row = colorRowPool.get(sourceIndex);
       if (row) {
-        positionColorRow(row, index, metrics.rowHeight, metrics.rowStride);
-        syncGridLockControl(row, "Colors", index);
+        positionColorRow(row, displayIndex, metrics.rowHeight, metrics.rowStride);
+        syncColorRowLockControls(row, sourceIndex);
+        positionColorRowLockControls(row);
         continue;
       }
-      row = createColorRow(combination, index, metrics.rowHeight, metrics.rowStride);
-      colorRowPool.set(index, row);
+      row = createColorRow(combination, sourceIndex, metrics.rowHeight, metrics.rowStride);
+      colorRowPool.set(sourceIndex, row);
       colorGrid.append(row);
+      positionColorRow(row, displayIndex, metrics.rowHeight, metrics.rowStride);
+      positionColorRowLockControls(row);
     }
     colorGridWindow = {
       startIndex,
@@ -25599,7 +27050,13 @@ void main() {
       rowHeight: metrics.rowHeight,
       rowStride: metrics.rowStride
     };
-    prefetchVisibleColorNames(startIndex, endIndex);
+    prefetchVisibleColorNames(indices.slice(startIndex, endIndex));
+    const visibleSources = indices.slice(startIndex, endIndex);
+    scheduleColorRowLockReposition(visibleSources);
+    document.fonts?.ready?.then(() => {
+      if (activeBrandTab !== "Colors" || colorGrid.hidden) return;
+      scheduleColorRowLockReposition(visibleSources);
+    });
   }
   function scheduleColorGridWindow() {
     if (colorGridScrollRaf) return;
@@ -25614,7 +27071,7 @@ void main() {
     window.addEventListener("scroll", scheduleColorGridWindow, { passive: true });
   }
   function renderColorGrid() {
-    colorGrid.style.setProperty("--color-row-gap", `${colorRowGap}px`);
+    colorGrid.style.setProperty("--color-swatch-gap", `${colorSwatchGap}px`);
     colorCombinations = buildColorCombinations();
     colorRowPool.clear();
     colorGrid.replaceChildren();
@@ -25625,10 +27082,29 @@ void main() {
   function getLogoIds() {
     return [...uploadedLogos.keys()];
   }
-  function buildLockupCombinations() {
-    const logos = getLogoIds();
+  function getLockupLogoIds() {
+    const active = getActiveLogoIds();
+    if (active.length) return active;
+    if (uploadedLogos.size) return getLogoIds();
+    if (lockupCatalogRevealed) {
+      return coolshapePlaceholders.map((_2, index) => `lockup-ph:${index}`);
+    }
+    return [];
+  }
+  function getLockupTypeIndices() {
+    const active = getActiveTypefaceIndices();
+    if (active.length) return active;
     const faces = getTypefaces();
-    if (!logos.length || !faces.length) return [];
+    return faces.map((_2, index) => index);
+  }
+  function lockupsReady() {
+    if (lockupCatalogRevealed) return true;
+    return uploadedLogos.size > 0 && (uploadedTypefaces.length > 0 || typeCatalogRevealed);
+  }
+  function buildLockupCombinations() {
+    const logos = getLockupLogoIds();
+    const typeIndices = getLockupTypeIndices();
+    if (!logos.length || !typeIndices.length) return [];
     const combinations = new Array(lockupCombinationCount);
     for (const [slot, combination] of pinnedGridSlots.Lockups) {
       if (slot >= 0 && slot < lockupCombinationCount) {
@@ -25639,16 +27115,17 @@ void main() {
       if (combinations[index]) continue;
       combinations[index] = {
         logoId: logos[Math.floor(Math.random() * logos.length)],
-        typeIndex: Math.floor(Math.random() * faces.length)
+        typeIndex: typeIndices[Math.floor(Math.random() * typeIndices.length)]
       };
     }
     return combinations;
   }
   function measureLockupGridMetrics() {
+    const indices = getLockupSourceIndices();
     const columns = Math.max(1, lockupGridColumns());
     const width = lockupGrid.clientWidth || logoSheet.clientWidth || window.innerWidth;
     const cellSize = width / columns;
-    const rows = Math.ceil(lockupCombinations.length / columns);
+    const rows = Math.ceil(indices.length / columns);
     return {
       columns,
       cellSize,
@@ -25710,7 +27187,8 @@ void main() {
     button.append(content);
     tile.append(button);
     tile.addEventListener("click", () => {
-      setStatus(lockupLabel(combination));
+      if (mobileDialogMedia.matches) return;
+      openLockupDialog(index);
     });
     attachGridLockControl(
       tile,
@@ -25728,6 +27206,15 @@ void main() {
   function updateLockupGridWindow(force = false) {
     if (lockupGrid.hidden || activeBrandTab !== "Lockups") return;
     if (!lockupCombinations.length) return;
+    const indices = getLockupSourceIndices();
+    if (!indices.length) {
+      lockupGrid.style.height = "0px";
+      for (const [index, tile] of lockupTilePool) {
+        tile.remove();
+        lockupTilePool.delete(index);
+      }
+      return;
+    }
     const metrics = measureLockupGridMetrics();
     if (metrics.cellSize <= 0) return;
     lockupGrid.style.height = `${metrics.totalHeight}px`;
@@ -25742,29 +27229,32 @@ void main() {
     );
     const startIndex = startRow * metrics.columns;
     const endIndex = Math.min(
-      lockupCombinations.length,
+      indices.length,
       (endRow + 1) * metrics.columns
     );
     const sameWindow = !force && startIndex === lockupGridWindow.startIndex && endIndex === lockupGridWindow.endIndex && metrics.columns === lockupGridWindow.columns && Math.abs(metrics.cellSize - lockupGridWindow.cellSize) < 0.5;
     if (sameWindow) return;
+    const visibleSourceIndices = new Set(indices.slice(startIndex, endIndex));
     for (const [index, tile] of lockupTilePool) {
-      if (index < startIndex || index >= endIndex) {
+      if (!visibleSourceIndices.has(index)) {
         tile.remove();
         lockupTilePool.delete(index);
       }
     }
-    for (let index = startIndex; index < endIndex; index += 1) {
-      const combination = lockupCombinations[index];
+    for (let displayIndex = startIndex; displayIndex < endIndex; displayIndex += 1) {
+      const sourceIndex = indices[displayIndex];
+      const combination = lockupCombinations[sourceIndex];
       if (!combination) continue;
-      let tile = lockupTilePool.get(index);
+      let tile = lockupTilePool.get(sourceIndex);
       if (tile) {
-        positionLockupTile(tile, index, metrics.columns, metrics.cellSize);
-        syncGridLockControl(tile, "Lockups", index);
+        positionLockupTile(tile, displayIndex, metrics.columns, metrics.cellSize);
+        syncGridLockControl(tile, "Lockups", sourceIndex);
         continue;
       }
-      tile = createLockupTile(combination, index, metrics.columns, metrics.cellSize);
-      lockupTilePool.set(index, tile);
+      tile = createLockupTile(combination, sourceIndex, metrics.columns, metrics.cellSize);
+      lockupTilePool.set(sourceIndex, tile);
       lockupGrid.append(tile);
+      positionLockupTile(tile, displayIndex, metrics.columns, metrics.cellSize);
     }
     lockupGridWindow = {
       columns: metrics.columns,
@@ -25801,20 +27291,14 @@ void main() {
     const showLockups = activeBrandTab === "Lockups";
     const isEmpty = uploadPanel.dataset.empty === "true";
     const showTypeEmpty = showType && !typeCatalogRevealed;
-    const canRandomizeTab = showColors || showLockups || showLogos && !isEmpty || showType;
+    const showLockupEmpty = showLockups && !lockupsReady();
     grid.hidden = !showLogos || isEmpty;
     typeGrid.hidden = !showType || showTypeEmpty;
     colorGrid.hidden = !showColors;
-    lockupGrid.hidden = !showLockups;
+    lockupGrid.hidden = !showLockups || showLockupEmpty;
     uploadEmpty.hidden = !(showLogos && isEmpty);
     typeUploadEmpty.hidden = !showTypeEmpty;
-    shuffleButton.hidden = !canRandomizeTab;
-    shuffleButton.disabled = activeBrandTab === "Logos" && uploadedLogos.size < 2;
-    shuffleButton.setAttribute(
-      "aria-label",
-      activeBrandTab === "Colors" ? "Randomize color combinations" : activeBrandTab === "Lockups" ? "Randomize lockup combinations" : activeBrandTab === "Type" ? "Randomize typefaces" : "Randomize logos"
-    );
-    uploadAddButton.hidden = !showLogos || isEmpty;
+    lockupUploadEmpty.hidden = !showLockupEmpty;
     if (showLogos && !isEmpty) {
       syncLogoGridPresentation();
     }
@@ -25823,18 +27307,28 @@ void main() {
       requestAnimationFrame(() => updateTypeGridWindow(true));
     }
     if (showColors) {
-      colorGrid.style.setProperty("--color-row-gap", `${colorRowGap}px`);
+      colorGrid.style.setProperty("--color-swatch-gap", `${colorSwatchGap}px`);
       bindColorGridListeners();
       if (!colorCombinations.length) renderColorGrid();
       else requestAnimationFrame(() => updateColorGridWindow(true));
     }
-    if (showLockups) {
-      if (!uploadedLogos.size && !activeFileReads) populatePlaceholderLogos();
+    if (showLockups && lockupsReady()) {
       bindLockupGridListeners();
       if (!lockupCombinations.length) renderLockupGrid();
       else requestAnimationFrame(() => updateLockupGridWindow(true));
+    } else if (showLockups) {
+      lockupCombinations = [];
+      lockupTilePool.clear();
+      lockupGrid.replaceChildren();
+      lockupGridWindow = { columns: 0, cellSize: 0, startIndex: -1, endIndex: -1 };
     }
     requestAnimationFrame(syncBrandGridOffset);
+    requestAnimationFrame(updateUploadBorders);
+    syncGridFilterUi();
+    syncGridActionsUi();
+    requestAnimationFrame(syncGridFiltersPosition);
+    requestAnimationFrame(syncGridActionsPosition);
+    requestAnimationFrame(validateKeyboardGridSelection);
   }
   function lockupMarkup(id) {
     return `<div class="fullscreen-lockup" aria-hidden="true">
@@ -25865,8 +27359,96 @@ void main() {
     document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
     renderGridLogos();
   }
-  function fullscreenMarkup(id) {
-    return lockupMode ? lockupMarkup(id) : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(id)}</span>`;
+  function isFullscreenLockup() {
+    return lockupMode || previewMode === "lockup";
+  }
+  function resetPreviewState() {
+    previewMode = "logo";
+    currentTypeIndex = -1;
+    currentLockupIndex = -1;
+    lockupMode = false;
+  }
+  function lockupLayoutTypeface() {
+    if (previewMode === "lockup") {
+      const combination = lockupCombinations[currentLockupIndex];
+      const face = combination ? getTypefaces()[combination.typeIndex] : null;
+      if (face) {
+        return {
+          family: `"${face.family}", sans-serif`,
+          weight: String(face.weight)
+        };
+      }
+    }
+    return {
+      family: selectedFontFamily(),
+      weight: "700"
+    };
+  }
+  function fullscreenTypeMarkup(face) {
+    return `<span class="fullscreen-type-specimen" data-font-family="${face.family}" data-font-weight="${face.weight}" style="font-family:&quot;${face.family}&quot;,sans-serif;font-weight:${face.weight}">${lockupText}</span>`;
+  }
+  function lockupCombinationMarkup(combination) {
+    const face = getTypefaces()[combination.typeIndex];
+    const fontFamily = face ? `"${face.family}", sans-serif` : selectedFontFamily();
+    const fontWeight = face ? String(face.weight) : "700";
+    return `<div class="fullscreen-lockup" aria-hidden="true">
+    <span class="fullscreen-logo-art fullscreen-lockup-mark">${logoMarkup(combination.logoId)}</span>
+    <span class="fullscreen-lockup-text" style="font-family:${fontFamily};font-weight:${fontWeight}">${lockupText}</span>
+  </div>`;
+  }
+  function fullscreenPreviewMarkup() {
+    if (previewMode === "type") {
+      const face = getTypefacesForGrid()[currentTypeIndex];
+      return face ? fullscreenTypeMarkup(face) : "";
+    }
+    if (previewMode === "lockup") {
+      const combination = lockupCombinations[currentLockupIndex];
+      return combination ? lockupCombinationMarkup(combination) : "";
+    }
+    return lockupMode ? lockupMarkup(currentLogoId) : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(currentLogoId)}</span>`;
+  }
+  function fullscreenPreviewLabel() {
+    if (previewMode === "type") {
+      const face = getTypefacesForGrid()[currentTypeIndex];
+      return face?.family ?? "Type specimen";
+    }
+    if (previewMode === "lockup") {
+      const combination = lockupCombinations[currentLockupIndex];
+      return combination ? lockupLabel(combination) : "Lockup preview";
+    }
+    const name = logoName(currentLogoId);
+    return lockupMode ? `${name} lockup with EEG text` : name;
+  }
+  function fullscreenDialogLabel() {
+    if (previewMode === "type") return "Selected typeface preview";
+    if (previewMode === "lockup") return "Selected lockup preview";
+    return "Selected logo preview";
+  }
+  function fitFullscreenType() {
+    const specimen = fullscreenLogo.querySelector(".fullscreen-type-specimen");
+    if (!specimen || !dialog.open || previewMode !== "type") return;
+    const box = fullscreenLogo.getBoundingClientRect();
+    if (!box.width || !box.height) return;
+    const family = specimen.dataset.fontFamily || "sans-serif";
+    const weight = specimen.dataset.fontWeight || "400";
+    const sample = specimen.textContent || lockupText;
+    let fontSize = Math.min(box.height * 0.5, box.width * 0.35, 220);
+    let ink = measureTypeInk(family, weight, fontSize, sample);
+    if (ink) {
+      const fit = Math.min(
+        1,
+        box.width * 0.85 / ink.width,
+        box.height * 0.72 / ink.height
+      );
+      if (fit < 1) fontSize *= fit;
+    }
+    specimen.style.fontSize = `${Math.max(1, Math.round(fontSize))}px`;
+  }
+  function scheduleFullscreenTypeLayout() {
+    window.requestAnimationFrame(() => {
+      fitFullscreenType();
+      document.fonts?.ready?.then(() => fitFullscreenType());
+    });
   }
   function measureLockupText(fontSize, fontFamily, fontWeight = 700) {
     const context = lockupCanvas.getContext("2d");
@@ -25943,16 +27525,16 @@ void main() {
     return cropLockupSvg(svg);
   }
   function updateLockupLayout() {
-    if (!dialog.open || !lockupMode) return;
+    if (!dialog.open || !isFullscreenLockup()) return;
     const markAspect = cropLockupSvgToArtwork();
     const box = fullscreenLogo.getBoundingClientRect();
     if (!box.width || !box.height) return;
-    const fontFamily = selectedFontFamily();
+    const { family: fontFamily, weight: fontWeight } = lockupLayoutTypeface();
     const maxWidth = box.width * 0.9;
     const maxHeight = box.height * 0.62;
     let fontSize = Math.min(maxHeight, maxWidth * 0.28);
     for (let pass = 0; pass < 5; pass += 1) {
-      const textMetrics2 = measureLockupText(fontSize, fontFamily);
+      const textMetrics2 = measureLockupText(fontSize, fontFamily, fontWeight);
       const markHeight2 = fontSize * 1.02;
       const markWidth2 = markHeight2 * markAspect;
       const gap2 = Math.min(84, Math.max(22, fontSize * 0.27));
@@ -25961,7 +27543,7 @@ void main() {
       const scale = Math.min(1, maxWidth / totalWidth, maxHeight / totalHeight);
       fontSize *= scale;
     }
-    const textMetrics = measureLockupText(fontSize, fontFamily);
+    const textMetrics = measureLockupText(fontSize, fontFamily, fontWeight);
     const markHeight = fontSize * 1.02;
     const markWidth = markHeight * markAspect;
     const gap = Math.min(84, Math.max(22, fontSize * 0.27));
@@ -25974,22 +27556,25 @@ void main() {
   function scheduleLockupLayout() {
     window.requestAnimationFrame(() => {
       updateLockupLayout();
-      if (dialog.open && lockupMode && currentShaderIndex >= 0) mountFullscreenShader();
+      if (dialog.open && isFullscreenLockup() && currentShaderIndex >= 0) mountFullscreenShader();
       document.fonts?.ready?.then(() => {
         updateLockupLayout();
-        if (dialog.open && lockupMode && currentShaderIndex >= 0) mountFullscreenShader();
+        if (dialog.open && isFullscreenLockup() && currentShaderIndex >= 0) mountFullscreenShader();
       });
     });
   }
-  function renderFullscreenLogo() {
-    fullscreenLogo.classList.toggle("is-lockup", lockupMode);
-    fullscreenLogo.innerHTML = fullscreenMarkup(currentLogoId);
-    const name = logoName(currentLogoId);
-    fullscreenLogo.setAttribute(
-      "aria-label",
-      lockupMode ? `${name} lockup with EEG text` : name
-    );
-    if (lockupMode) {
+  function renderFullscreenPreview() {
+    fullscreenLogo.classList.toggle("is-lockup", isFullscreenLockup());
+    fullscreenLogo.classList.toggle("is-type", previewMode === "type");
+    fullscreenLogo.innerHTML = fullscreenPreviewMarkup();
+    fullscreenLogo.setAttribute("aria-label", fullscreenPreviewLabel());
+    dialog.setAttribute("aria-label", fullscreenDialogLabel());
+    if (previewMode === "type") {
+      disposeFullscreenShader();
+      scheduleFullscreenTypeLayout();
+      return;
+    }
+    if (isFullscreenLockup()) {
       disposeFullscreenShader();
       updateLockupLayout();
       scheduleLockupLayout();
@@ -26002,7 +27587,55 @@ void main() {
     const normalizedId = logoId(id);
     if (!uploadedLogos.has(normalizedId)) return;
     currentLogoId = normalizedId;
-    renderFullscreenLogo();
+    renderFullscreenPreview();
+  }
+  function showTypeByIndex(index) {
+    const faces = getTypefacesForGrid();
+    if (!faces[index]) return;
+    currentTypeIndex = index;
+    const face = faces[index];
+    ensureTypefaceLoaded(face).then(() => {
+      if (dialog.open && previewMode === "type" && currentTypeIndex === index) {
+        renderFullscreenPreview();
+      }
+    });
+    renderFullscreenPreview();
+  }
+  function showLockupByIndex(index) {
+    const combination = lockupCombinations[index];
+    if (!combination) return;
+    currentLockupIndex = index;
+    const face = getTypefaces()[combination.typeIndex];
+    const finish = () => {
+      if (dialog.open && previewMode === "lockup" && currentLockupIndex === index) {
+        renderFullscreenPreview();
+      }
+    };
+    if (face) {
+      ensureTypefaceLoaded(face).then(finish);
+    } else {
+      finish();
+    }
+    renderFullscreenPreview();
+  }
+  function showAdjacentPreview(offset) {
+    if (previewMode === "type") {
+      const order = getTypeGridSourceIndices();
+      if (!order.length) return;
+      const position = Math.max(0, order.indexOf(currentTypeIndex));
+      const nextPosition = ((position + offset) % order.length + order.length) % order.length;
+      showTypeByIndex(order[nextPosition]);
+      return;
+    }
+    if (previewMode === "lockup") {
+      const order = getLockupSourceIndices();
+      if (!order.length) return;
+      const position = Math.max(0, order.indexOf(currentLockupIndex));
+      const nextPosition = ((position + offset) % order.length + order.length) % order.length;
+      showLockupByIndex(order[nextPosition]);
+      return;
+    }
+    showAdjacentLogo(offset);
   }
   function showAdjacentLogo(offset) {
     const order = tileOrder();
@@ -26014,25 +27647,45 @@ void main() {
   function openLogoDialog(id) {
     if (!uploadedLogos.has(logoId(id))) return;
     document.activeElement?.blur?.();
+    previewMode = "logo";
     lockupMode = false;
+    currentTypeIndex = -1;
+    currentLockupIndex = -1;
     showLogoById(id);
     dialog.showModal();
     dialog.focus({ preventScroll: true });
     mountFullscreenShader();
   }
+  function openTypeDialog(index) {
+    const faces = getTypefacesForGrid();
+    if (!faces[index]) return;
+    document.activeElement?.blur?.();
+    previewMode = "type";
+    lockupMode = false;
+    currentLockupIndex = -1;
+    showTypeByIndex(index);
+    dialog.showModal();
+    dialog.focus({ preventScroll: true });
+  }
+  function openLockupDialog(index) {
+    if (!lockupCombinations[index]) return;
+    document.activeElement?.blur?.();
+    previewMode = "lockup";
+    lockupMode = false;
+    currentTypeIndex = -1;
+    showLockupByIndex(index);
+    dialog.showModal();
+    dialog.focus({ preventScroll: true });
+  }
   function createLogoTile(id, name, position) {
     const tile = document.createElement("figure");
     const button = document.createElement("button");
     const logo = document.createElement("span");
-    const voteControls = document.createElement("figcaption");
-    const upButton = document.createElement("button");
-    const downButton = document.createElement("button");
     tile.className = "logo-tile";
     tile.dataset.logoIndex = String(id);
     tile.dataset.logoId = logoId(id);
     tile.dataset.logoName = name;
     tile.dataset.sortIndex = String(position);
-    tile.dataset.vote = "0";
     button.className = "logo-button";
     button.type = "button";
     button.setAttribute("aria-pressed", "false");
@@ -26040,17 +27693,6 @@ void main() {
     logo.className = "logo-art";
     logo.setAttribute("aria-hidden", "true");
     logo.innerHTML = logoMarkup(id);
-    voteControls.className = "vote-controls";
-    upButton.className = "vote-button vote-button--up";
-    upButton.type = "button";
-    upButton.disabled = !canVote;
-    upButton.dataset.voteValue = "1";
-    upButton.setAttribute("aria-label", `Upvote ${name}`);
-    downButton.className = "vote-button vote-button--down";
-    downButton.type = "button";
-    downButton.disabled = !canVote;
-    downButton.dataset.voteValue = "-1";
-    downButton.setAttribute("aria-label", `Downvote ${name}`);
     button.addEventListener("pointerdown", (event) => {
       if (!mobileDialogMedia.matches || !event.isPrimary) return;
       mobileLogoSwipe = {
@@ -26097,17 +27739,8 @@ void main() {
       }
       openLogoDialog(id);
     });
-    [upButton, downButton].forEach((voteButton) => {
-      voteButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setLogoVote(logoId(id), Number(voteButton.dataset.voteValue));
-      });
-    });
     button.append(logo);
-    voteControls.append(upButton, downButton);
     tile.append(button);
-    tile.append(voteControls);
     attachGridLockControl(
       tile,
       "Logos",
@@ -26253,7 +27886,6 @@ void main() {
     uploadPanel.removeAttribute("aria-busy");
     uploadInput.value = "";
     updateUploadUi();
-    applyVoteState();
     syncBrandTabView();
     syncLogoGridPresentation();
     const addedMessage = added ? `${added} ${added === 1 ? "logo" : "logos"} added` : "Upload complete";
@@ -26268,18 +27900,38 @@ void main() {
       createLogoTile(id, name, grid.children.length);
       if (!currentLogoId) currentLogoId = id;
     });
+    logoPlaceholdersChosen = true;
     updateUploadUi();
-    applyVoteState();
     syncBrandTabView();
     syncLogoGridPresentation();
     uploadFeedback.textContent = `${coolshapePlaceholders.length} Coolshapes placeholders added`;
     setStatus(uploadFeedback.textContent);
+    saveSessionState();
   }
   function openFilePicker() {
     uploadInput.click();
   }
   function openTypeFilePicker() {
     typeUploadInput.click();
+  }
+  function openLockupFilePicker() {
+    if (uploadedLogos.size === 0) {
+      openFilePicker();
+      return;
+    }
+    openTypeFilePicker();
+  }
+  function bindUploadEmptyPanel(panel, openPicker) {
+    panel.addEventListener("click", (event) => {
+      if (event.target.closest(".placeholder-link, .brand-tab-link")) return;
+      openPicker();
+    });
+    panel.addEventListener("keydown", (event) => {
+      if (event.target !== panel) return;
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openPicker();
+    });
   }
   function fontExtension(fileName) {
     const match = fileName.toLowerCase().match(/\.([a-z0-9]+)$/);
@@ -26306,11 +27958,21 @@ void main() {
     if (named === "normal") return 400;
     return 400;
   }
+  function revealLockupCatalog() {
+    if (lockupCatalogRevealed) return;
+    lockupCatalogRevealed = true;
+    lockupCatalogChosen = true;
+    syncBrandTabView();
+    setStatus("Exploring sample lockups");
+    saveSessionState();
+  }
   function revealTypeCatalog() {
     if (typeCatalogRevealed) return;
     typeCatalogRevealed = true;
+    typeCatalogChosen = true;
     syncBrandTabView();
     setStatus("Exploring open-source typefaces");
+    saveSessionState();
   }
   function refreshTypeGrid() {
     typeTilePool.forEach((tile) => tile.remove());
@@ -26372,6 +28034,11 @@ void main() {
       dropOverlayHint.textContent = "WOFF, WOFF2, TTF, or OTF";
       return;
     }
+    if (activeBrandTab === "Lockups" && !lockupsReady()) {
+      dropOverlayTitle.textContent = "Drop to add logos or fonts";
+      dropOverlayHint.textContent = "SVG, WOFF, WOFF2, TTF, or OTF";
+      return;
+    }
     dropOverlayTitle.textContent = "Drop to add logos";
     dropOverlayHint.textContent = "SVG files only";
   }
@@ -26383,47 +28050,346 @@ void main() {
     dropOverlay.hidden = true;
     document.body.classList.remove("is-dragging-files");
   }
-  uploadButton.addEventListener("click", openFilePicker);
-  typeUploadButton.addEventListener("click", openTypeFilePicker);
   placeholderButton.addEventListener("click", populatePlaceholderLogos);
   typeExploreButton.addEventListener("click", revealTypeCatalog);
-  uploadAddButton.addEventListener("click", openFilePicker);
+  lockupTryButton.addEventListener("click", revealLockupCatalog);
+  bindUploadEmptyPanel(uploadEmpty, openFilePicker);
+  bindUploadEmptyPanel(typeUploadEmpty, openTypeFilePicker);
+  bindUploadEmptyPanel(lockupUploadEmpty, openLockupFilePicker);
+  bindBrandTabLinks(lockupUploadEmpty);
   uploadInput.addEventListener("change", () => addLogoFiles(uploadInput.files));
   typeUploadInput.addEventListener("change", () => addFontFiles(typeUploadInput.files));
+  function selectBrandTabByName(tabName) {
+    const button = brandTabButtons.find((entry) => brandTabName(entry) === tabName);
+    if (button) selectBrandTab(button);
+  }
+  function bindBrandTabLinks(container) {
+    container.querySelectorAll("[data-brand-tab]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        selectBrandTabByName(link.dataset.brandTab);
+      });
+    });
+  }
+  var keyboardGridSelection = null;
+  function isActiveBrandGridVisible() {
+    if (activeBrandTab === "Logos") return !grid.hidden;
+    if (activeBrandTab === "Type") return !typeGrid.hidden;
+    if (activeBrandTab === "Colors") return !colorGrid.hidden && colorCombinations.length > 0;
+    if (activeBrandTab === "Lockups") return !lockupGrid.hidden && lockupCombinations.length > 0;
+    return false;
+  }
+  function canUseGridKeyboardNav(event) {
+    if (dialog.open) return false;
+    if (!BRAND_TABS.has(activeBrandTab)) return false;
+    if (!isActiveBrandGridVisible()) return false;
+    if (colorDragSession) return false;
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return false;
+    if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return false;
+    if (target.isContentEditable || target.closest('[contenteditable="true"]')) return false;
+    if (target.closest(".brand-tab")) return false;
+    if (target.closest(".grid-filter")) return false;
+    if (target.closest(".grid-action")) return false;
+    if (target.closest(".access-panel")) return false;
+    if (accessPanel && !accessPanel.hidden) return false;
+    return true;
+  }
+  function getVisibleLogoTiles() {
+    return [...grid.querySelectorAll(".logo-tile")].filter((tile) => !tile.hidden);
+  }
+  function getKeyboardGridNavMetrics(tab = activeBrandTab) {
+    if (tab === "Colors") {
+      const rowCount = getColorRowSourceIndices().length;
+      return { columns: 4, count: rowCount * 4 };
+    }
+    if (tab === "Logos") {
+      const tiles = getVisibleLogoTiles();
+      return { columns: gridBaseColumns(), count: tiles.length };
+    }
+    if (tab === "Type") {
+      const indices = getTypeGridSourceIndices();
+      return { columns: Math.max(1, typeGridColumns()), count: indices.length };
+    }
+    if (tab === "Lockups") {
+      const indices = getLockupSourceIndices();
+      return { columns: Math.max(1, lockupGridColumns()), count: indices.length };
+    }
+    return { columns: 1, count: 0 };
+  }
+  function keyboardSelectionToFlatIndex(selection) {
+    if (!selection) return -1;
+    if (selection.tab === "Colors") {
+      const indices = getColorRowSourceIndices();
+      const displayRow = indices.indexOf(selection.rowSourceIndex);
+      if (displayRow < 0) return -1;
+      return displayRow * 4 + selection.swatchIndex;
+    }
+    if (selection.tab === "Logos") {
+      const tiles = getVisibleLogoTiles();
+      return tiles.findIndex((tile) => tile.dataset.logoId === selection.logoId);
+    }
+    if (selection.tab === "Type") {
+      return getTypeGridSourceIndices().indexOf(selection.typeIndex);
+    }
+    if (selection.tab === "Lockups") {
+      return getLockupSourceIndices().indexOf(selection.lockupIndex);
+    }
+    return -1;
+  }
+  function flatIndexToKeyboardSelection(tab, flatIndex) {
+    if (flatIndex < 0) return null;
+    if (tab === "Colors") {
+      const indices = getColorRowSourceIndices();
+      const displayRow = Math.floor(flatIndex / 4);
+      const swatchIndex = flatIndex % 4;
+      const rowSourceIndex = indices[displayRow];
+      if (rowSourceIndex == null || swatchIndex > 3) return null;
+      return { tab, rowSourceIndex, swatchIndex };
+    }
+    if (tab === "Logos") {
+      const tile = getVisibleLogoTiles()[flatIndex];
+      if (!tile) return null;
+      return { tab, logoId: tile.dataset.logoId };
+    }
+    if (tab === "Type") {
+      const typeIndex = getTypeGridSourceIndices()[flatIndex];
+      if (typeIndex == null) return null;
+      return { tab, typeIndex };
+    }
+    if (tab === "Lockups") {
+      const lockupIndex = getLockupSourceIndices()[flatIndex];
+      if (lockupIndex == null) return null;
+      return { tab, lockupIndex };
+    }
+    return null;
+  }
+  function navigateGridFlatIndex(current, columns, count, key) {
+    if (count <= 0) return -1;
+    if (current < 0) {
+      return key === "ArrowLeft" || key === "ArrowUp" ? count - 1 : 0;
+    }
+    const row = Math.floor(current / columns);
+    const col = current % columns;
+    const rowCount = Math.ceil(count / columns);
+    let nextRow = row;
+    let nextCol = col;
+    if (key === "ArrowLeft") {
+      if (col > 0) nextCol = col - 1;
+      else {
+        nextRow = row > 0 ? row - 1 : rowCount - 1;
+        nextCol = columns - 1;
+      }
+    } else if (key === "ArrowRight") {
+      if (col < columns - 1 && current + 1 < count) nextCol = col + 1;
+      else {
+        nextRow = row < rowCount - 1 ? row + 1 : 0;
+        nextCol = 0;
+      }
+    } else if (key === "ArrowUp") {
+      nextRow = row > 0 ? row - 1 : rowCount - 1;
+    } else if (key === "ArrowDown") {
+      nextRow = row < rowCount - 1 ? row + 1 : 0;
+    }
+    let next = nextRow * columns + nextCol;
+    if (next >= count) {
+      if (key === "ArrowUp" || key === "ArrowDown") {
+        next = Math.min((rowCount - 1) * columns + nextCol, count - 1);
+      } else {
+        next = count - 1;
+      }
+    }
+    return next;
+  }
+  function getKeyboardSelectionElement() {
+    if (!keyboardGridSelection) return null;
+    const { tab } = keyboardGridSelection;
+    if (tab === "Colors") {
+      const { rowSourceIndex, swatchIndex } = keyboardGridSelection;
+      const row = colorRowPool.get(rowSourceIndex);
+      return row?.querySelectorAll(".color-swatch")[swatchIndex] ?? null;
+    }
+    if (tab === "Logos") {
+      const tile = grid.querySelector(`.logo-tile[data-logo-id="${keyboardGridSelection.logoId}"]`);
+      return tile?.hidden ? null : tile;
+    }
+    if (tab === "Type") {
+      return typeTilePool.get(keyboardGridSelection.typeIndex) ?? null;
+    }
+    if (tab === "Lockups") {
+      return lockupTilePool.get(keyboardGridSelection.lockupIndex) ?? null;
+    }
+    return null;
+  }
+  function clearKeyboardGridSelection() {
+    document.querySelectorAll(".is-keyboard-selected").forEach((element) => {
+      element.classList.remove("is-keyboard-selected");
+    });
+    keyboardGridSelection = null;
+  }
+  function syncKeyboardGridSelection() {
+    document.querySelectorAll(".is-keyboard-selected").forEach((element2) => {
+      element2.classList.remove("is-keyboard-selected");
+    });
+    if (!keyboardGridSelection || keyboardGridSelection.tab !== activeBrandTab) return;
+    const element = getKeyboardSelectionElement();
+    if (!element) {
+      keyboardGridSelection = null;
+      return;
+    }
+    element.classList.add("is-keyboard-selected");
+    if (element.classList.contains("color-swatch")) {
+      ensureColorNames([element.dataset.colorHex]);
+      positionColorSwatchLockControl(element);
+      return;
+    }
+    if (element.classList.contains("logo-tile") || element.classList.contains("type-tile") || element.classList.contains("lockup-tile")) {
+      positionGridLockControl(element);
+    }
+  }
+  function scrollVirtualGridToOffset(gridElement, offsetTop, callback) {
+    const gridTop = gridElement.getBoundingClientRect().top + window.scrollY;
+    const target = gridTop + offsetTop - window.innerHeight * 0.35;
+    window.scrollTo({ top: Math.max(0, target) });
+    requestAnimationFrame(() => {
+      callback();
+      const element = getKeyboardSelectionElement();
+      element?.scrollIntoView({ block: "nearest", inline: "nearest" });
+      syncKeyboardGridSelection();
+    });
+  }
+  function scrollKeyboardSelectionIntoView() {
+    if (!keyboardGridSelection) return;
+    const { tab } = keyboardGridSelection;
+    if (tab === "Colors") {
+      const indices = getColorRowSourceIndices();
+      const displayRow = indices.indexOf(keyboardGridSelection.rowSourceIndex);
+      if (displayRow < 0) return;
+      const metrics = measureColorGridMetrics();
+      scrollVirtualGridToOffset(colorGrid, displayRow * metrics.rowStride, () => {
+        updateColorGridWindow(true);
+      });
+      return;
+    }
+    if (tab === "Type") {
+      const indices = getTypeGridSourceIndices();
+      const displayIndex = indices.indexOf(keyboardGridSelection.typeIndex);
+      if (displayIndex < 0) return;
+      const metrics = measureTypeGridMetrics();
+      const top = Math.floor(displayIndex / metrics.columns) * metrics.cellSize;
+      scrollVirtualGridToOffset(typeGrid, top, () => {
+        updateTypeGridWindow(true);
+      });
+      return;
+    }
+    if (tab === "Lockups") {
+      const indices = getLockupSourceIndices();
+      const displayIndex = indices.indexOf(keyboardGridSelection.lockupIndex);
+      if (displayIndex < 0) return;
+      const metrics = measureLockupGridMetrics();
+      const top = Math.floor(displayIndex / metrics.columns) * metrics.cellSize;
+      scrollVirtualGridToOffset(lockupGrid, top, () => {
+        updateLockupGridWindow(true);
+      });
+      return;
+    }
+    if (tab === "Logos") {
+      getKeyboardSelectionElement()?.scrollIntoView({ block: "nearest", inline: "nearest" });
+      syncKeyboardGridSelection();
+    }
+  }
+  function navigateKeyboardGrid(key) {
+    const tab = activeBrandTab;
+    const { columns, count } = getKeyboardGridNavMetrics(tab);
+    if (count <= 0) return;
+    const currentFlat = keyboardGridSelection?.tab === tab ? keyboardSelectionToFlatIndex(keyboardGridSelection) : -1;
+    const nextFlat = navigateGridFlatIndex(currentFlat, columns, count, key);
+    keyboardGridSelection = flatIndexToKeyboardSelection(tab, nextFlat);
+    scrollKeyboardSelectionIntoView();
+    syncKeyboardGridSelection();
+  }
+  function lockKeyboardGridSelection() {
+    const element = getKeyboardSelectionElement();
+    const lockButton = element?.querySelector(".grid-lock-control");
+    lockButton?.click();
+  }
+  function validateKeyboardGridSelection() {
+    if (!keyboardGridSelection) return;
+    if (keyboardGridSelection.tab !== activeBrandTab) {
+      clearKeyboardGridSelection();
+      return;
+    }
+    if (keyboardSelectionToFlatIndex(keyboardGridSelection) < 0) {
+      clearKeyboardGridSelection();
+      return;
+    }
+    syncKeyboardGridSelection();
+  }
   function selectBrandTab(selectedButton, shouldFocus = false) {
-    const nextTab = selectedButton.textContent.trim();
-    const leavingColors = activeBrandTab === "Colors" && nextTab !== "Colors";
-    const enteringColors = activeBrandTab !== "Colors" && nextTab === "Colors";
-    if (leavingColors) restorePaletteBeforeColors();
-    if (enteringColors) stashPaletteBeforeColors();
+    if (isBrandTabDisabled(selectedButton)) return;
+    const nextTab = brandTabName(selectedButton);
+    if (nextTab !== activeBrandTab) clearKeyboardGridSelection();
     brandTabButtons.forEach((button) => {
       const isSelected = button === selectedButton;
       button.setAttribute("aria-pressed", String(isSelected));
-      button.tabIndex = isSelected ? 0 : -1;
+      if (!isBrandTabDisabled(button)) button.tabIndex = isSelected ? 0 : -1;
     });
     activeBrandTab = nextTab;
     syncBrandTabView();
     if (shouldFocus) selectedButton.focus();
     setStatus(`${activeBrandTab} tab selected`);
+    saveSessionState();
   }
   brandTabButtons.forEach((button, index) => {
-    button.addEventListener("click", () => selectBrandTab(button));
+    button.addEventListener("click", () => {
+      if (isBrandTabDisabled(button)) return;
+      selectBrandTab(button);
+    });
     button.addEventListener("keydown", (event) => {
       let nextIndex = index;
       if (event.key === "ArrowRight") {
-        nextIndex = (index + 1) % brandTabButtons.length;
+        nextIndex = nextEnabledBrandTabIndex(index, 1);
       } else if (event.key === "ArrowLeft") {
-        nextIndex = (index - 1 + brandTabButtons.length) % brandTabButtons.length;
+        nextIndex = nextEnabledBrandTabIndex(index, -1);
       } else if (event.key === "Home") {
-        nextIndex = 0;
+        nextIndex = firstEnabledBrandTabIndex();
       } else if (event.key === "End") {
-        nextIndex = brandTabButtons.length - 1;
+        nextIndex = lastEnabledBrandTabIndex();
       } else {
         return;
       }
       event.preventDefault();
       selectBrandTab(brandTabButtons[nextIndex], true);
     });
+  });
+  gridFilters?.addEventListener("click", (event) => {
+    const button = event.target.closest(".grid-filter");
+    if (!button || !gridFilters.contains(button)) return;
+    const tab = button.closest(".grid-filter-panel")?.dataset.gridFilterTab;
+    const filter = button.dataset.filter;
+    if (!tab || !filter) return;
+    setGridFilter(tab, filter);
+  });
+  gridActions?.querySelectorAll(".grid-action").forEach((button) => {
+    button.addEventListener("click", () => {
+      const tab = button.closest(".grid-action-panel")?.dataset.tab;
+      const action = button.dataset.action;
+      if (!tab || !action) return;
+      handleGridAction(tab, action);
+      button.blur();
+    });
+  });
+  lockedImportInput?.addEventListener("change", async () => {
+    const file = lockedImportInput.files?.[0];
+    const tab = pendingImportTab;
+    pendingImportTab = null;
+    lockedImportInput.value = "";
+    if (!file || !tab) return;
+    try {
+      await importLockedForTab(tab, file);
+    } catch {
+      setStatus(`Could not import ${tab.toLowerCase()}`);
+    }
   });
   document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
   document.addEventListener("dragenter", (event) => {
@@ -26451,6 +28417,15 @@ void main() {
     hideDropOverlay();
     if (activeBrandTab === "Type") {
       addFontFiles(files);
+      return;
+    }
+    if (activeBrandTab === "Lockups" && !lockupsReady()) {
+      const logoFiles = [...files].filter((file) => {
+        return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
+      });
+      const fontFiles = [...files].filter((file) => isFontFile(file));
+      if (logoFiles.length) addLogoFiles(logoFiles);
+      if (fontFiles.length) addFontFiles(fontFiles);
       return;
     }
     addLogoFiles(files);
@@ -26486,46 +28461,12 @@ void main() {
     }
     authForm.hidden = false;
   }
-  function setVotingEnabled(enabled) {
-    canVote = Boolean(enabled);
-    grid.querySelectorAll(".vote-button").forEach((button) => {
-      button.disabled = !canVote;
-    });
-  }
-  function applyVoteState() {
-    grid.querySelectorAll(".logo-tile").forEach((tile) => {
-      const vote = clientVotes.get(tile.dataset.logoId) ?? 0;
-      tile.dataset.vote = String(vote);
-      tile.classList.toggle("has-upvote", vote === 1);
-      tile.classList.toggle("has-downvote", vote === -1);
-      tile.querySelector(".vote-button--up")?.setAttribute("aria-pressed", String(vote === 1));
-      tile.querySelector(".vote-button--down")?.setAttribute("aria-pressed", String(vote === -1));
-    });
-  }
   function syncLogoGridPresentation() {
     updateFaviconForTopLogo();
     scheduleLogoShaderMask();
     schedulePerIconShaderSync();
+    applyLogoGridFilter();
     requestAnimationFrame(syncBrandGridOffset);
-  }
-  function moveLogoTile(id, direction) {
-    const tile = [...grid.querySelectorAll(".logo-tile")].find((candidate) => candidate.dataset.logoId === id);
-    if (!tile) return;
-    if (direction > 0) {
-      const previousTile = tile.previousElementSibling;
-      if (previousTile) grid.insertBefore(tile, previousTile);
-    } else if (direction < 0) {
-      const nextTile = tile.nextElementSibling;
-      if (nextTile) grid.insertBefore(nextTile, tile);
-    }
-    syncLogoGridPresentation();
-  }
-  function renderVotes() {
-    applyVoteState();
-    syncLogoGridPresentation();
-    const upvotes = [...clientVotes.values()].filter((vote) => vote === 1).length;
-    const downvotes = [...clientVotes.values()].filter((vote) => vote === -1).length;
-    setStatus(`${upvotes} up / ${downvotes} down`);
   }
   async function handleAuthSubmit(event) {
     event.preventDefault();
@@ -26558,50 +28499,15 @@ void main() {
     }
     return Boolean(data);
   }
-  async function loadClientVotes() {
-    if (!supabase || !session?.user) return;
-    const { data, error } = await supabase.from("logo_votes").select("logo_id,vote").eq("project_id", projectId).eq("user_id", session.user.id);
-    if (error) {
-      setStatus(error.message);
-      return;
-    }
-    clientVotes = new Map((data ?? []).map((row) => [row.logo_id, row.vote]));
-    renderVotes();
-  }
   async function refreshClientState() {
     currentProfile = await loadProfile();
     syncAccessUi();
     const member = await loadMembership();
-    setVotingEnabled(member);
     if (!member && !isAdmin()) {
-      clientVotes = /* @__PURE__ */ new Map();
-      renderVotes();
       setStatus("Project access pending");
       return;
     }
-    await loadClientVotes();
     if (isAdminRoute) await loadAdminResults();
-  }
-  async function setLogoVote(id, nextVote) {
-    if (!supabase || !session?.user || !canVote) return;
-    const nextValue = nextVote;
-    setVotingEnabled(false);
-    const { error } = await supabase.from("logo_votes").upsert({
-      project_id: projectId,
-      user_id: session.user.id,
-      logo_id: id,
-      vote: nextValue
-    }, { onConflict: "project_id,user_id,logo_id" });
-    if (error) {
-      setStatus(error.message);
-      setVotingEnabled(true);
-      return;
-    }
-    clientVotes.set(id, nextValue);
-    moveLogoTile(id, nextValue);
-    renderVotes();
-    setVotingEnabled(true);
-    if (isAdminRoute && isAdmin()) await loadAdminResults();
   }
   function summarizeAdminVotes(rows) {
     const summaries = new Map(tileOrder().map((id) => [
@@ -26702,18 +28608,11 @@ void main() {
     session = data.session;
     syncAccessUi();
     supabase.auth.onAuthStateChange((event, nextSession) => {
-      const wasSignedOut = !session;
       session = nextSession;
-      const shouldOpenInfo = event === "SIGNED_IN" && wasSignedOut && Boolean(session);
       currentProfile = null;
-      clientVotes = /* @__PURE__ */ new Map();
-      setVotingEnabled(false);
-      if (shouldOpenInfo) openInfoDialog();
       syncAccessUi();
       if (session) {
         refreshClientState();
-      } else {
-        renderVotes();
       }
     });
     if (session) await refreshClientState();
@@ -26727,27 +28626,143 @@ void main() {
     });
     setStatus("Selection cleared");
   }
+  function ensureColorCombinations() {
+    if (!colorCombinations.length) {
+      colorCombinations = buildColorCombinations();
+    }
+  }
+  function randomizePaletteFromCombinations() {
+    if (bwModeActive) return false;
+    const pool = getActiveColorPool();
+    if (pool.filter === "locked") {
+      if (!pool.colors.length) return false;
+      applyPalette(paletteFromCombination({ colors: pool.colors, source: "Locked" }));
+      return true;
+    }
+    if (pool.filter !== "all") {
+      if (pool.combinations?.length) {
+        const combination2 = pool.combinations[Math.floor(Math.random() * pool.combinations.length)];
+        applyPalette(paletteFromCombination(combination2));
+        return true;
+      }
+      if (!pool.colors?.length) return false;
+      applyPalette(paletteFromCombination({ colors: pool.colors, source: pool.filter }));
+      return true;
+    }
+    if (!pool.combinations?.length) return false;
+    const combination = pool.combinations[Math.floor(Math.random() * pool.combinations.length)];
+    applyPalette(paletteFromCombination(combination));
+    return true;
+  }
+  function pickRandomDifferent(pool, current) {
+    if (!pool.length) return void 0;
+    if (pool.length === 1) return pool[0];
+    const others = pool.filter((item) => item !== current);
+    return randomFrom(others.length ? others : pool);
+  }
+  function getDialogLockupPool() {
+    const logoSet = new Set(getLockupLogoIds());
+    const typeSet = new Set(getLockupTypeIndices());
+    return getLockupSourceIndices().filter((index) => {
+      const combination = lockupCombinations[index];
+      if (!combination) return false;
+      return logoSet.has(combination.logoId) && typeSet.has(combination.typeIndex);
+    });
+  }
+  function randomizeDialogPreview() {
+    if (!dialog.open) return;
+    const paletteOk = randomizePaletteFromCombinations();
+    let itemOk = false;
+    if (previewMode === "type") {
+      const pool2 = getTypeGridSourceIndices();
+      const next2 = pickRandomDifferent(pool2, currentTypeIndex);
+      if (next2 !== void 0) {
+        showTypeByIndex(next2);
+        itemOk = true;
+      }
+      if (itemOk && paletteOk) {
+        setStatus("Randomized typeface and palette");
+      } else if (itemOk) {
+        setStatus(emptyColorsFilterStatus("randomized typeface") ?? "Randomized typeface");
+      } else {
+        setStatus(paletteOk ? "Randomized palette" : emptyColorsFilterStatus() ?? "Nothing to randomize");
+      }
+      return;
+    }
+    if (previewMode === "lockup") {
+      const pool2 = getDialogLockupPool();
+      const next2 = pickRandomDifferent(pool2, currentLockupIndex);
+      if (next2 !== void 0) {
+        showLockupByIndex(next2);
+        itemOk = true;
+      }
+      if (itemOk && paletteOk) {
+        setStatus("Randomized lockup and palette");
+      } else if (itemOk) {
+        setStatus(emptyColorsFilterStatus("randomized lockup") ?? "Randomized lockup");
+      } else {
+        setStatus(paletteOk ? "Randomized palette" : emptyColorsFilterStatus() ?? "Nothing to randomize");
+      }
+      return;
+    }
+    const pool = getVisibleLogoTiles().map((tile) => tile.dataset.logoId);
+    const next = pickRandomDifferent(pool, currentLogoId);
+    if (next !== void 0) {
+      showLogoById(next);
+      itemOk = true;
+    }
+    if (itemOk && paletteOk) {
+      setStatus("Randomized logo and palette");
+    } else if (itemOk) {
+      setStatus(emptyColorsFilterStatus("randomized logo") ?? "Randomized logo");
+    } else {
+      setStatus(paletteOk ? "Randomized palette" : emptyColorsFilterStatus() ?? "Nothing to randomize");
+    }
+  }
   function randomizeActiveTab() {
     if (activeBrandTab === "Colors") {
       renderColorGrid();
-      setStatus("Randomized color combinations");
+      const paletteOk2 = randomizePaletteFromCombinations();
+      if (paletteOk2) {
+        setStatus("Randomized color combinations and palette");
+      } else {
+        setStatus(emptyColorsFilterStatus("randomized color combinations") ?? "Randomized color combinations");
+      }
       return;
     }
     if (activeBrandTab === "Lockups") {
+      if (!lockupsReady()) return;
+      const paletteOk2 = randomizePaletteFromCombinations();
       renderLockupGrid();
-      setStatus("Randomized lockup combinations");
+      if (paletteOk2) {
+        setStatus("Randomized lockup combinations and palette");
+      } else {
+        setStatus(emptyColorsFilterStatus("randomized lockups") ?? "Randomized lockup combinations");
+      }
       return;
     }
     if (activeBrandTab === "Type") {
       if (!typeCatalogRevealed) revealTypeCatalog();
+      const paletteOk2 = randomizePaletteFromCombinations();
       shuffleTypeDisplayOrder();
       refreshTypeGrid();
-      setStatus("Randomized typefaces");
+      if (paletteOk2) {
+        setStatus("Randomized typefaces and palette");
+      } else {
+        setStatus(emptyColorsFilterStatus("randomized typefaces") ?? "Randomized typefaces");
+      }
       return;
     }
     if (activeBrandTab !== "Logos") return;
     const tiles = [...grid.querySelectorAll(".logo-tile")];
-    if (tiles.length < 2) return;
+    if (tiles.length < 2) {
+      const paletteOk2 = randomizePaletteFromCombinations();
+      updateFaviconForTopLogo();
+      syncLogoGridPresentation();
+      setStatus(paletteOk2 ? "Randomized palette" : emptyColorsFilterStatus() ?? "Nothing to randomize");
+      return;
+    }
+    const paletteOk = randomizePaletteFromCombinations();
     const nextIds = permuteIdsWithPinnedSlots(tiles.length, pinnedGridSlots.Logos, getLogoIds());
     const tileById = new Map(tiles.map((tile) => [tile.dataset.logoId, tile]));
     nextIds.forEach((id) => {
@@ -26757,18 +28772,13 @@ void main() {
     syncLogoTileLockControls();
     updateFaviconForTopLogo();
     clearSelection();
-    if (clientVotes.size) {
-      renderVotes();
+    syncLogoGridPresentation();
+    if (paletteOk) {
+      setStatus("Randomized logos and palette");
     } else {
-      scheduleLogoShaderMask();
-      schedulePerIconShaderSync();
+      setStatus(emptyColorsFilterStatus("randomized logos") ?? "Randomized logos");
     }
-    setStatus("Randomized logos");
   }
-  function randomizeLogoOrder() {
-    randomizeActiveTab();
-  }
-  shuffleButton.addEventListener("click", randomizeLogoOrder);
   document.addEventListener("pointerdown", (event) => {
     if (event.shiftKey) return;
     if (dialog.open) return;
@@ -26779,52 +28789,34 @@ void main() {
     disposeFullscreenShader();
     dialog.close();
     document.activeElement?.blur?.();
-    lockupMode = false;
-    fullscreenLogo.classList.remove("is-lockup");
+    resetPreviewState();
+    fullscreenLogo.classList.remove("is-lockup", "is-type");
     fullscreenLogo.innerHTML = "";
     fullscreenLogo.setAttribute("aria-label", "");
+    dialog.setAttribute("aria-label", "Selected logo preview");
   }
   closeButton.addEventListener("click", closeDialog);
-  function openInfoDialog() {
-    if (infoDialog.open) return;
-    infoDialog.showModal();
-    infoButton.setAttribute("aria-expanded", "true");
-    infoCloseButton.focus({ preventScroll: true });
-  }
-  function closeInfoDialog() {
-    infoDialog.close();
-    infoButton.setAttribute("aria-expanded", "false");
-    infoButton.focus({ preventScroll: true });
-  }
-  infoButton.addEventListener("click", openInfoDialog);
-  infoCloseButton.addEventListener("click", closeInfoDialog);
-  infoDialog.addEventListener("click", (event) => {
-    if (event.target === infoDialog) closeInfoDialog();
-  });
-  infoDialog.addEventListener("close", () => {
-    infoButton.setAttribute("aria-expanded", "false");
-  });
   [closeButton, previousButton, nextButton].forEach((button) => {
     button.addEventListener("pointerdown", (event) => {
       event.preventDefault();
     });
   });
   previousButton.addEventListener("click", () => {
-    showAdjacentLogo(-1);
+    showAdjacentPreview(-1);
     dialog.focus({ preventScroll: true });
   });
   nextButton.addEventListener("click", () => {
-    showAdjacentLogo(1);
+    showAdjacentPreview(1);
     dialog.focus({ preventScroll: true });
   });
   dialog.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      showAdjacentLogo(-1);
+      showAdjacentPreview(-1);
     }
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      showAdjacentLogo(1);
+      showAdjacentPreview(1);
     }
   });
   dialog.addEventListener("click", (event) => {
@@ -26832,10 +28824,11 @@ void main() {
   });
   dialog.addEventListener("cancel", () => {
     disposeFullscreenShader();
-    lockupMode = false;
-    fullscreenLogo.classList.remove("is-lockup");
+    resetPreviewState();
+    fullscreenLogo.classList.remove("is-lockup", "is-type");
     fullscreenLogo.innerHTML = "";
     fullscreenLogo.setAttribute("aria-label", "");
+    dialog.setAttribute("aria-label", "Selected logo preview");
   });
   var commonShaderSizing = {
     u_fit: ShaderFitOptions.cover,
@@ -27421,7 +29414,7 @@ void main() {
     if (!preset.logoTexture) {
       return paletteTextureImage(currentPalette);
     }
-    if (lockupMode) {
+    if (isFullscreenLockup()) {
       return lightweightLockupTexture(preset.logoTexture);
     }
     const cacheKey = `${preset.logoTexture}:${currentLogoId}`;
@@ -27442,7 +29435,7 @@ void main() {
     fullscreenShaderMount = null;
     fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
     fullscreenLogo.classList.remove("has-fullscreen-shader");
-    if (!dialog.open || currentShaderIndex < 0) return;
+    if (!dialog.open || currentShaderIndex < 0 || previewMode === "type") return;
     const preset = shaderPresets[currentShaderIndex];
     const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
     if (!svg) return;
@@ -27454,7 +29447,7 @@ void main() {
     if (token !== shaderToken || !dialog.open || !image) return;
     const layer = document.createElement("div");
     layer.className = "fullscreen-shader-layer";
-    const mask = lockupMode ? lockupMaskUrl() : logoMaskUrlFromSvg(svg);
+    const mask = isFullscreenLockup() ? lockupMaskUrl() : logoMaskUrlFromSvg(svg);
     if (!mask) return;
     layer.style.webkitMaskImage = mask;
     layer.style.maskImage = mask;
@@ -27541,12 +29534,26 @@ void main() {
     shaderMount?.dispose();
     fullscreenShaderMount?.dispose();
     disposePerIconShaders();
+    saveSessionState();
+    try {
+      sessionStorage.setItem(SESSION_KEYS.reloadPending, "1");
+    } catch {
+    }
+  });
+  window.addEventListener("pagehide", (event) => {
+    if (event.persisted) return;
+    saveSessionState();
+    try {
+      sessionStorage.setItem(SESSION_KEYS.reloadPending, "1");
+    } catch {
+    }
   });
   window.addEventListener("scroll", scheduleLogoShaderMask, { passive: true });
   window.addEventListener("resize", () => {
     updateGridColumns();
     scheduleLogoShaderMask();
-    if (dialog.open && lockupMode) scheduleLockupLayout();
+    if (dialog.open && isFullscreenLockup()) scheduleLockupLayout();
+    if (dialog.open && previewMode === "type") scheduleFullscreenTypeLayout();
     if (activeBrandTab === "Type") updateTypeGridWindow(true);
     else if (activeBrandTab === "Colors") updateColorGridWindow(true);
     else if (activeBrandTab === "Lockups") updateLockupGridWindow(true);
@@ -27795,6 +29802,225 @@ void main() {
       source: name
     };
   }
+  function colorCloseness(a2, b2) {
+    const left = hexToRgb(parseColor(a2));
+    const right = hexToRgb(parseColor(b2));
+    const dr = left[0] - right[0];
+    const dg = left[1] - right[1];
+    const db = left[2] - right[2];
+    return Math.sqrt(dr * dr + dg * dg + db * db);
+  }
+  function colorsTooClose(a2, b2, threshold = 28) {
+    return colorCloseness(a2, b2) < threshold;
+  }
+  function scoreLockedCombination(colors, lockedByIndex) {
+    let score = 0;
+    const lums = colors.map((color) => luminance(color));
+    score += (Math.max(...lums) - Math.min(...lums)) * 14;
+    for (let index = 0; index < colors.length - 1; index += 1) {
+      score += Math.min(contrastRatio(colors[index], colors[index + 1]), 7);
+    }
+    for (let i2 = 0; i2 < colors.length; i2 += 1) {
+      for (let j = i2 + 1; j < colors.length; j += 1) {
+        if (parseColor(colors[i2]) === parseColor(colors[j])) score -= 20;
+        else if (colorsTooClose(colors[i2], colors[j], 22)) score -= 8;
+      }
+    }
+    for (const [lockedIndex, lockedColor] of lockedByIndex) {
+      for (let index = 0; index < colors.length; index += 1) {
+        if (index === lockedIndex) continue;
+        const ratio = contrastRatio(lockedColor, colors[index]);
+        if (ratio >= 2.45) score += 1.6;
+        else if (ratio >= 1.85) score += 0.7;
+      }
+    }
+    return score;
+  }
+  function expandLockedColorCandidates(seeds, unlockedCount, existing = []) {
+    const candidates = [...existing];
+    const locked = seeds.map(parseColor);
+    const pushUnique = (color) => {
+      const normalized = parseColor(color);
+      if (candidates.some((entry) => colorsTooClose(entry, normalized, 22))) return false;
+      if (locked.some((entry) => colorsTooClose(normalized, entry, 24))) return false;
+      candidates.push(normalized);
+      return true;
+    };
+    for (const seed of locked) {
+      const hue = hueFromHex(seed);
+      for (let step = 0; step < 8; step += 1) {
+        pushUnique(hslToHex(
+          (hue + step * (35 + Math.random() * 55) + Math.random() * 20) % 360,
+          0.22 + Math.random() * 0.7,
+          0.08 + Math.random() * 0.84
+        ));
+      }
+      pushUnique(mixColors(seed, "#ffffff", 0.2 + Math.random() * 0.65));
+      pushUnique(mixColors(seed, "#111111", 0.2 + Math.random() * 0.55));
+      pushUnique(mixColors(seed, "#000000", 0.35 + Math.random() * 0.4));
+    }
+    if (locked.length >= 2) {
+      pushUnique(mixColors(locked[0], locked[1], 0.2 + Math.random() * 0.6));
+      pushUnique(mixColors(locked[0], locked[1], 0.35 + Math.random() * 0.3));
+    }
+    while (candidates.length < unlockedCount + 4) {
+      const seed = locked[Math.floor(Math.random() * locked.length)] ?? "#888888";
+      const hue = (hueFromHex(seed) + Math.random() * 360) % 360;
+      if (!pushUnique(hslToHex(hue, 0.2 + Math.random() * 0.75, 0.1 + Math.random() * 0.8))) {
+        pushUnique(mixColors(seed, Math.random() < 0.5 ? "#ffffff" : "#000000", 0.25 + Math.random() * 0.55));
+      }
+      if (candidates.length > unlockedCount + 12) break;
+    }
+    return candidates;
+  }
+  function fillUnlockedColorSlots(lockedByIndex, pool) {
+    const colors = new Array(4).fill(null);
+    const used = [];
+    for (const [index, color] of lockedByIndex) {
+      const normalized = parseColor(color);
+      colors[index] = normalized;
+      used.push(normalized);
+    }
+    const unlocked = [0, 1, 2, 3].filter((index) => colors[index] == null);
+    let candidates = [...new Set(pool.map(parseColor))].filter((color) => !used.some((locked) => colorsTooClose(color, locked, 24)));
+    if (candidates.length < unlocked.length + 3) {
+      candidates = expandLockedColorCandidates(used, unlocked.length, candidates);
+    }
+    const available = shuffleArray2([...candidates]);
+    for (const slot of unlocked) {
+      if (!available.length) {
+        const seed = used[0] ?? "#888888";
+        const fallback = mixColors(seed, slot < 2 ? "#000000" : "#ffffff", 0.25 + Math.random() * 0.55);
+        colors[slot] = parseColor(fallback);
+        used.push(colors[slot]);
+        continue;
+      }
+      const targetLum = (slot + Math.random() * 0.35) / 3.35;
+      const ranked = available.map((color, index) => ({
+        index,
+        color,
+        distance: Math.abs(luminance(color) - targetLum) + Math.random() * 0.22
+      })).sort((left, right) => left.distance - right.distance);
+      const pickFrom = Math.min(3, ranked.length);
+      const chosen = ranked[Math.floor(Math.random() * pickFrom)];
+      available.splice(chosen.index, 1);
+      colors[slot] = chosen.color;
+      used.push(chosen.color);
+    }
+    return colors;
+  }
+  function poolAroundLockedColors(lockedColors) {
+    const seeds = lockedColors.map(parseColor);
+    const pool = [...seeds];
+    for (const seed of seeds) {
+      const hue = hueFromHex(seed);
+      for (let step = 0; step < 6; step += 1) {
+        const nextHue = (hue + step * (50 + Math.random() * 40)) % 360;
+        const saturation = 0.28 + Math.random() * 0.62;
+        const lightness = 0.1 + Math.random() * 0.8;
+        pool.push(hslToHex(nextHue, saturation, lightness));
+      }
+      pool.push(
+        mixColors(seed, "#ffffff", 0.25),
+        mixColors(seed, "#ffffff", 0.55),
+        mixColors(seed, "#ffffff", 0.8),
+        mixColors(seed, "#111111", 0.35),
+        mixColors(seed, "#000000", 0.55)
+      );
+    }
+    if (seeds.length >= 2) {
+      pool.push(
+        mixColors(seeds[0], seeds[1], 0.25),
+        mixColors(seeds[0], seeds[1], 0.5),
+        mixColors(seeds[0], seeds[1], 0.75)
+      );
+    }
+    const [name, generator] = randomFrom(paletteSources);
+    pool.push(...generator());
+    return { pool, source: name };
+  }
+  function unlockedColorsChanged(nextColors, previousColors, lockedByIndex) {
+    if (!previousColors?.length) return true;
+    for (let index = 0; index < nextColors.length; index += 1) {
+      if (lockedByIndex.has(index)) continue;
+      if (parseColor(nextColors[index]) !== parseColor(previousColors[index])) return true;
+    }
+    return false;
+  }
+  function generateColorCombinationWithLocks(lockedByIndex, previous = null) {
+    const locks = new Map(
+      [...lockedByIndex.entries()].map(([index, color]) => [Number(index), parseColor(color)])
+    );
+    if (locks.size >= 4) {
+      const colors = [0, 1, 2, 3].map(
+        (index) => locks.get(index) ?? previous?.colors?.[index] ?? "#888888"
+      );
+      return {
+        colors,
+        source: previous?.source ?? "Pinned"
+      };
+    }
+    if (locks.size === 0) return generateColorCombination();
+    let best = null;
+    let bestScore = -Infinity;
+    const lockedColors = [...locks.values()];
+    const previousColors = previous?.colors ?? null;
+    for (let attempt = 0; attempt < 56; attempt += 1) {
+      let pool;
+      let source;
+      if (Math.random() < 0.62) {
+        ({ pool, source } = poolAroundLockedColors(lockedColors));
+      } else {
+        const combo = generateColorCombination();
+        pool = [...combo.colors, ...expandLockedColorCandidates(lockedColors, 4 - locks.size)];
+        source = combo.source;
+      }
+      const colors = fillUnlockedColorSlots(locks, pool);
+      let score = scoreLockedCombination(colors, locks) + Math.random() * 2.8;
+      if (previousColors && !unlockedColorsChanged(colors, previousColors, locks)) {
+        score -= 18;
+      } else if (previousColors) {
+        for (let index = 0; index < colors.length; index += 1) {
+          if (locks.has(index)) continue;
+          if (colorsTooClose(colors[index], previousColors[index], 28)) score -= 3.5;
+          else score += 0.8;
+        }
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        best = { colors, source };
+      }
+    }
+    if (best && previousColors && !unlockedColorsChanged(best.colors, previousColors, locks)) {
+      for (let retry = 0; retry < 16; retry += 1) {
+        const { pool, source } = poolAroundLockedColors(lockedColors);
+        const colors = fillUnlockedColorSlots(locks, pool);
+        if (unlockedColorsChanged(colors, previousColors, locks)) {
+          return { colors, source };
+        }
+      }
+    }
+    return best ?? {
+      colors: fillUnlockedColorSlots(locks, generateColorCombination().colors),
+      source: previous?.source ?? "Matched"
+    };
+  }
+  function paletteFromCombination(combination) {
+    const candidates = contrastPairs(combination.colors, combination.source);
+    const palette = weightedRandom(candidates) ?? {
+      ink: combination.colors[0],
+      paper: combination.colors[combination.colors.length - 1],
+      ratio: contrastRatio(combination.colors[0], combination.colors[combination.colors.length - 1]),
+      source: combination.source
+    };
+    rememberPalette(palette);
+    return {
+      ink: palette.ink,
+      paper: palette.paper,
+      ratio: palette.ratio,
+      source: palette.source
+    };
+  }
   function weightedRandom(items) {
     const total = items.reduce((sum, item) => sum + item.score, 0);
     let cursor = Math.random() * total;
@@ -27829,6 +30055,11 @@ void main() {
     document.documentElement.style.setProperty("--editor-mark-color", alphaColor(palette.ink, 0.36));
     updateFaviconForTopLogo();
     refreshShaderPalette();
+    if (!isMonochromePalette(palette)) {
+      bwModeActive = false;
+      preBwPalette = null;
+    }
+    syncBwButtons();
   }
   function isMonochromePalette(palette = currentPalette) {
     const ink = palette.ink.toLowerCase();
@@ -27837,27 +30068,21 @@ void main() {
     const invertedMatch = ink === invertedPalette.ink && paper === invertedPalette.paper;
     return defaultMatch || invertedMatch;
   }
-  function ensureMonochromePalette() {
-    if (isMonochromePalette()) return;
-    applyPalette(defaultPalette);
-  }
-  function stashPaletteBeforeColors() {
-    paletteBeforeColors = {
-      ink: currentPalette.ink,
-      paper: currentPalette.paper,
-      ratio: currentPalette.ratio,
-      source: currentPalette.source
-    };
-    ensureMonochromePalette();
-  }
-  function restorePaletteBeforeColors() {
-    if (!paletteBeforeColors) return;
-    applyPalette(paletteBeforeColors);
-    paletteBeforeColors = null;
-  }
   function toggleDefaultPalette() {
-    const isInverted = currentPalette.ink.toLowerCase() === invertedPalette.ink && currentPalette.paper.toLowerCase() === invertedPalette.paper;
-    applyPalette(isInverted ? defaultPalette : invertedPalette);
+    if (!bwModeActive) {
+      preBwPalette = { ...currentPalette };
+      bwModeActive = true;
+      applyPalette(invertedPalette);
+      return;
+    }
+    if (isBwInverted()) {
+      applyPalette(defaultPalette);
+      return;
+    }
+    const restore = preBwPalette ?? defaultPalette;
+    preBwPalette = null;
+    bwModeActive = false;
+    applyPalette(restore);
   }
   function applyMobilePaletteTap() {
     mobilePaletteTapCount = (mobilePaletteTapCount + 1) % 5;
@@ -27869,44 +30094,65 @@ void main() {
   }
   document.addEventListener("keydown", (event) => {
     const target = event.target;
-    if (infoDialog.open) return;
     const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
     if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.key === "Tab") {
       if (dialog.open) return;
       event.preventDefault();
       const currentIndex = brandTabButtons.findIndex(
-        (button) => button.textContent.trim() === activeBrandTab
+        (button) => brandTabName(button) === activeBrandTab
       );
-      const fromIndex = currentIndex < 0 ? 0 : currentIndex;
-      const nextIndex = event.shiftKey ? (fromIndex - 1 + brandTabButtons.length) % brandTabButtons.length : (fromIndex + 1) % brandTabButtons.length;
+      const fromIndex = currentIndex < 0 ? firstEnabledBrandTabIndex() : currentIndex;
+      const nextIndex = event.shiftKey ? nextEnabledBrandTabIndex(fromIndex, -1) : nextEnabledBrandTabIndex(fromIndex, 1);
       selectBrandTab(brandTabButtons[nextIndex]);
       return;
     }
     if (event.code === "Space") {
       event.preventDefault();
-      if (dialog.open) return;
+      if (dialog.open) {
+        randomizeDialogPreview();
+        return;
+      }
       if (target instanceof HTMLElement && target.classList.contains("brand-tab")) {
         target.blur();
       }
       randomizeActiveTab();
+      return;
+    }
+    if (canUseGridKeyboardNav(event)) {
+      if (event.key === "Escape") {
+        if (keyboardGridSelection) {
+          event.preventDefault();
+          clearKeyboardGridSelection();
+          return;
+        }
+      }
+      if (event.key === "Enter") {
+        if (keyboardGridSelection?.tab === activeBrandTab) {
+          event.preventDefault();
+          lockKeyboardGridSelection();
+          return;
+        }
+      }
+      if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        navigateKeyboardGrid(event.key);
+        return;
+      }
     }
     if (event.code === "ArrowDown") {
       event.preventDefault();
       cycleShader(1);
+      return;
     }
     if (event.code === "ArrowUp") {
       event.preventDefault();
       cycleShader(-1);
+      return;
     }
-    if (event.code === "Enter") {
+    if (event.key.toLowerCase() === "b") {
       event.preventDefault();
-      resetShaderView();
       toggleDefaultPalette();
-    }
-    if (event.key.toLowerCase() === "r") {
-      event.preventDefault();
-      randomizeLogoOrder();
     }
     if (event.key === "+" || event.key === "=") {
       event.preventDefault();
@@ -27917,6 +30163,33 @@ void main() {
       resizeActiveLogoView(-0.1);
     }
   });
+  function updateUploadBorders() {
+    const rects = document.querySelectorAll(".upload-border rect");
+    rects.forEach((rect) => {
+      const svg = rect.ownerSVGElement;
+      if (!svg) return;
+      const parent = svg.parentElement;
+      if (!parent || parent.offsetWidth === 0) return;
+      const width = parent.offsetWidth;
+      const height = parent.offsetHeight;
+      const perimeter = 2 * (width + height);
+      const nominalPeriod = 20;
+      const n2 = Math.round(perimeter / nominalPeriod);
+      const actualPeriod = perimeter / n2;
+      const dash = actualPeriod * 0.4;
+      const gap = actualPeriod * 0.6;
+      rect.setAttribute("stroke-dasharray", `${dash.toFixed(2)} ${gap.toFixed(2)}`);
+      rect.style.setProperty("--dash-period", `${actualPeriod.toFixed(2)}px`);
+    });
+  }
+  window.addEventListener("resize", updateUploadBorders);
+  window.addEventListener("resize", syncGridFiltersPosition);
+  window.addEventListener("resize", syncGridActionsPosition);
+  window.addEventListener("scroll", syncGridFiltersPosition, { passive: true });
+  window.addEventListener("scroll", syncGridActionsPosition, { passive: true });
+  initTypeRegistryFilters();
+  initColorGeneratorFilters();
+  restoreSessionState();
   syncBrandTabView();
   initializeClientAccess();
 })();
