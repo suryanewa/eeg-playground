@@ -2366,11 +2366,22 @@ function parseFontWeight(value) {
   return 400;
 }
 
+function revealLockupCatalog() {
+  if (lockupCatalogRevealed) return;
+  lockupCatalogRevealed = true;
+  lockupCatalogChosen = true;
+  syncBrandTabView();
+  setStatus("Exploring sample lockups");
+  saveSessionState();
+}
+
 function revealTypeCatalog() {
   if (typeCatalogRevealed) return;
   typeCatalogRevealed = true;
+  typeCatalogChosen = true;
   syncBrandTabView();
   setStatus("Exploring open-source typefaces");
+  saveSessionState();
 }
 
 function refreshTypeGrid() {
@@ -4155,13 +4166,30 @@ window.addEventListener("beforeunload", () => {
   shaderMount?.dispose();
   fullscreenShaderMount?.dispose();
   disposePerIconShaders();
+  saveSessionState();
+  try {
+    sessionStorage.setItem(SESSION_KEYS.reloadPending, "1");
+  } catch {
+    // ignore
+  }
+});
+
+window.addEventListener("pagehide", (event) => {
+  if (event.persisted) return;
+  saveSessionState();
+  try {
+    sessionStorage.setItem(SESSION_KEYS.reloadPending, "1");
+  } catch {
+    // ignore
+  }
 });
 
 window.addEventListener("scroll", scheduleLogoShaderMask, { passive: true });
 window.addEventListener("resize", () => {
   updateGridColumns();
   scheduleLogoShaderMask();
-  if (dialog.open && lockupMode) scheduleLockupLayout();
+  if (dialog.open && isFullscreenLockup()) scheduleLockupLayout();
+  if (dialog.open && previewMode === "type") scheduleFullscreenTypeLayout();
   if (activeBrandTab === "Type") updateTypeGridWindow(true);
   else if (activeBrandTab === "Colors") updateColorGridWindow(true);
   else if (activeBrandTab === "Lockups") updateLockupGridWindow(true);
