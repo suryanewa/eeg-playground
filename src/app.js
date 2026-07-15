@@ -5,6 +5,7 @@ import { rybHsl2rgb } from "rybitten";
 import { createClient } from "@supabase/supabase-js";
 import { coolshapePlaceholders } from "./coolshape-placeholders.js";
 import { typefaces } from "./typefaces.js";
+import { buildDesignMd, designMdFilename } from "./design-md.js";
 import {
   GemSmokeShapes,
   HalftoneCmykTypes,
