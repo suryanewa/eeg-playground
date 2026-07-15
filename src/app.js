@@ -29,29 +29,56 @@ const grid = document.querySelector("#logo-grid");
 const uploadPanel = document.querySelector("#logo-upload");
 const uploadEmpty = document.querySelector("#logo-upload-empty");
 const typeUploadEmpty = document.querySelector("#type-upload-empty");
+const lockupUploadEmpty = document.querySelector("#lockup-upload-empty");
 const uploadInput = document.querySelector("#logo-file-input");
 const typeUploadInput = document.querySelector("#type-file-input");
-const uploadButton = document.querySelector("#logo-file-button");
-const typeUploadButton = document.querySelector("#type-file-button");
 const placeholderButton = document.querySelector("#placeholder-button");
 const typeExploreButton = document.querySelector("#type-explore-button");
-const uploadAddButton = document.querySelector("#logo-add-button");
+const lockupTryButton = document.querySelector("#lockup-try-button");
 const uploadFeedback = document.querySelector("#upload-feedback");
 const typeUploadFeedback = document.querySelector("#type-upload-feedback");
 const dropOverlay = document.querySelector("#drop-overlay");
 const dropOverlayTitle = document.querySelector("#drop-overlay-title");
 const dropOverlayHint = document.querySelector("#drop-overlay-hint");
-const shuffleButton = document.querySelector("#shuffle-button");
-const infoButton = document.querySelector("#info-button");
 const brandTabButtons = [...document.querySelectorAll(".brand-tab")];
+
+function brandTabName(button) {
+  return button.dataset.brandTab ?? button.textContent.trim();
+}
+
+function isBrandTabDisabled(button) {
+  return button.classList.contains("brand-tab--soon");
+}
+
+function nextEnabledBrandTabIndex(fromIndex, step) {
+  const count = brandTabButtons.length;
+  for (let i = 1; i <= count; i += 1) {
+    const index = (fromIndex + step * i + count) % count;
+    if (!isBrandTabDisabled(brandTabButtons[index])) return index;
+  }
+  return fromIndex;
+}
+
+function firstEnabledBrandTabIndex() {
+  return brandTabButtons.findIndex((button) => !isBrandTabDisabled(button));
+}
+
+function lastEnabledBrandTabIndex() {
+  for (let i = brandTabButtons.length - 1; i >= 0; i -= 1) {
+    if (!isBrandTabDisabled(brandTabButtons[i])) return i;
+  }
+  return 0;
+}
 const typeGrid = document.querySelector("#type-grid");
 const colorGrid = document.querySelector("#color-grid");
 const lockupGrid = document.querySelector("#lockup-grid");
+const gridFilters = document.querySelector("#grid-filters");
+const gridActions = document.querySelector("#grid-actions");
+const lockedImportInput = document.querySelector("#locked-import-input");
+let pendingImportTab = null;
 const dialog = document.querySelector("#logo-dialog");
-const infoDialog = document.querySelector("#info-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
 const closeButton = dialog.querySelector(".close-button");
-const infoCloseButton = infoDialog.querySelector(".info-close-button");
 const previousButton = dialog.querySelector(".nav-button--previous");
 const nextButton = dialog.querySelector(".nav-button--next");
 const defaultProjectId = "00000000-0000-4000-8000-000000000001";
@@ -76,8 +103,6 @@ const supabase = supabaseUrl && supabasePublishableKey
   : null;
 let session = null;
 let currentProfile = null;
-let canVote = false;
-let clientVotes = new Map();
 let adminVoteRows = [];
 let statusElement = null;
 let accessPanel = null;
@@ -1625,30 +1650,14 @@ function syncBrandTabView() {
   const showLockups = activeBrandTab === "Lockups";
   const isEmpty = uploadPanel.dataset.empty === "true";
   const showTypeEmpty = showType && !typeCatalogRevealed;
-  const canRandomizeTab = showColors
-    || showLockups
-    || (showLogos && !isEmpty)
-    || showType;
-
+  const showLockupEmpty = showLockups && !lockupsReady();
   grid.hidden = !showLogos || isEmpty;
   typeGrid.hidden = !showType || showTypeEmpty;
   colorGrid.hidden = !showColors;
-  lockupGrid.hidden = !showLockups;
+  lockupGrid.hidden = !showLockups || showLockupEmpty;
   uploadEmpty.hidden = !(showLogos && isEmpty);
   typeUploadEmpty.hidden = !showTypeEmpty;
-  shuffleButton.hidden = !canRandomizeTab;
-  shuffleButton.disabled = activeBrandTab === "Logos" && uploadedLogos.size < 2;
-  shuffleButton.setAttribute(
-    "aria-label",
-    activeBrandTab === "Colors"
-      ? "Randomize color combinations"
-      : activeBrandTab === "Lockups"
-        ? "Randomize lockup combinations"
-        : activeBrandTab === "Type"
-          ? "Randomize typefaces"
-          : "Randomize logos",
-  );
-  uploadAddButton.hidden = !showLogos || isEmpty;
+  lockupUploadEmpty.hidden = !showLockupEmpty;
 
   if (showLogos && !isEmpty) {
     syncLogoGridPresentation();
@@ -1932,17 +1941,6 @@ function createLogoTile(id, name, position) {
   logo.className = "logo-art";
   logo.setAttribute("aria-hidden", "true");
   logo.innerHTML = logoMarkup(id);
-  voteControls.className = "vote-controls";
-  upButton.className = "vote-button vote-button--up";
-  upButton.type = "button";
-  upButton.disabled = !canVote;
-  upButton.dataset.voteValue = "1";
-  upButton.setAttribute("aria-label", `Upvote ${name}`);
-  downButton.className = "vote-button vote-button--down";
-  downButton.type = "button";
-  downButton.disabled = !canVote;
-  downButton.dataset.voteValue = "-1";
-  downButton.setAttribute("aria-label", `Downvote ${name}`);
 
   button.addEventListener("pointerdown", (event) => {
     if (!mobileDialogMedia.matches || !event.isPrimary) return;
@@ -2000,18 +1998,8 @@ function createLogoTile(id, name, position) {
     openLogoDialog(id);
   });
 
-  [upButton, downButton].forEach((voteButton) => {
-    voteButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setLogoVote(logoId(id), Number(voteButton.dataset.voteValue));
-    });
-  });
-
   button.append(logo);
-  voteControls.append(upButton, downButton);
   tile.append(button);
-  tile.append(voteControls);
   attachGridLockControl(
     tile,
     "Logos",
@@ -2180,7 +2168,6 @@ async function addLogoFiles(fileList) {
   uploadPanel.removeAttribute("aria-busy");
   uploadInput.value = "";
   updateUploadUi();
-  applyVoteState();
   syncBrandTabView();
   syncLogoGridPresentation();
 
@@ -2201,12 +2188,13 @@ function populatePlaceholderLogos() {
     if (!currentLogoId) currentLogoId = id;
   });
 
+  logoPlaceholdersChosen = true;
   updateUploadUi();
-  applyVoteState();
   syncBrandTabView();
   syncLogoGridPresentation();
   uploadFeedback.textContent = `${coolshapePlaceholders.length} Coolshapes placeholders added`;
   setStatus(uploadFeedback.textContent);
+  saveSessionState();
 }
 
 function openFilePicker() {
@@ -2464,52 +2452,12 @@ function syncAccessUi() {
   authForm.hidden = false;
 }
 
-function setVotingEnabled(enabled) {
-  canVote = Boolean(enabled);
-  grid.querySelectorAll(".vote-button").forEach((button) => {
-    button.disabled = !canVote;
-  });
-}
-
-function applyVoteState() {
-  grid.querySelectorAll(".logo-tile").forEach((tile) => {
-    const vote = clientVotes.get(tile.dataset.logoId) ?? 0;
-    tile.dataset.vote = String(vote);
-    tile.classList.toggle("has-upvote", vote === 1);
-    tile.classList.toggle("has-downvote", vote === -1);
-    tile.querySelector(".vote-button--up")?.setAttribute("aria-pressed", String(vote === 1));
-    tile.querySelector(".vote-button--down")?.setAttribute("aria-pressed", String(vote === -1));
-  });
-}
-
 function syncLogoGridPresentation() {
   updateFaviconForTopLogo();
   scheduleLogoShaderMask();
   schedulePerIconShaderSync();
+  applyLogoGridFilter();
   requestAnimationFrame(syncBrandGridOffset);
-}
-
-function moveLogoTile(id, direction) {
-  const tile = [...grid.querySelectorAll(".logo-tile")].find((candidate) => candidate.dataset.logoId === id);
-  if (!tile) return;
-
-  if (direction > 0) {
-    const previousTile = tile.previousElementSibling;
-    if (previousTile) grid.insertBefore(tile, previousTile);
-  } else if (direction < 0) {
-    const nextTile = tile.nextElementSibling;
-    if (nextTile) grid.insertBefore(nextTile, tile);
-  }
-
-  syncLogoGridPresentation();
-}
-
-function renderVotes() {
-  applyVoteState();
-  syncLogoGridPresentation();
-  const upvotes = [...clientVotes.values()].filter((vote) => vote === 1).length;
-  const downvotes = [...clientVotes.values()].filter((vote) => vote === -1).length;
-  setStatus(`${upvotes} up / ${downvotes} down`);
 }
 
 async function handleAuthSubmit(event) {
@@ -2563,68 +2511,18 @@ async function loadMembership() {
   return Boolean(data);
 }
 
-async function loadClientVotes() {
-  if (!supabase || !session?.user) return;
-
-  const { data, error } = await supabase
-    .from("logo_votes")
-    .select("logo_id,vote")
-    .eq("project_id", projectId)
-    .eq("user_id", session.user.id);
-
-  if (error) {
-    setStatus(error.message);
-    return;
-  }
-
-  clientVotes = new Map((data ?? []).map((row) => [row.logo_id, row.vote]));
-  renderVotes();
-}
-
 async function refreshClientState() {
   currentProfile = await loadProfile();
   syncAccessUi();
 
   const member = await loadMembership();
-  setVotingEnabled(member);
 
   if (!member && !isAdmin()) {
-    clientVotes = new Map();
-    renderVotes();
     setStatus("Project access pending");
     return;
   }
 
-  await loadClientVotes();
   if (isAdminRoute) await loadAdminResults();
-}
-
-async function setLogoVote(id, nextVote) {
-  if (!supabase || !session?.user || !canVote) return;
-
-  const nextValue = nextVote;
-
-  setVotingEnabled(false);
-  const { error } = await supabase
-    .from("logo_votes")
-    .upsert({
-      project_id: projectId,
-      user_id: session.user.id,
-      logo_id: id,
-      vote: nextValue,
-    }, { onConflict: "project_id,user_id,logo_id" });
-
-  if (error) {
-    setStatus(error.message);
-    setVotingEnabled(true);
-    return;
-  }
-
-  clientVotes.set(id, nextValue);
-  moveLogoTile(id, nextValue);
-  renderVotes();
-  setVotingEnabled(true);
-  if (isAdminRoute && isAdmin()) await loadAdminResults();
 }
 
 function summarizeAdminVotes(rows) {
@@ -2746,18 +2644,11 @@ async function initializeClientAccess() {
   syncAccessUi();
 
   supabase.auth.onAuthStateChange((event, nextSession) => {
-    const wasSignedOut = !session;
     session = nextSession;
-    const shouldOpenInfo = event === "SIGNED_IN" && wasSignedOut && Boolean(session);
     currentProfile = null;
-    clientVotes = new Map();
-    setVotingEnabled(false);
-    if (shouldOpenInfo) openInfoDialog();
     syncAccessUi();
     if (session) {
       refreshClientState();
-    } else {
-      renderVotes();
     }
   });
 
@@ -2811,20 +2702,17 @@ function randomizeActiveTab() {
   syncLogoTileLockControls();
   updateFaviconForTopLogo();
   clearSelection();
-  if (clientVotes.size) {
-    renderVotes();
+  syncLogoGridPresentation();
+  if (paletteOk) {
+    setStatus("Randomized logos and palette");
   } else {
-    scheduleLogoShaderMask();
-    schedulePerIconShaderSync();
+    setStatus(emptyColorsFilterStatus("randomized logos") ?? "Randomized logos");
   }
-  setStatus("Randomized logos");
 }
 
 function randomizeLogoOrder() {
   randomizeActiveTab();
 }
-
-shuffleButton.addEventListener("click", randomizeLogoOrder);
 
 document.addEventListener("pointerdown", (event) => {
   if (event.shiftKey) return;
@@ -2838,37 +2726,14 @@ function closeDialog() {
   disposeFullscreenShader();
   dialog.close();
   document.activeElement?.blur?.();
-  lockupMode = false;
-  fullscreenLogo.classList.remove("is-lockup");
+  resetPreviewState();
+  fullscreenLogo.classList.remove("is-lockup", "is-type");
   fullscreenLogo.innerHTML = "";
   fullscreenLogo.setAttribute("aria-label", "");
+  dialog.setAttribute("aria-label", "Selected logo preview");
 }
 
 closeButton.addEventListener("click", closeDialog);
-
-function openInfoDialog() {
-  if (infoDialog.open) return;
-  infoDialog.showModal();
-  infoButton.setAttribute("aria-expanded", "true");
-  infoCloseButton.focus({ preventScroll: true });
-}
-
-function closeInfoDialog() {
-  infoDialog.close();
-  infoButton.setAttribute("aria-expanded", "false");
-  infoButton.focus({ preventScroll: true });
-}
-
-infoButton.addEventListener("click", openInfoDialog);
-infoCloseButton.addEventListener("click", closeInfoDialog);
-
-infoDialog.addEventListener("click", (event) => {
-  if (event.target === infoDialog) closeInfoDialog();
-});
-
-infoDialog.addEventListener("close", () => {
-  infoButton.setAttribute("aria-expanded", "false");
-});
 
 [closeButton, previousButton, nextButton].forEach((button) => {
   button.addEventListener("pointerdown", (event) => {
@@ -2877,24 +2742,24 @@ infoDialog.addEventListener("close", () => {
 });
 
 previousButton.addEventListener("click", () => {
-  showAdjacentLogo(-1);
+  showAdjacentPreview(-1);
   dialog.focus({ preventScroll: true });
 });
 
 nextButton.addEventListener("click", () => {
-  showAdjacentLogo(1);
+  showAdjacentPreview(1);
   dialog.focus({ preventScroll: true });
 });
 
 dialog.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft") {
     event.preventDefault();
-    showAdjacentLogo(-1);
+    showAdjacentPreview(-1);
   }
 
   if (event.key === "ArrowRight") {
     event.preventDefault();
-    showAdjacentLogo(1);
+    showAdjacentPreview(1);
   }
 });
 
@@ -4252,8 +4117,6 @@ function applyMobilePaletteTap() {
 
 document.addEventListener("keydown", (event) => {
   const target = event.target;
-
-  if (infoDialog.open) return;
 
   const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
   if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
