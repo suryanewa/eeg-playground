@@ -273,6 +273,28 @@ body {
   color: var(--logo-bg);
 }
 
+.brand-tab--soon {
+  position: relative;
+  cursor: default;
+}
+
+.brand-tab--soon:hover {
+  color: transparent;
+  border-color: transparent;
+}
+
+.brand-tab--soon:hover::before {
+  content: "SOON…";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--logo-ink);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .drop-overlay {
   position: fixed;
   inset: 0;

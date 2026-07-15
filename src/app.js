@@ -123,15 +123,115 @@ let fullscreenLogoScale = 1;
 const defaultPalette = { ink: "#000000", paper: "#ffffff", ratio: 21, source: "Default" };
 const invertedPalette = { ink: "#ffffff", paper: "#000000", ratio: 21, source: "Inverted" };
 let currentPalette = defaultPalette;
-let paletteBeforeColors = null;
+let bwModeActive = false;
+let preBwPalette = null;
 let currentShaderIndex = -1;
 let selectedFont = "Helvetica";
 let activeBrandTab = "Colors";
 let typeCatalogRevealed = false;
+let lockupCatalogRevealed = false;
+let logoPlaceholdersChosen = false;
+let typeCatalogChosen = false;
+let lockupCatalogChosen = false;
+
+const SESSION_PREFIX = "brandy:";
+const SESSION_KEYS = {
+  activeTab: `${SESSION_PREFIX}active-tab`,
+  typeCatalog: `${SESSION_PREFIX}type-catalog`,
+  lockupCatalog: `${SESSION_PREFIX}lockup-catalog`,
+  logoPlaceholders: `${SESSION_PREFIX}logo-placeholders`,
+  reloadPending: `${SESSION_PREFIX}reload-pending`,
+};
+const BRAND_TABS = new Set(["Colors", "Logos", "Type", "Lockups"]);
+
+function saveSessionState() {
+  try {
+    sessionStorage.setItem(SESSION_KEYS.activeTab, activeBrandTab);
+    sessionStorage.setItem(SESSION_KEYS.typeCatalog, String(typeCatalogChosen));
+    sessionStorage.setItem(SESSION_KEYS.lockupCatalog, String(lockupCatalogChosen));
+    sessionStorage.setItem(SESSION_KEYS.logoPlaceholders, String(logoPlaceholdersChosen));
+  } catch {
+    // sessionStorage may be unavailable in restricted contexts
+  }
+}
+
+function clearSessionState() {
+  try {
+    for (const key of Object.values(SESSION_KEYS)) {
+      sessionStorage.removeItem(key);
+    }
+  } catch {
+    // ignore
+  }
+}
+
+function isHardRefresh(nav) {
+  if (!nav || nav.type !== "reload") return false;
+  if (nav.deliveryType === "cache") return false;
+  return nav.transferSize > 0;
+}
+
+function shouldRestoreSessionState() {
+  const [nav] = performance.getEntriesByType("navigation");
+  const reloadPending = sessionStorage.getItem(SESSION_KEYS.reloadPending) === "1";
+  sessionStorage.removeItem(SESSION_KEYS.reloadPending);
+
+  if (!nav || nav.type !== "reload" || !reloadPending || isHardRefresh(nav)) {
+    return false;
+  }
+  return true;
+}
+
+function readSessionState() {
+  const tab = sessionStorage.getItem(SESSION_KEYS.activeTab);
+  return {
+    activeBrandTab: BRAND_TABS.has(tab) ? tab : "Colors",
+    typeCatalogChosen: sessionStorage.getItem(SESSION_KEYS.typeCatalog) === "true",
+    lockupCatalogChosen: sessionStorage.getItem(SESSION_KEYS.lockupCatalog) === "true",
+    logoPlaceholdersChosen: sessionStorage.getItem(SESSION_KEYS.logoPlaceholders) === "true",
+  };
+}
+
+function applyRestoredBrandTab(tabName) {
+  const button = brandTabButtons.find((entry) => brandTabName(entry) === tabName);
+  if (!button || isBrandTabDisabled(button)) return;
+
+  brandTabButtons.forEach((btn) => {
+    const isSelected = btn === button;
+    btn.setAttribute("aria-pressed", String(isSelected));
+    if (!isBrandTabDisabled(btn)) btn.tabIndex = isSelected ? 0 : -1;
+  });
+  activeBrandTab = tabName;
+}
+
+function restoreSessionState() {
+  if (!shouldRestoreSessionState()) {
+    clearSessionState();
+    return;
+  }
+
+  const saved = readSessionState();
+  if (saved.typeCatalogChosen) {
+    typeCatalogChosen = true;
+    typeCatalogRevealed = true;
+  }
+  if (saved.lockupCatalogChosen) {
+    lockupCatalogChosen = true;
+    lockupCatalogRevealed = true;
+  }
+  if (saved.logoPlaceholdersChosen) {
+    logoPlaceholdersChosen = true;
+    populatePlaceholderLogos();
+  }
+  applyRestoredBrandTab(saved.activeBrandTab);
+}
 let typeDisplayOrder = null;
 const uploadedTypefaces = [];
 let activeFontReads = 0;
 let lockupMode = false;
+let previewMode = "logo";
+let currentTypeIndex = -1;
+let currentLockupIndex = -1;
 let shaderMount = null;
 let fullscreenShaderMount = null;
 const perIconShaderMounts = new Map();
@@ -4485,44 +4585,73 @@ document.addEventListener("keydown", (event) => {
     if (dialog.open) return;
     event.preventDefault();
     const currentIndex = brandTabButtons.findIndex(
-      (button) => button.textContent.trim() === activeBrandTab,
+      (button) => brandTabName(button) === activeBrandTab,
     );
-    const fromIndex = currentIndex < 0 ? 0 : currentIndex;
+    const fromIndex = currentIndex < 0 ? firstEnabledBrandTabIndex() : currentIndex;
     const nextIndex = event.shiftKey
-      ? (fromIndex - 1 + brandTabButtons.length) % brandTabButtons.length
-      : (fromIndex + 1) % brandTabButtons.length;
+      ? nextEnabledBrandTabIndex(fromIndex, -1)
+      : nextEnabledBrandTabIndex(fromIndex, 1);
     selectBrandTab(brandTabButtons[nextIndex]);
     return;
   }
 
   if (event.code === "Space") {
     event.preventDefault();
-    if (dialog.open) return;
+    if (dialog.open) {
+      randomizeDialogPreview();
+      return;
+    }
     if (target instanceof HTMLElement && target.classList.contains("brand-tab")) {
       target.blur();
     }
     randomizeActiveTab();
+    return;
+  }
+
+  if (canUseGridKeyboardNav(event)) {
+    if (event.key === "Escape") {
+      if (keyboardGridSelection) {
+        event.preventDefault();
+        clearKeyboardGridSelection();
+        return;
+      }
+    }
+
+    if (event.key === "Enter") {
+      if (keyboardGridSelection?.tab === activeBrandTab) {
+        event.preventDefault();
+        lockKeyboardGridSelection();
+        return;
+      }
+    }
+
+    if (
+      event.key === "ArrowUp"
+      || event.key === "ArrowDown"
+      || event.key === "ArrowLeft"
+      || event.key === "ArrowRight"
+    ) {
+      event.preventDefault();
+      navigateKeyboardGrid(event.key);
+      return;
+    }
   }
 
   if (event.code === "ArrowDown") {
     event.preventDefault();
     cycleShader(1);
+    return;
   }
 
   if (event.code === "ArrowUp") {
     event.preventDefault();
     cycleShader(-1);
+    return;
   }
 
-  if (event.code === "Enter") {
+  if (event.key.toLowerCase() === "b") {
     event.preventDefault();
-    resetShaderView();
     toggleDefaultPalette();
-  }
-
-  if (event.key.toLowerCase() === "r") {
-    event.preventDefault();
-    randomizeLogoOrder();
   }
 
   if (event.key === "+" || event.key === "=") {
