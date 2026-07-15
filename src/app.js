@@ -250,7 +250,8 @@ let suppressNextMobileLogoClick = false;
 const lockupText = "EEG";
 const lockupCanvas = document.createElement("canvas");
 const colorCombinationCount = 720;
-const colorRowGap = 72;
+const colorSwatchGap = 24;
+const gridLockControlSize = 30;
 let colorCombinations = [];
 const colorRowPool = new Map();
 let colorGridWindow = { startIndex: -1, endIndex: -1, rowHeight: 0, rowStride: 0 };
@@ -2236,12 +2237,16 @@ function renderTypeGrid() {
 function buildColorCombinations() {
   const used = new Set();
   const combinations = new Array(colorCombinationCount);
+  const previous = colorCombinations;
 
-  for (const [slot, combination] of pinnedGridSlots.Colors) {
-    if (slot >= 0 && slot < colorCombinationCount) {
-      combinations[slot] = structuredClone(combination);
-      used.add(combination.colors.join("/"));
-    }
+  for (let index = 0; index < colorCombinationCount; index += 1) {
+    const locks = pinnedGridSlots.Colors.get(index);
+    if (!locks?.size) continue;
+    if (index < 0 || index >= colorCombinationCount) continue;
+
+    const combination = generateColorCombinationWithLocks(locks, previous[index]);
+    combinations[index] = combination;
+    used.add(combination.colors.join("/"));
   }
 
   for (let index = 0; index < colorCombinationCount; index += 1) {
@@ -2304,7 +2309,10 @@ function updateSwatchesForColor(key) {
   const name = colorNameCache.get(key);
   if (!name) return;
   colorGrid.querySelectorAll(".color-swatch").forEach((swatch) => {
-    if (swatch.dataset.colorHex === key) applyColorNameToSwatch(swatch);
+    if (swatch.dataset.colorHex === key) {
+      applyColorNameToSwatch(swatch);
+      positionColorSwatchLockControl(swatch);
+    }
   });
 }
 
@@ -2470,7 +2478,8 @@ function bindSwatchDragAdjust(swatch, row, swatchIndex) {
   swatch.addEventListener("pointerdown", (event) => {
     if (event.button !== 0) return;
     if (event.target.closest(".color-swatch-hex")) return;
-    if (colorDragSession) finishColorDrag(true);
+    if (event.target.closest(".grid-lock-control")) return;
+    if (colorDragSession) finishColorDrag(colorDragSession.hasDragged);
 
     event.preventDefault();
     event.stopPropagation();
@@ -2650,8 +2659,10 @@ function createColorRow(combination, index, rowHeight, rowStride) {
     applyColorNameToSwatch(swatch);
     bindSwatchHexEditor(hex, swatch, row, swatchIndex);
     bindSwatchDragAdjust(swatch, row, swatchIndex);
+    attachColorSwatchLockControl(swatch, row, swatchIndex);
     swatch.addEventListener("mouseenter", () => {
       ensureColorNames([swatch.dataset.colorHex]);
+      positionColorSwatchLockControl(swatch);
     });
     row.append(swatch);
   });
@@ -2764,7 +2775,7 @@ function bindColorGridListeners() {
 }
 
 function renderColorGrid() {
-  colorGrid.style.setProperty("--color-row-gap", `${colorRowGap}px`);
+  colorGrid.style.setProperty("--color-swatch-gap", `${colorSwatchGap}px`);
   colorCombinations = buildColorCombinations();
   colorRowPool.clear();
   colorGrid.replaceChildren();
@@ -5985,6 +5996,249 @@ function generateColorCombination() {
   return {
     colors: sampleFourColors(generator()),
     source: name,
+  };
+}
+
+function colorCloseness(a, b) {
+  const left = hexToRgb(parseColor(a));
+  const right = hexToRgb(parseColor(b));
+  const dr = left[0] - right[0];
+  const dg = left[1] - right[1];
+  const db = left[2] - right[2];
+  return Math.sqrt(dr * dr + dg * dg + db * db);
+}
+
+function colorsTooClose(a, b, threshold = 28) {
+  return colorCloseness(a, b) < threshold;
+}
+
+function scoreLockedCombination(colors, lockedByIndex) {
+  let score = 0;
+  const lums = colors.map((color) => luminance(color));
+  score += (Math.max(...lums) - Math.min(...lums)) * 14;
+
+  for (let index = 0; index < colors.length - 1; index += 1) {
+    score += Math.min(contrastRatio(colors[index], colors[index + 1]), 7);
+  }
+
+  for (let i = 0; i < colors.length; i += 1) {
+    for (let j = i + 1; j < colors.length; j += 1) {
+      if (parseColor(colors[i]) === parseColor(colors[j])) score -= 20;
+      else if (colorsTooClose(colors[i], colors[j], 22)) score -= 8;
+    }
+  }
+
+  for (const [lockedIndex, lockedColor] of lockedByIndex) {
+    for (let index = 0; index < colors.length; index += 1) {
+      if (index === lockedIndex) continue;
+      const ratio = contrastRatio(lockedColor, colors[index]);
+      if (ratio >= 2.45) score += 1.6;
+      else if (ratio >= 1.85) score += 0.7;
+    }
+  }
+
+  return score;
+}
+
+function expandLockedColorCandidates(seeds, unlockedCount, existing = []) {
+  const candidates = [...existing];
+  const locked = seeds.map(parseColor);
+
+  const pushUnique = (color) => {
+    const normalized = parseColor(color);
+    if (candidates.some((entry) => colorsTooClose(entry, normalized, 22))) return false;
+    if (locked.some((entry) => colorsTooClose(normalized, entry, 24))) return false;
+    candidates.push(normalized);
+    return true;
+  };
+
+  for (const seed of locked) {
+    const hue = hueFromHex(seed);
+    for (let step = 0; step < 8; step += 1) {
+      pushUnique(hslToHex(
+        (hue + step * (35 + Math.random() * 55) + Math.random() * 20) % 360,
+        0.22 + Math.random() * 0.7,
+        0.08 + Math.random() * 0.84,
+      ));
+    }
+    pushUnique(mixColors(seed, "#ffffff", 0.2 + Math.random() * 0.65));
+    pushUnique(mixColors(seed, "#111111", 0.2 + Math.random() * 0.55));
+    pushUnique(mixColors(seed, "#000000", 0.35 + Math.random() * 0.4));
+  }
+
+  if (locked.length >= 2) {
+    pushUnique(mixColors(locked[0], locked[1], 0.2 + Math.random() * 0.6));
+    pushUnique(mixColors(locked[0], locked[1], 0.35 + Math.random() * 0.3));
+  }
+
+  while (candidates.length < unlockedCount + 4) {
+    const seed = locked[Math.floor(Math.random() * locked.length)] ?? "#888888";
+    const hue = (hueFromHex(seed) + Math.random() * 360) % 360;
+    if (!pushUnique(hslToHex(hue, 0.2 + Math.random() * 0.75, 0.1 + Math.random() * 0.8))) {
+      pushUnique(mixColors(seed, Math.random() < 0.5 ? "#ffffff" : "#000000", 0.25 + Math.random() * 0.55));
+    }
+    if (candidates.length > unlockedCount + 12) break;
+  }
+
+  return candidates;
+}
+
+function fillUnlockedColorSlots(lockedByIndex, pool) {
+  const colors = new Array(4).fill(null);
+  const used = [];
+
+  for (const [index, color] of lockedByIndex) {
+    const normalized = parseColor(color);
+    colors[index] = normalized;
+    used.push(normalized);
+  }
+
+  const unlocked = [0, 1, 2, 3].filter((index) => colors[index] == null);
+  let candidates = [...new Set(pool.map(parseColor))]
+    .filter((color) => !used.some((locked) => colorsTooClose(color, locked, 24)));
+
+  if (candidates.length < unlocked.length + 3) {
+    candidates = expandLockedColorCandidates(used, unlocked.length, candidates);
+  }
+
+  const available = shuffleArray([...candidates]);
+  for (const slot of unlocked) {
+    if (!available.length) {
+      const seed = used[0] ?? "#888888";
+      const fallback = mixColors(seed, slot < 2 ? "#000000" : "#ffffff", 0.25 + Math.random() * 0.55);
+      colors[slot] = parseColor(fallback);
+      used.push(colors[slot]);
+      continue;
+    }
+
+    const targetLum = (slot + Math.random() * 0.35) / 3.35;
+    const ranked = available
+      .map((color, index) => ({
+        index,
+        color,
+        distance: Math.abs(luminance(color) - targetLum) + Math.random() * 0.22,
+      }))
+      .sort((left, right) => left.distance - right.distance);
+
+    const pickFrom = Math.min(3, ranked.length);
+    const chosen = ranked[Math.floor(Math.random() * pickFrom)];
+    available.splice(chosen.index, 1);
+    colors[slot] = chosen.color;
+    used.push(chosen.color);
+  }
+
+  return colors;
+}
+
+function poolAroundLockedColors(lockedColors) {
+  const seeds = lockedColors.map(parseColor);
+  const pool = [...seeds];
+
+  for (const seed of seeds) {
+    const hue = hueFromHex(seed);
+    for (let step = 0; step < 6; step += 1) {
+      const nextHue = (hue + step * (50 + Math.random() * 40)) % 360;
+      const saturation = 0.28 + Math.random() * 0.62;
+      const lightness = 0.1 + Math.random() * 0.8;
+      pool.push(hslToHex(nextHue, saturation, lightness));
+    }
+    pool.push(
+      mixColors(seed, "#ffffff", 0.25),
+      mixColors(seed, "#ffffff", 0.55),
+      mixColors(seed, "#ffffff", 0.8),
+      mixColors(seed, "#111111", 0.35),
+      mixColors(seed, "#000000", 0.55),
+    );
+  }
+
+  if (seeds.length >= 2) {
+    pool.push(
+      mixColors(seeds[0], seeds[1], 0.25),
+      mixColors(seeds[0], seeds[1], 0.5),
+      mixColors(seeds[0], seeds[1], 0.75),
+    );
+  }
+
+  const [name, generator] = randomFrom(paletteSources);
+  pool.push(...generator());
+  return { pool, source: name };
+}
+
+function unlockedColorsChanged(nextColors, previousColors, lockedByIndex) {
+  if (!previousColors?.length) return true;
+  for (let index = 0; index < nextColors.length; index += 1) {
+    if (lockedByIndex.has(index)) continue;
+    if (parseColor(nextColors[index]) !== parseColor(previousColors[index])) return true;
+  }
+  return false;
+}
+
+function generateColorCombinationWithLocks(lockedByIndex, previous = null) {
+  const locks = new Map(
+    [...lockedByIndex.entries()].map(([index, color]) => [Number(index), parseColor(color)]),
+  );
+
+  if (locks.size >= 4) {
+    const colors = [0, 1, 2, 3].map(
+      (index) => locks.get(index) ?? previous?.colors?.[index] ?? "#888888",
+    );
+    return {
+      colors,
+      source: previous?.source ?? "Pinned",
+    };
+  }
+
+  if (locks.size === 0) return generateColorCombination();
+
+  let best = null;
+  let bestScore = -Infinity;
+  const lockedColors = [...locks.values()];
+  const previousColors = previous?.colors ?? null;
+
+  for (let attempt = 0; attempt < 56; attempt += 1) {
+    let pool;
+    let source;
+
+    if (Math.random() < 0.62) {
+      ({ pool, source } = poolAroundLockedColors(lockedColors));
+    } else {
+      const combo = generateColorCombination();
+      pool = [...combo.colors, ...expandLockedColorCandidates(lockedColors, 4 - locks.size)];
+      source = combo.source;
+    }
+
+    const colors = fillUnlockedColorSlots(locks, pool);
+    let score = scoreLockedCombination(colors, locks) + Math.random() * 2.8;
+
+    if (previousColors && !unlockedColorsChanged(colors, previousColors, locks)) {
+      score -= 18;
+    } else if (previousColors) {
+      for (let index = 0; index < colors.length; index += 1) {
+        if (locks.has(index)) continue;
+        if (colorsTooClose(colors[index], previousColors[index], 28)) score -= 3.5;
+        else score += 0.8;
+      }
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = { colors, source };
+    }
+  }
+
+  if (best && previousColors && !unlockedColorsChanged(best.colors, previousColors, locks)) {
+    for (let retry = 0; retry < 16; retry += 1) {
+      const { pool, source } = poolAroundLockedColors(lockedColors);
+      const colors = fillUnlockedColorSlots(locks, pool);
+      if (unlockedColorsChanged(colors, previousColors, locks)) {
+        return { colors, source };
+      }
+    }
+  }
+
+  return best ?? {
+    colors: fillUnlockedColorSlots(locks, generateColorCombination().colors),
+    source: previous?.source ?? "Matched",
   };
 }
 

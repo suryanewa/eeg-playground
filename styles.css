@@ -539,8 +539,10 @@ body {
   position: relative;
   display: block;
   margin-top: var(--brand-grid-offset);
+  padding-left: calc(var(--grid-lock-control-size) + var(--color-swatch-gap));
   background: transparent;
-  --color-row-gap: 72px;
+  --color-swatch-gap: 24px;
+  --grid-lock-control-size: 30px;
 }
 
 .lockup-grid {
@@ -620,6 +622,7 @@ body {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--color-swatch-gap);
   margin: 0;
   padding: 0;
   border: 0;
@@ -633,10 +636,10 @@ body {
   content: "";
   position: absolute;
   z-index: 3;
-  left: 0;
-  width: 100%;
-  top: calc(var(--color-row-gap, 72px) * -0.5);
-  height: calc(var(--color-row-gap, 72px) * 0.5 + 16px);
+  top: 0;
+  height: 100%;
+  left: calc((var(--grid-lock-control-size) + var(--color-swatch-gap)) * -1);
+  width: calc(var(--grid-lock-control-size) + var(--color-swatch-gap));
 }
 
 .grid-lock-control {
@@ -665,13 +668,35 @@ body {
 }
 
 .color-row > .grid-lock-control {
-  top: calc(var(--color-row-gap, 72px) * -0.5);
+  left: calc((var(--color-swatch-gap) + var(--grid-lock-control-size) * 0.5) * -1);
+  top: 50%;
   transform: translate(-50%, -50%);
+  color: var(--logo-ink);
+}
+
+.color-swatch > .grid-lock-control {
+  transform: translate(-50%, -50%);
+  color: var(--color-swatch-label, var(--logo-ink));
+}
+
+.color-swatch.is-grid-locked.is-lock-positioned > .grid-lock-control {
+  opacity: var(--grid-lock-icon-rest-opacity);
+  pointer-events: auto;
+}
+
+.color-row.is-grid-locked > .grid-lock-control {
+  opacity: var(--grid-lock-icon-rest-opacity);
+  pointer-events: auto;
+}
+
+.color-swatch > .grid-lock-control:focus-visible {
+  outline-color: var(--color-swatch-label, var(--editor-mark-color));
 }
 
 .logo-tile > .grid-lock-control {
-  top: 0;
-  transform: translate(-50%, -50%);
+  top: var(--grid-tile-inset);
+  margin: 0;
+  transform: translateX(-50%);
 }
 
 .type-tile > .grid-lock-control,
@@ -680,9 +705,16 @@ body {
 }
 
 .color-row:hover > .grid-lock-control,
+.color-row:has(.color-swatch:hover) > .grid-lock-control,
+.color-row:has(.color-swatch.is-keyboard-selected) > .grid-lock-control,
+.color-swatch:hover > .grid-lock-control,
+.color-swatch.is-keyboard-selected > .grid-lock-control,
 .logo-tile:hover > .grid-lock-control,
+.logo-tile.is-keyboard-selected > .grid-lock-control,
 .type-tile:hover > .grid-lock-control,
+.type-tile.is-keyboard-selected > .grid-lock-control,
 .lockup-tile:hover > .grid-lock-control,
+.lockup-tile.is-keyboard-selected > .grid-lock-control,
 .grid-lock-control:hover {
   opacity: 1;
   pointer-events: auto;
@@ -754,8 +786,14 @@ body {
 }
 
 .color-swatch:hover .color-swatch-label,
-.color-swatch.is-adjusting .color-swatch-label {
+.color-swatch.is-keyboard-selected .color-swatch-label,
+.color-swatch.is-adjusting .color-swatch-label,
+.color-swatch.is-measuring-label .color-swatch-label {
   display: flex;
+}
+
+.color-swatch.is-measuring-label .color-swatch-label {
+  visibility: hidden;
 }
 
 .logo-tile {
