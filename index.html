@@ -3,31 +3,117 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EEG Playground</title>
-    <meta name="description" content="A playground for reviewing EEG logo explorations." />
-    <meta property="og:title" content="EEG Playground" />
-    <meta property="og:description" content="A playground for reviewing EEG logo explorations." />
+    <title>Brandy</title>
+    <meta name="description" content="Explore logos, typefaces, color palettes, and lockups in a fast brand review playground. Lock favorites, cycle shaders, and import or export SVGs, fonts, and Brandy project files." />
+    <meta property="og:title" content="Brandy" />
+    <meta property="og:description" content="Explore logos, typefaces, color palettes, and lockups in a fast brand review playground. Lock favorites, cycle shaders, and import or export SVGs, fonts, and Brandy project files." />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="EEG Playground" />
+    <meta property="og:site_name" content="Brandy" />
     <meta property="og:image" content="/assets/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="A random arrangement of EEG logo explorations." />
+    <meta property="og:image:alt" content="Brandy bottle icon and wordmark on a white background." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EEG Playground" />
-    <meta name="twitter:description" content="A playground for reviewing EEG logo explorations." />
+    <meta name="twitter:title" content="Brandy" />
+    <meta name="twitter:description" content="Explore logos, typefaces, color palettes, and lockups in a fast brand review playground. Lock favorites, cycle shaders, and import or export SVGs, fonts, and Brandy project files." />
     <meta name="twitter:image" content="/assets/og-image.png" />
-    <meta name="twitter:image:alt" content="A random arrangement of EEG logo explorations." />
-    <link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" />
+    <meta name="twitter:image:alt" content="Brandy bottle icon and wordmark on a white background." />
+    <link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg transform='translate(16 16.5) scale(0.0315) translate(-200 -400)'%3E%3Cpath fill='%23000' fill-rule='evenodd' d='M391.8,734c1.4,31.3-9.8,51.5-33.2,61-13.7,5.4-22.2,5-36.5,5H77.9c-14.3,0-22.8.4-36.5-5-23.5-9.4-34.7-29.6-33.2-61C-4.4,392.9-.9,346.7,8.2,305.9c13.1-58.5,35.4-73.8,44.3-80.2,24.9-17.9,53.7-19.7,68.3-45.1,7.6-13.3,7.9-27,7.1-36.3V8.3c0-4.6,4-8.3,8.9-8.3h126.4c4.9,0,8.9,3.7,8.9,8.3v136c-.8,9.3-.5,23.1,7.1,36.3,14.6,25.5,43.3,27.2,68.3,45.1,9,6.5,31.3,21.7,44.3,80.2,9.1,40.7,12.6,87,0,428.1Z'/%3E%3C/g%3E%3C/svg%3E" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="shader-layer" id="shader-layer" aria-hidden="true"></div>
+    <div class="brand-mark" id="brand-mark" aria-label="Brandy">
+      <div class="brand-mark-lockup">
+        <span class="brand-mark-icon" aria-hidden="true">
+          <span class="brand-mark-art">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" aria-hidden="true">
+              <path fill="currentColor" fill-rule="evenodd" d="M391.8,734c1.4,31.3-9.8,51.5-33.2,61-13.7,5.4-22.2,5-36.5,5H77.9c-14.3,0-22.8.4-36.5-5-23.5-9.4-34.7-29.6-33.2-61C-4.4,392.9-.9,346.7,8.2,305.9c13.1-58.5,35.4-73.8,44.3-80.2,24.9-17.9,53.7-19.7,68.3-45.1,7.6-13.3,7.9-27,7.1-36.3V8.3c0-4.6,4-8.3,8.9-8.3h126.4c4.9,0,8.9,3.7,8.9,8.3v136c-.8,9.3-.5,23.1,7.1,36.3,14.6,25.5,43.3,27.2,68.3,45.1,9,6.5,31.3,21.7,44.3,80.2,9.1,40.7,12.6,87,0,428.1Z"/>
+            </svg>
+          </span>
+        </span>
+        <span class="brand-mark-wordmark" aria-hidden="true">
+          <span class="brand-mark-wordmark-ink">Brandy</span>
+        </span>
+      </div>
+    </div>
+    <nav class="grid-filters" id="grid-filters" aria-label="Grid filters" hidden>
+      <div class="grid-filter-panel" data-grid-filter-tab="Colors">
+        <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+      </div>
+      <div class="grid-filter-panel" data-grid-filter-tab="Logos">
+        <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+      </div>
+      <div class="grid-filter-panel" data-grid-filter-tab="Type">
+        <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+        <button class="grid-filter" type="button" data-filter="editors-picks" aria-pressed="false">Picks</button>
+      </div>
+      <div class="grid-filter-panel" data-grid-filter-tab="Lockups">
+        <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
+      </div>
+    </nav>
+    <nav class="grid-actions" id="grid-actions" aria-label="Grid actions" hidden>
+      <div class="grid-action-panel" data-tab="Colors">
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="clear-locked">Clear locked (⌘ L)</button>
+          <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White (B)</button>
+        </div>
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span> (⌘ O)</button>
+          <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span> (⌘ S)</button>
+          <button class="grid-action grid-action--scroll-up" type="button" data-action="scroll-up" hidden>Scroll Up<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+        </div>
+      </div>
+      <div class="grid-action-panel" data-tab="Logos">
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="clear-locked">Clear locked (⌘ L)</button>
+          <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White (B)</button>
+          <button class="grid-action" type="button" data-action="cycle-shader" aria-pressed="false">Shaders (S)</button>
+          <button class="grid-action grid-action--reset" type="button" data-action="reset-deletions" hidden>Reset</button>
+        </div>
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span> (⌘ O)</button>
+          <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span> (⌘ S)</button>
+          <button class="grid-action grid-action--scroll-up" type="button" data-action="scroll-up" hidden>Scroll Up<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+        </div>
+      </div>
+      <div class="grid-action-panel" data-tab="Type">
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="clear-locked">Clear locked (⌘ L)</button>
+          <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White (B)</button>
+          <button class="grid-action" type="button" data-action="cycle-shader" aria-pressed="false">Shaders (S)</button>
+          <button class="grid-action grid-action--reset" type="button" data-action="reset-deletions" hidden>Reset</button>
+        </div>
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span> (⌘ O)</button>
+          <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span> (⌘ S)</button>
+          <button class="grid-action grid-action--scroll-up" type="button" data-action="scroll-up" hidden>Scroll Up<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+        </div>
+      </div>
+      <div class="grid-action-panel" data-tab="Lockups">
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="clear-locked">Clear locked (⌘ L)</button>
+          <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White (B)</button>
+          <button class="grid-action" type="button" data-action="cycle-shader" aria-pressed="false">Shaders (S)</button>
+          <button class="grid-action grid-action--reset" type="button" data-action="reset-deletions" hidden>Reset</button>
+        </div>
+        <div class="grid-action-group">
+          <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span> (⌘ O)</button>
+          <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span> (⌘ S)</button>
+          <button class="grid-action grid-action--scroll-up" type="button" data-action="scroll-up" hidden>Scroll Up<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
+        </div>
+      </div>
+    </nav>
     <main class="logo-sheet" aria-label="EEG branding explorations">
       <section class="logo-upload" id="logo-upload" data-empty="true" aria-label="Upload logos">
         <input id="logo-file-input" type="file" accept=".svg,image/svg+xml" multiple hidden />
         <input id="type-file-input" type="file" accept=".woff,.woff2,.ttf,.otf,font/woff,font/woff2,font/ttf,font/otf" multiple hidden />
-        <input id="locked-import-input" type="file" accept=".json,application/json" hidden />
+        <input id="locked-import-input" type="file" accept=".json,application/json,.svg,image/svg+xml,.woff,.woff2,.ttf,.otf,font/woff,font/woff2,font/ttf,font/otf" multiple hidden />
         <nav class="brand-tabs" aria-label="Brand asset categories">
           <button class="brand-tab" type="button" aria-pressed="true" tabindex="0">Colors</button>
           <button class="brand-tab" type="button" aria-pressed="false" tabindex="-1">Logos</button>
@@ -70,80 +156,18 @@
             </svg>
           </span>
         </div>
+        <div class="logo-upload-empty import-drag-target" id="import-drag-target" hidden tabindex="-1" aria-hidden="true">
+          <svg class="upload-border" aria-hidden="true"><rect x="1" y="1" rx="0" ry="0" fill="none" /></svg>
+          <div class="upload-copy">
+            <p>Drop to import SVG, font, or Brandy JSON files.</p>
+          </div>
+        </div>
       </section>
-      <nav class="grid-filters" id="grid-filters" aria-label="Grid filters" hidden>
-        <div class="grid-filter-panel" data-grid-filter-tab="Colors">
-          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
-          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
-        </div>
-        <div class="grid-filter-panel" data-grid-filter-tab="Logos">
-          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
-          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
-        </div>
-        <div class="grid-filter-panel" data-grid-filter-tab="Type">
-          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
-          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
-          <button class="grid-filter" type="button" data-filter="editors-picks" aria-pressed="false">Picks</button>
-        </div>
-        <div class="grid-filter-panel" data-grid-filter-tab="Lockups">
-          <button class="grid-filter" type="button" data-filter="all" aria-pressed="true">All</button>
-          <button class="grid-filter" type="button" data-filter="locked" aria-pressed="false">Locked</button>
-        </div>
-      </nav>
-      <nav class="grid-actions" id="grid-actions" aria-label="Grid actions" hidden>
-        <div class="grid-action-panel" data-tab="Colors">
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
-            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
-          </div>
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
-            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
-          </div>
-        </div>
-        <div class="grid-action-panel" data-tab="Logos">
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
-            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
-          </div>
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
-            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
-          </div>
-        </div>
-        <div class="grid-action-panel" data-tab="Type">
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
-            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
-          </div>
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
-            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
-          </div>
-        </div>
-        <div class="grid-action-panel" data-tab="Lockups">
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="clear-locked">Clear locked</button>
-            <button class="grid-action" type="button" data-action="toggle-bw" aria-pressed="false">Black & White</button>
-          </div>
-          <div class="grid-action-group">
-            <button class="grid-action" type="button" data-action="import">Import<span class="grid-action-arrow" aria-hidden="true">↑</span></button>
-            <button class="grid-action" type="button" data-action="export">Export<span class="grid-action-arrow" aria-hidden="true">↓</span></button>
-          </div>
-        </div>
-      </nav>
       <section class="logo-grid" id="logo-grid" aria-label="Individual EEG logo SVGs"></section>
       <section class="type-grid" id="type-grid" aria-label="Open-source typeface specimens" hidden></section>
       <section class="color-grid" id="color-grid" aria-label="Color combinations" hidden></section>
       <section class="lockup-grid" id="lockup-grid" aria-label="Logo and type lockups" hidden></section>
     </main>
-    <div class="drop-overlay" id="drop-overlay" hidden aria-hidden="true">
-      <div class="drop-overlay-frame">
-        <span class="drop-overlay-plus">＋</span>
-        <p id="drop-overlay-title">Drop to add logos</p>
-        <span id="drop-overlay-hint">SVG files only</span>
-      </div>
-    </div>
     <dialog class="logo-dialog" id="logo-dialog" aria-label="Selected logo preview" tabindex="-1">
       <button class="close-button" type="button" aria-label="Close fullscreen logo">
         <span aria-hidden="true"></span>
@@ -156,6 +180,57 @@
         <span aria-hidden="true"></span>
       </button>
     </dialog>
+    <script>
+      (function () {
+        function estimateGutterWidth() {
+          var grid = document.querySelector(
+            ".color-grid:not([hidden]), #logo-grid:not([hidden]), #type-grid:not([hidden]), #lockup-grid:not([hidden])",
+          );
+          if (grid) return Math.max(0, grid.getBoundingClientRect().left);
+
+          var sheet = document.querySelector(".logo-sheet");
+          if (!sheet) return 0;
+          var sheetRect = sheet.getBoundingClientRect();
+          var padLeft = Number.parseFloat(getComputedStyle(sheet).paddingLeft) || 20;
+          return Math.max(0, sheetRect.left + padLeft);
+        }
+
+        function syncBrandMarkPositionEarly() {
+          var brandMark = document.getElementById("brand-mark");
+          var uploadPanel = document.getElementById("logo-upload");
+          if (!brandMark || !uploadPanel) return;
+
+          var brandTabs = uploadPanel.querySelector(".brand-tabs");
+          var lockup = brandMark.querySelector(".brand-mark-lockup");
+          var gutterWidth = estimateGutterWidth();
+          var lockupWidth = lockup
+            ? lockup.getBoundingClientRect().width
+            : brandMark.getBoundingClientRect().width;
+          var minInset = Math.min(Math.max(window.innerWidth * 0.015, 10), 18);
+          var gutterCenter = gutterWidth / 2;
+          var top = minInset;
+
+          if (brandTabs) {
+            var rect = brandTabs.getBoundingClientRect();
+            if (rect.height) top = rect.top + rect.height / 2 + window.scrollY;
+          }
+
+          brandMark.style.top = `${top}px`;
+
+          if (gutterWidth >= lockupWidth + minInset * 2) {
+            brandMark.style.left = `${gutterCenter}px`;
+            brandMark.style.transform = "translate(-50%, -50%)";
+          } else {
+            brandMark.style.left = `${minInset}px`;
+            brandMark.style.transform = "translateY(-50%)";
+          }
+
+          brandMark.classList.add("is-positioned");
+        }
+
+        syncBrandMarkPositionEarly();
+      })();
+    </script>
     <script src="dist/env.js"></script>
     <script src="dist/app.js"></script>
   </body>
