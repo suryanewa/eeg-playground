@@ -31,6 +31,7 @@ const uploadPanel = document.querySelector("#logo-upload");
 const uploadEmpty = document.querySelector("#logo-upload-empty");
 const typeUploadEmpty = document.querySelector("#type-upload-empty");
 const lockupUploadEmpty = document.querySelector("#lockup-upload-empty");
+const importDragTarget = document.querySelector("#import-drag-target");
 const uploadInput = document.querySelector("#logo-file-input");
 const typeUploadInput = document.querySelector("#type-file-input");
 const placeholderButton = document.querySelector("#placeholder-button");
@@ -38,9 +39,6 @@ const typeExploreButton = document.querySelector("#type-explore-button");
 const lockupTryButton = document.querySelector("#lockup-try-button");
 const uploadFeedback = document.querySelector("#upload-feedback");
 const typeUploadFeedback = document.querySelector("#type-upload-feedback");
-const dropOverlay = document.querySelector("#drop-overlay");
-const dropOverlayTitle = document.querySelector("#drop-overlay-title");
-const dropOverlayHint = document.querySelector("#drop-overlay-hint");
 const brandTabButtons = [...document.querySelectorAll(".brand-tab")];
 
 function brandTabName(button) {
@@ -75,8 +73,9 @@ const colorGrid = document.querySelector("#color-grid");
 const lockupGrid = document.querySelector("#lockup-grid");
 const gridFilters = document.querySelector("#grid-filters");
 const gridActions = document.querySelector("#grid-actions");
+const brandMark = document.querySelector("#brand-mark");
+const BRAND_MARK_PATH = "M391.8,734c1.4,31.3-9.8,51.5-33.2,61-13.7,5.4-22.2,5-36.5,5H77.9c-14.3,0-22.8.4-36.5-5-23.5-9.4-34.7-29.6-33.2-61C-4.4,392.9-.9,346.7,8.2,305.9c13.1-58.5,35.4-73.8,44.3-80.2,24.9-17.9,53.7-19.7,68.3-45.1,7.6-13.3,7.9-27,7.1-36.3V8.3c0-4.6,4-8.3,8.9-8.3h126.4c4.9,0,8.9,3.7,8.9,8.3v136c-.8,9.3-.5,23.1,7.1,36.3,14.6,25.5,43.3,27.2,68.3,45.1,9,6.5,31.3,21.7,44.3,80.2,9.1,40.7,12.6,87,0,428.1Z";
 const lockedImportInput = document.querySelector("#locked-import-input");
-let pendingImportTab = null;
 const dialog = document.querySelector("#logo-dialog");
 const fullscreenLogo = document.querySelector("#fullscreen-logo");
 const closeButton = dialog.querySelector(".close-button");
@@ -127,6 +126,7 @@ let currentPalette = defaultPalette;
 let bwModeActive = false;
 let preBwPalette = null;
 let currentShaderIndex = -1;
+let preShaderPalette = null;
 let selectedFont = "Helvetica";
 let activeBrandTab = "Colors";
 let typeCatalogRevealed = false;
@@ -144,6 +144,7 @@ const SESSION_KEYS = {
   reloadPending: `${SESSION_PREFIX}reload-pending`,
 };
 const BRAND_TABS = new Set(["Colors", "Logos", "Type", "Lockups"]);
+const SHADER_UI_TABS = new Set(["Logos", "Type", "Lockups"]);
 
 function saveSessionState() {
   try {
@@ -262,6 +263,8 @@ const colorNameApi = "https://api.color.pizza/v1/";
 const colorNameCache = new Map();
 const colorNameInflight = new Map();
 let colorDragSession = null;
+const colorChangeUndoStack = [];
+const COLOR_CHANGE_UNDO_LIMIT = 100;
 const lockupCombinationCount = 720;
 let lockupCombinations = [];
 const lockupTilePool = new Map();
@@ -276,6 +279,16 @@ const pinnedGridSlots = {
   Type: new Map(),
   Lockups: new Map(),
 };
+
+const excludedLogoIds = new Set();
+const excludedTypefaceKeys = new Set();
+const excludedLockupKeys = new Set();
+const deletionUndoStacks = {
+  Logos: [],
+  Type: [],
+  Lockups: [],
+};
+const DELETION_UNDO_LIMIT = 100;
 
 const TYPEFACE_REGISTRY_ORDER = ["google", "fontshare", "fontsource", "bunny", "local"];
 const TYPEFACE_REGISTRY_LABELS = {
@@ -316,6 +329,13 @@ const EDITOR_PICK_TYPEFACE_IDS = new Set([
 ]);
 
 const gridFilterState = {
+  Colors: "all",
+  Logos: "all",
+  Type: "all",
+  Lockups: "all",
+};
+
+const gridFilterLastNonLocked = {
   Colors: "all",
   Logos: "all",
   Type: "all",
@@ -410,7 +430,7 @@ function getColorRowSourceIndices() {
 
 function getTypeGridSourceIndices() {
   const faces = getTypefacesForGrid();
-  const all = faces.map((_, index) => index);
+  let all = faces.map((_, index) => index).filter((index) => !isTypefaceExcluded(faces[index]));
   const filter = gridFilterForTab("Type");
   if (filter === "locked") {
     return all.filter((index) => isTypefacePinned(faces[index]));
@@ -424,8 +444,159 @@ function getTypeGridSourceIndices() {
   return all;
 }
 
+function lockupCombinationKey(combination) {
+  if (!combination) return "";
+  return `${combination.logoId}:${combination.typeIndex}`;
+}
+
+function isTypefaceExcluded(face) {
+  return Boolean(face) && excludedTypefaceKeys.has(typefaceLoadKey(face));
+}
+
+function isLockupCombinationExcluded(combination) {
+  if (!combination) return true;
+  if (excludedLockupKeys.has(lockupCombinationKey(combination))) return true;
+  if (excludedLogoIds.has(combination.logoId)) return true;
+  const face = getTypefaces()[combination.typeIndex];
+  return isTypefaceExcluded(face);
+}
+
+function getAvailableLogoIds() {
+  return getLogoIds().filter((id) => !excludedLogoIds.has(id));
+}
+
+function pushDeletionUndo(tab, entry) {
+  const stack = deletionUndoStacks[tab];
+  if (!stack) return;
+  stack.push(entry);
+  if (stack.length > DELETION_UNDO_LIMIT) stack.shift();
+  syncResetButtons();
+}
+
+function tabHasDeletions(tab) {
+  if (tab === "Logos") return excludedLogoIds.size > 0;
+  if (tab === "Type") return excludedTypefaceKeys.size > 0;
+  if (tab === "Lockups") return excludedLockupKeys.size > 0;
+  return false;
+}
+
+function syncResetButtons() {
+  if (!gridActions) return;
+  gridActions.querySelectorAll('[data-action="reset-deletions"]').forEach((button) => {
+    const tab = button.closest(".grid-action-panel")?.dataset.tab;
+    button.hidden = !tab || !tabHasDeletions(tab);
+  });
+}
+
+function unpinLogoId(logoId) {
+  const ordered = orderedPinnedValues(pinnedGridSlots.Logos);
+  if (!ordered.includes(logoId)) return;
+  resetPinnedMap(pinnedGridSlots.Logos, ordered.filter((id) => id !== logoId));
+}
+
+function unpinTypefaceKey(key) {
+  const ordered = orderedPinnedValues(pinnedGridSlots.Type);
+  if (!ordered.includes(key)) return;
+  resetPinnedMap(pinnedGridSlots.Type, ordered.filter((entry) => entry !== key));
+}
+
+function unpinLockupCombination(combination) {
+  const ordered = orderedPinnedValues(pinnedGridSlots.Lockups);
+  if (pinValueIndex(combination, ordered) < 0) return;
+  resetPinnedMap(
+    pinnedGridSlots.Lockups,
+    ordered.filter((entry) => !pinValuesEqual(entry, combination)),
+  );
+}
+
+function removeLogoFromGrid(logoId) {
+  if (!logoId || excludedLogoIds.has(logoId)) return;
+  excludedLogoIds.add(logoId);
+  pushDeletionUndo("Logos", { kind: "logo", id: logoId });
+  unpinLogoId(logoId);
+  applyLogoGridFilter();
+  if (lockupCombinations.length) updateLockupGridWindow(true);
+  syncLogoGridPresentation();
+  setStatus("Removed logo");
+}
+
+function removeTypefaceFromGrid(gridIndex) {
+  const face = getTypefacesForGrid()[gridIndex];
+  if (!face) return;
+  const key = typefaceLoadKey(face);
+  if (excludedTypefaceKeys.has(key)) return;
+  excludedTypefaceKeys.add(key);
+  pushDeletionUndo("Type", { kind: "typeface", key });
+  unpinTypefaceKey(key);
+  resetFilteredGridWindow("Type");
+  if (lockupCombinations.length) updateLockupGridWindow(true);
+  setStatus("Removed typeface");
+}
+
+function removeLockupFromGrid(lockupIndex) {
+  const combination = lockupCombinations[lockupIndex];
+  if (!combination) return;
+  const key = lockupCombinationKey(combination);
+  if (excludedLockupKeys.has(key)) return;
+  excludedLockupKeys.add(key);
+  pushDeletionUndo("Lockups", { kind: "lockup", key, combination: clonePinValue(combination) });
+  unpinLockupCombination(combination);
+  resetFilteredGridWindow("Lockups");
+  setStatus("Removed lockup");
+}
+
+function resetTabDeletions(tab) {
+  if (tab === "Logos") {
+    excludedLogoIds.clear();
+    deletionUndoStacks.Logos.length = 0;
+    applyLogoGridFilter();
+    if (lockupCombinations.length) updateLockupGridWindow(true);
+    syncLogoGridPresentation();
+    setStatus("Restored all logos");
+  } else if (tab === "Type") {
+    excludedTypefaceKeys.clear();
+    deletionUndoStacks.Type.length = 0;
+    resetFilteredGridWindow("Type");
+    if (lockupCombinations.length) updateLockupGridWindow(true);
+    setStatus("Restored all typefaces");
+  } else if (tab === "Lockups") {
+    excludedLockupKeys.clear();
+    deletionUndoStacks.Lockups.length = 0;
+    resetFilteredGridWindow("Lockups");
+    setStatus("Restored all lockups");
+  }
+  syncResetButtons();
+}
+
+function undoDeletion(tab) {
+  const stack = deletionUndoStacks[tab];
+  if (!stack?.length) return false;
+
+  const entry = stack.pop();
+  if (entry.kind === "logo" && tab === "Logos") {
+    excludedLogoIds.delete(entry.id);
+    applyLogoGridFilter();
+    if (lockupCombinations.length) updateLockupGridWindow(true);
+    syncLogoGridPresentation();
+  } else if (entry.kind === "typeface" && tab === "Type") {
+    excludedTypefaceKeys.delete(entry.key);
+    resetFilteredGridWindow("Type");
+    if (lockupCombinations.length) updateLockupGridWindow(true);
+  } else if (entry.kind === "lockup" && tab === "Lockups") {
+    excludedLockupKeys.delete(entry.key);
+    resetFilteredGridWindow("Lockups");
+  } else {
+    return false;
+  }
+
+  syncResetButtons();
+  return true;
+}
+
 function getLockupSourceIndices() {
-  const all = lockupCombinations.map((_, index) => index);
+  const all = lockupCombinations
+    .map((_, index) => index)
+    .filter((index) => !isLockupCombinationExcluded(lockupCombinations[index]));
   if (gridFilterForTab("Lockups") !== "locked") return all;
   return all.filter((index) => isLockupCombinationPinned(index, lockupCombinations[index]));
 }
@@ -463,23 +634,21 @@ function syncGridFilterUi() {
   });
 }
 
-function syncGridFiltersPosition() {
-  if (!gridFilters || gridFilters.hidden) return;
-
+function syncGridGutterMetrics() {
   const activeGrid = activeBrandGridElement();
   if (!activeGrid || activeGrid.hidden) return;
 
-  const sheetRect = logoSheet.getBoundingClientRect();
   const gridRect = activeGrid.getBoundingClientRect();
-  const gutterCenterX = gridRect.left / 2;
+  document.documentElement.style.setProperty("--grid-gutter-left-width", `${Math.max(0, gridRect.left)}px`);
+  document.documentElement.style.setProperty(
+    "--grid-gutter-right-width",
+    `${Math.max(0, window.innerWidth - gridRect.right)}px`,
+  );
+}
 
-  const brandTabs = uploadPanel.querySelector(".brand-tabs");
-  const contentTop = (brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom)
-    + brandContentGap;
-  const centerY = contentTop + Math.max(0, window.innerHeight - contentTop) / 2;
-
-  gridFilters.style.left = `${gutterCenterX - sheetRect.left}px`;
-  gridFilters.style.top = `${centerY - sheetRect.top}px`;
+function syncGridFiltersPosition() {
+  syncGridGutterMetrics();
+  syncBrandMarkPosition();
 }
 
 function isBwInverted() {
@@ -499,6 +668,47 @@ function syncBwButtons() {
   });
 }
 
+function syncShaderButtons() {
+  if (!gridActions) return;
+
+  const active = currentShaderIndex >= 0;
+  const preset = active ? shaderPresets[currentShaderIndex] : null;
+  const hoverLabel = preset ? `${preset.label} (S)` : "Shaders (S)";
+
+  gridActions.querySelectorAll('[data-action="cycle-shader"]').forEach((button) => {
+    button.setAttribute("aria-pressed", String(active));
+    button.classList.toggle("is-active", active);
+
+    let defaultLabel = button.querySelector(".grid-action-label--default");
+    let hoverLabelEl = button.querySelector(".grid-action-label--hover");
+    if (!defaultLabel) {
+      button.replaceChildren();
+      defaultLabel = document.createElement("span");
+      defaultLabel.className = "grid-action-label grid-action-label--default";
+      hoverLabelEl = document.createElement("span");
+      hoverLabelEl.className = "grid-action-label grid-action-label--hover";
+      hoverLabelEl.setAttribute("aria-hidden", "true");
+      button.append(defaultLabel, hoverLabelEl);
+    }
+
+    defaultLabel.textContent = "Shaders (S)";
+    hoverLabelEl.textContent = hoverLabel;
+  });
+}
+
+function brandHeaderBottom() {
+  const brandTabs = uploadPanel.querySelector(".brand-tabs");
+  return brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom;
+}
+
+function syncScrollUpButtons() {
+  if (!gridActions) return;
+  const show = brandHeaderBottom() < 0;
+  gridActions.querySelectorAll('[data-action="scroll-up"]').forEach((button) => {
+    button.hidden = !show;
+  });
+}
+
 function syncGridActionsUi() {
   if (!gridActions) return;
 
@@ -513,25 +723,283 @@ function syncGridActionsUi() {
     panel.classList.toggle("is-active", panel.dataset.tab === activeBrandTab);
   });
   syncBwButtons();
+  syncShaderButtons();
+  syncScrollUpButtons();
+  syncResetButtons();
 }
 
 function syncGridActionsPosition() {
-  if (!gridActions || gridActions.hidden) return;
+  syncGridGutterMetrics();
+  syncBrandMarkPosition();
+}
 
-  const activeGrid = activeBrandGridElement();
-  if (!activeGrid || activeGrid.hidden) return;
+function primaryBrandTypeface() {
+  return getTypefacesForGrid()[0] ?? getTypefaces()[0] ?? null;
+}
 
-  const sheetRect = logoSheet.getBoundingClientRect();
-  const gridRect = activeGrid.getBoundingClientRect();
-  const gutterCenterX = (window.innerWidth + gridRect.right) / 2;
+function brandMarkIconSvg() {
+  return brandMark?.querySelector(".brand-mark-art svg") ?? null;
+}
 
-  const brandTabs = uploadPanel.querySelector(".brand-tabs");
-  const contentTop = (brandTabs?.getBoundingClientRect().bottom ?? uploadPanel.getBoundingClientRect().bottom)
-    + brandContentGap;
-  const centerY = contentTop + Math.max(0, window.innerHeight - contentTop) / 2;
+function brandMarkIconMaskUrl(svg) {
+  if (!svg) return "";
+  const icon = brandMark?.querySelector(".brand-mark-icon");
+  const box = icon?.getBoundingClientRect();
+  const width = Math.max(1, Math.round(box?.width || 26));
+  const height = Math.max(1, Math.round(box?.height || width * 2));
+  const normalizedMarkup = svgMarkupScaledTo(svg, width, height);
 
-  gridActions.style.left = `${gutterCenterX - sheetRect.left}px`;
-  gridActions.style.top = `${centerY - sheetRect.top}px`;
+  const maskSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <style>
+      .logo-mask :is(path, polygon, polyline, rect, circle, ellipse) { fill: white !important; stroke: white !important; }
+      .logo-mask line { stroke: white !important; }
+      .logo-mask .cls-5 { fill: black !important; stroke: black !important; opacity: 1 !important; }
+    </style>
+    <defs>
+      <mask id="brand-mark-icon-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+        <rect width="${width}" height="${height}" fill="black"/>
+        <g class="logo-mask">${normalizedMarkup}</g>
+      </mask>
+    </defs>
+    <rect width="${width}" height="${height}" fill="white" mask="url(#brand-mark-icon-mask)"/>
+  </svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")`;
+}
+
+function brandMarkWordGeometry() {
+  const wordmark = brandMark?.querySelector(".brand-mark-wordmark-ink");
+  if (!wordmark) return null;
+
+  const box = wordmark.getBoundingClientRect();
+  const style = getComputedStyle(wordmark);
+  if (!box.width || !box.height) return null;
+
+  return {
+    width: box.width,
+    height: box.height,
+    fontFamily: style.fontFamily,
+    fontSize: Number.parseFloat(style.fontSize) || 20,
+    fontWeight: style.fontWeight || "600",
+    text: wordmark.textContent || "Brandy",
+  };
+}
+
+function brandMarkWordMaskUrl() {
+  const geometry = brandMarkWordGeometry();
+  if (!geometry) return "";
+
+  const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+  const safeText = escapeSvgText(geometry.text);
+  const width = Math.max(1, Math.round(geometry.width));
+  const height = Math.max(1, Math.round(geometry.height));
+
+  const maskSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <text x="${(width / 2).toFixed(2)}" y="${(height / 2).toFixed(2)}" fill="white" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="${geometry.fontWeight}" text-anchor="middle" dominant-baseline="central">${safeText}</text>
+  </svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")`;
+}
+
+function brandMarkWordSourceUrl() {
+  const geometry = brandMarkWordGeometry();
+  if (!geometry) return "";
+
+  const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+  const safeText = escapeSvgText(geometry.text);
+  const width = Math.max(1, Math.round(geometry.width));
+  const height = Math.max(1, Math.round(geometry.height));
+
+  const sourceSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <text x="${(width / 2).toFixed(2)}" y="${(height / 2).toFixed(2)}" fill="black" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="${geometry.fontWeight}" text-anchor="middle" dominant-baseline="central">${safeText}</text>
+  </svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(sourceSvg)}`;
+}
+
+function brandMarkShaderCacheKey(part, preset) {
+  const paletteSuffix = preset.logoTexture === "source"
+    ? `:${currentPalette.ink}:${currentPalette.paper}`
+    : "";
+  return `${preset.logoTexture}:brand-mark:${part}${paletteSuffix}`;
+}
+
+async function processedBrandMarkIconImage(preset) {
+  if (!preset.logoTexture) return null;
+  const cacheKey = brandMarkShaderCacheKey("icon", preset);
+  if (!perIconLogoImageCache.has(cacheKey)) {
+    const svg = brandMarkIconSvg();
+    perIconLogoImageCache.set(cacheKey, lightweightLogoTexture(svg, preset.logoTexture));
+  }
+  return perIconLogoImageCache.get(cacheKey);
+}
+
+async function processedBrandMarkWordImage(preset) {
+  if (!preset.logoTexture) return null;
+  const cacheKey = brandMarkShaderCacheKey("word", preset);
+  if (!perIconLogoImageCache.has(cacheKey)) {
+    const loader = (async () => {
+      const url = brandMarkWordSourceUrl();
+      if (!url) return null;
+      const image = await imageFromDataUrl(url, "Failed to load brand mark word texture");
+      return textureFromSourceImage(image, preset.logoTexture, { preserveAspect: true });
+    })();
+    perIconLogoImageCache.set(cacheKey, loader);
+  }
+  return perIconLogoImageCache.get(cacheKey);
+}
+
+let brandMarkIconShaderMount = null;
+let brandMarkWordShaderMount = null;
+
+function disposeBrandMarkShaderPart(part) {
+  if (part === "icon") {
+    brandMarkIconShaderMount?.dispose();
+    brandMarkIconShaderMount = null;
+    brandMark?.querySelector(".brand-mark-icon .brand-mark-shader-layer")?.remove();
+    brandMark?.classList.remove("has-icon-shader");
+    return;
+  }
+
+  brandMarkWordShaderMount?.dispose();
+  brandMarkWordShaderMount = null;
+  brandMark?.querySelector(".brand-mark-wordmark .brand-mark-shader-layer")?.remove();
+  brandMark?.classList.remove("has-word-shader");
+}
+
+function disposeBrandMarkShaders() {
+  disposeBrandMarkShaderPart("icon");
+  disposeBrandMarkShaderPart("word");
+}
+
+async function mountBrandMarkShaderPart(part, preset, noiseTexture, token) {
+  disposeBrandMarkShaderPart(part);
+  if (token !== shaderToken || currentShaderIndex < 0 || !preset?.perIcon) return;
+
+  const host = part === "icon"
+    ? brandMark?.querySelector(".brand-mark-icon")
+    : brandMark?.querySelector(".brand-mark-wordmark");
+  if (!host) return;
+
+  const logoImage = part === "icon"
+    ? await processedBrandMarkIconImage(preset)
+    : await processedBrandMarkWordImage(preset);
+  if (token !== shaderToken || !logoImage) return;
+
+  const mask = part === "icon" ? brandMarkIconMaskUrl(brandMarkIconSvg()) : brandMarkWordMaskUrl();
+  if (!mask) return;
+
+  const layer = document.createElement("div");
+  layer.className = "logo-shader-layer brand-mark-shader-layer";
+  layer.style.webkitMaskImage = mask;
+  layer.style.maskImage = mask;
+  host.append(layer);
+  brandMark.classList.add(part === "icon" ? "has-icon-shader" : "has-word-shader");
+
+  try {
+    const mount = new ShaderMount(
+      layer,
+      preset.fragment,
+      preset.uniforms(currentPalette, logoImage, noiseTexture),
+      { alpha: true, premultipliedAlpha: false },
+      preset.speed,
+      Math.random() * 12000,
+      1,
+      320 * 320 * 2,
+      preset.mipmaps,
+    );
+    if (part === "icon") {
+      brandMarkIconShaderMount = mount;
+    } else {
+      brandMarkWordShaderMount = mount;
+    }
+  } catch (error) {
+    layer.remove();
+    brandMark.classList.remove(part === "icon" ? "has-icon-shader" : "has-word-shader");
+    console.error(`Failed to mount brand mark ${part} shader`, error);
+  }
+}
+
+async function syncBrandMarkShader() {
+  const token = shaderToken;
+  if (!brandMark || currentShaderIndex < 0) {
+    disposeBrandMarkShaders();
+    return;
+  }
+
+  const preset = shaderPresets[currentShaderIndex];
+  if (!preset?.perIcon) {
+    disposeBrandMarkShaders();
+    return;
+  }
+
+  const noiseTexture = await loadedNoiseTexture();
+  if (token !== shaderToken) return;
+
+  await Promise.all([
+    mountBrandMarkShaderPart("icon", preset, noiseTexture, token),
+    mountBrandMarkShaderPart("word", preset, noiseTexture, token),
+  ]);
+}
+
+function syncBrandMarkPalette() {
+  if (!brandMark) return;
+  brandMark.style.color = currentPalette.ink;
+}
+
+function syncBrandMarkSizing() {
+  const icon = brandMark?.querySelector(".brand-mark-icon");
+  if (icon) icon.style.marginBottom = "";
+  syncBrandMarkPosition();
+}
+
+function brandTabsStickyCenterY() {
+  const brandTabs = uploadPanel?.querySelector(".brand-tabs");
+  const rect = brandTabs?.getBoundingClientRect();
+  if (!rect?.height) return null;
+  return rect.top + rect.height / 2 + window.scrollY;
+}
+
+function syncBrandMarkPosition() {
+  if (!brandMark) return;
+
+  const gutterWidth = Number.parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue("--grid-gutter-left-width"),
+  ) || 0;
+  const lockup = brandMark.querySelector(".brand-mark-lockup");
+  const lockupWidth = lockup?.getBoundingClientRect().width || brandMark.getBoundingClientRect().width;
+  const minInset = Math.min(Math.max(window.innerWidth * 0.015, 10), 18);
+  const gutterCenter = gutterWidth / 2;
+  const tabsCenterY = brandTabsStickyCenterY();
+  const top = tabsCenterY ?? minInset;
+
+  brandMark.style.top = `${top}px`;
+
+  if (gutterWidth >= lockupWidth + minInset * 2) {
+    brandMark.style.left = `${gutterCenter}px`;
+    brandMark.style.transform = "translate(-50%, -50%)";
+  } else {
+    brandMark.style.left = `${minInset}px`;
+    brandMark.style.transform = "translateY(-50%)";
+  }
+  brandMark.classList.add("is-positioned");
+}
+
+async function syncBrandMarkTypeface() {
+  const face = primaryBrandTypeface();
+  if (!face || !brandMark) return;
+
+  await ensureTypefaceLoaded(face);
+  document.documentElement.style.setProperty("--brand-mark-font-family", `"${face.family}", sans-serif`);
+  document.documentElement.style.setProperty("--brand-mark-font-weight", String(face.weight));
+  syncBrandMarkSizing();
+}
+
+function syncBrandMark() {
+  if (!brandMark) return;
+  syncBrandMarkPalette();
+  syncBrandMarkSizing();
+  void syncBrandMarkTypeface().then(() => {
+    syncBrandMarkSizing();
+    void syncBrandMarkShader();
+  });
 }
 
 function downloadDataFile(filename, data, mimeType = "application/json") {
@@ -784,32 +1252,60 @@ function exportLockups() {
   setStatus(`Exported ${locked.length} locked ${locked.length === 1 ? "lockup" : "lockups"}`);
 }
 
-async function readLockedExportFile(file, expectedTab) {
+async function readLockedExportFile(file, expectedTab = null) {
   const text = await file.text();
-  const payload = JSON.parse(text);
+  return parseLockedExportPayload(JSON.parse(text), expectedTab);
+}
+
+function lockedItemsFromPayload(payload, tab) {
+  if (Array.isArray(payload.locked)) return payload.locked;
+  if (tab === "Logos" && Array.isArray(payload.logos)) return payload.logos;
+  if (tab === "Type" && Array.isArray(payload.typefaces)) return payload.typefaces;
+  if (tab === "Lockups" && Array.isArray(payload.combinations)) return payload.combinations;
+  return null;
+}
+
+function detectLockedExportTab(payload) {
+  if (typeof payload.tab === "string" && LOCKED_EXPORT_TABS.has(payload.tab)) {
+    return payload.tab;
+  }
+  if (Array.isArray(payload.logos) && payload.logos.length) return "Logos";
+  if (Array.isArray(payload.typefaces) && payload.typefaces.length) return "Type";
+  if (Array.isArray(payload.combinations) && payload.combinations.length) return "Lockups";
+  const locked = payload.locked;
+  if (!Array.isArray(locked) || !locked.length) return null;
+  const first = locked[0];
+  if (Array.isArray(first) && first.length === 4) return "Colors";
+  if (!first || typeof first !== "object") return null;
+  if (typeof first.markup === "string") return "Logos";
+  if (first.logoId != null || first.logo) return "Lockups";
+  if (first.family != null || first.loader != null || first.weight != null) return "Type";
+  if (Array.isArray(first.colors) || first.swatches) return "Colors";
+  return null;
+}
+
+function parseLockedExportPayload(raw, expectedTab = null) {
+  const payload = raw;
   if (!payload || typeof payload !== "object") {
     throw new Error("Invalid export file");
   }
 
-  if (payload.tab != null && payload.tab !== expectedTab) {
+  const detectedTab = detectLockedExportTab(payload);
+  const tab = detectedTab ?? expectedTab;
+  if (!tab || !LOCKED_EXPORT_TABS.has(tab)) {
+    throw new Error("Unrecognized export file");
+  }
+
+  if (expectedTab != null && payload.tab != null && payload.tab !== expectedTab) {
     throw new Error(`Expected ${expectedTab} export`);
   }
 
-  const locked = Array.isArray(payload.locked)
-    ? payload.locked
-    : Array.isArray(payload.logos)
-      ? payload.logos
-      : Array.isArray(payload.typefaces)
-        ? payload.typefaces
-        : Array.isArray(payload.combinations)
-          ? payload.combinations
-          : null;
-
+  const locked = lockedItemsFromPayload(payload, tab);
   if (!Array.isArray(locked) || !locked.length) {
     throw new Error("No locked items in file");
   }
 
-  return { ...payload, tab: expectedTab, locked };
+  return { ...payload, tab, locked };
 }
 
 function ensureLogoFromExport(logo) {
@@ -862,8 +1358,7 @@ function ensureTypefaceFromExport(record) {
   return findTypefaceIndexByRecord(record);
 }
 
-async function importColorsFromFile(file) {
-  const payload = await readLockedExportFile(file, "Colors");
+async function importColorsFromPayload(payload) {
   ensureColorCombinations();
 
   const imported = payload.locked.map((entry) => {
@@ -909,8 +1404,7 @@ async function importColorsFromFile(file) {
   setStatus(`Imported ${imported.length} locked color ${imported.length === 1 ? "row" : "rows"}`);
 }
 
-async function importLogosFromFile(file) {
-  const payload = await readLockedExportFile(file, "Logos");
+async function importLogosFromPayload(payload) {
   const restoredIds = [];
 
   for (const entry of payload.locked) {
@@ -933,8 +1427,7 @@ async function importLogosFromFile(file) {
   setStatus(`Imported ${restoredIds.length} locked ${restoredIds.length === 1 ? "logo" : "logos"}`);
 }
 
-async function importTypefacesFromFile(file) {
-  const payload = await readLockedExportFile(file, "Type");
+async function importTypefacesFromPayload(payload) {
   const needsCatalog = payload.locked.some((entry) => entry?.loader && entry.loader !== "local");
   if (needsCatalog) revealTypeCatalog();
 
@@ -957,8 +1450,7 @@ async function importTypefacesFromFile(file) {
   setStatus(`Imported ${keys.length} locked ${keys.length === 1 ? "typeface" : "typefaces"}`);
 }
 
-async function importLockupsFromFile(file) {
-  const payload = await readLockedExportFile(file, "Lockups");
+async function importLockupsFromPayload(payload) {
   const combinations = [];
 
   for (const entry of payload.locked) {
@@ -1012,16 +1504,59 @@ async function importLockupsFromFile(file) {
   setStatus(`Imported ${combinations.length} locked ${combinations.length === 1 ? "lockup" : "lockups"}`);
 }
 
-async function importLockedForTab(tab, file) {
-  if (tab === "Colors") await importColorsFromFile(file);
-  else if (tab === "Logos") await importLogosFromFile(file);
-  else if (tab === "Type") await importTypefacesFromFile(file);
-  else if (tab === "Lockups") await importLockupsFromFile(file);
+async function importLockedFromFile(file) {
+  const payload = await readLockedExportFile(file);
+  if (payload.tab === "Colors") await importColorsFromPayload(payload);
+  else if (payload.tab === "Logos") await importLogosFromPayload(payload);
+  else if (payload.tab === "Type") await importTypefacesFromPayload(payload);
+  else if (payload.tab === "Lockups") await importLockupsFromPayload(payload);
+}
+
+function isSvgFile(file) {
+  return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
+}
+
+function isJsonFile(file) {
+  return file.type === "application/json" || file.name.toLowerCase().endsWith(".json");
+}
+
+async function handleImportFiles(fileList) {
+  const files = [...fileList];
+  if (!files.length) return;
+
+  const svgFiles = [];
+  const fontFiles = [];
+  const jsonFiles = [];
+  let skipped = 0;
+
+  for (const file of files) {
+    if (isSvgFile(file)) svgFiles.push(file);
+    else if (isFontFile(file)) fontFiles.push(file);
+    else if (isJsonFile(file)) jsonFiles.push(file);
+    else skipped += 1;
+  }
+
+  if (svgFiles.length) await addLogoFiles(svgFiles);
+  if (fontFiles.length) await addFontFiles(fontFiles);
+
+  let jsonErrors = 0;
+  for (const file of jsonFiles) {
+    try {
+      await importLockedFromFile(file);
+    } catch {
+      jsonErrors += 1;
+    }
+  }
+
+  if (jsonErrors && !svgFiles.length && !fontFiles.length) {
+    setStatus(`Could not import ${jsonErrors === 1 ? "file" : "files"}`);
+  } else if (skipped && !svgFiles.length && !fontFiles.length && !jsonFiles.length) {
+    setStatus("No supported files to import");
+  }
 }
 
 function importForTab(tab) {
   if (!LOCKED_EXPORT_TABS.has(tab)) return;
-  pendingImportTab = tab;
   lockedImportInput?.click();
 }
 
@@ -1041,12 +1576,24 @@ function handleGridAction(tab, action) {
     toggleDefaultPalette();
     return;
   }
+  if (action === "cycle-shader") {
+    if (SHADER_UI_TABS.has(tab)) cycleShader(1);
+    return;
+  }
   if (action === "import") {
     importForTab(tab);
     return;
   }
   if (action === "export") {
     exportForTab(tab);
+    return;
+  }
+  if (action === "scroll-up") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  if (action === "reset-deletions") {
+    resetTabDeletions(tab);
   }
 }
 
@@ -1054,8 +1601,10 @@ function applyLogoGridFilter() {
   const filter = gridFilterForTab("Logos");
   const pinnedIds = pinnedLogoIds();
   grid.querySelectorAll(".logo-tile").forEach((tile) => {
-    tile.hidden = filter === "locked" && !pinnedIds.has(tile.dataset.logoId);
+    const excluded = excludedLogoIds.has(tile.dataset.logoId);
+    tile.hidden = excluded || (filter === "locked" && !pinnedIds.has(tile.dataset.logoId));
   });
+  positionLogoTileControls();
 }
 
 function resetFilteredGridWindow(tab) {
@@ -1090,12 +1639,29 @@ function resetFilteredGridWindow(tab) {
 
 function setGridFilter(tab, filter) {
   if (gridFilterForTab(tab) === filter) return;
+  if (filter !== "locked") {
+    gridFilterLastNonLocked[tab] = filter;
+  }
   gridFilterState[tab] = filter;
   syncGridFilterUi();
   resetFilteredGridWindow(tab);
   requestAnimationFrame(syncGridFiltersPosition);
   requestAnimationFrame(syncGridActionsPosition);
   requestAnimationFrame(validateKeyboardGridSelection);
+}
+
+function toggleLockedGridFilter(tab = activeBrandTab) {
+  if (!BRAND_TABS.has(tab)) return false;
+
+  const current = gridFilterForTab(tab);
+  if (current === "locked") {
+    setGridFilter(tab, gridFilterLastNonLocked[tab] ?? "all");
+    return true;
+  }
+
+  gridFilterLastNonLocked[tab] = current;
+  setGridFilter(tab, "locked");
+  return true;
 }
 
 function maybeRefreshGridFilter(tab) {
@@ -1112,6 +1678,10 @@ function gridLockIconMarkup(locked) {
   return `<svg viewBox="0 0 24 24" aria-hidden="true">${shackle}${body}</svg>`;
 }
 
+function gridDismissIconMarkup() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+}
+
 function syncGridLockControl(container, tab, slotIndex) {
   const button = container.querySelector(".grid-lock-control");
   if (!button) return;
@@ -1123,31 +1693,195 @@ function syncGridLockControl(container, tab, slotIndex) {
   button.setAttribute("aria-pressed", String(locked));
   button.setAttribute("aria-label", locked ? "Unlock position" : "Lock in place");
   button.innerHTML = gridLockIconMarkup(locked);
-  if (tab === "Type" || tab === "Lockups") {
-    positionGridLockControl(container);
+  positionGridTileControls(container);
+}
+
+function gridTileOutlineInset(tile) {
+  const value = getComputedStyle(tile).getPropertyValue("--grid-tile-inset").trim();
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 12;
+}
+
+function svgInkTop(svg, tileRect) {
+  if (!(svg instanceof SVGSVGElement)) return null;
+
+  try {
+    const box = svg.getBBox();
+    if (box.width <= 0 || box.height <= 0) return null;
+
+    const point = svg.createSVGPoint();
+    point.x = box.x;
+    point.y = box.y;
+    const matrix = svg.getScreenCTM();
+    if (!matrix) return null;
+
+    const mapped = point.matrixTransform(matrix);
+    return mapped.y - tileRect.top;
+  } catch {
+    return null;
   }
+}
+
+function domInkTop(element, tileRect) {
+  if (!element) return null;
+
+  const range = document.createRange();
+  range.selectNodeContents(element);
+  const rect = range.getBoundingClientRect();
+  if (rect.height <= 0) return null;
+
+  return rect.top - tileRect.top;
+}
+
+function typeSpecimenInkTop(specimen, tileRect) {
+  if (!specimen) return null;
+
+  const range = document.createRange();
+  range.selectNodeContents(specimen);
+  const glyphRect = range.getBoundingClientRect();
+  if (glyphRect.height <= 0) return null;
+
+  const styles = getComputedStyle(specimen);
+  const fontSize = Number.parseFloat(styles.fontSize);
+  const family = specimen.dataset.fontFamily;
+  const weight = specimen.dataset.fontWeight || "400";
+  if (family && Number.isFinite(fontSize)) {
+    const ink = measureTypeInk(family, weight, fontSize, specimen.textContent || lockupText);
+    if (ink) {
+      return glyphRect.bottom - tileRect.top - ink.height;
+    }
+  }
+
+  return glyphRect.top - tileRect.top;
+}
+
+function lockupInkTop(tile, tileRect) {
+  let top = Infinity;
+
+  const markTop = svgInkTop(tile.querySelector(".lockup-mark svg"), tileRect);
+  if (markTop != null) top = Math.min(top, markTop);
+
+  const textTop = domInkTop(tile.querySelector(".lockup-text"), tileRect);
+  if (textTop != null) top = Math.min(top, textTop);
+
+  return Number.isFinite(top) ? top : null;
 }
 
 function gridItemInkTop(tile) {
   const tileRect = tile.getBoundingClientRect();
   const specimen = tile.querySelector(".type-specimen");
   if (specimen) {
-    const range = document.createRange();
-    range.selectNodeContents(specimen);
-    const rect = range.getBoundingClientRect();
-    if (rect.height > 0) return rect.top - tileRect.top;
+    const top = typeSpecimenInkTop(specimen, tileRect);
+    if (top != null) return top;
   }
 
-  const mark = tile.querySelector(".lockup-mark");
-  const text = tile.querySelector(".lockup-text");
-  if (mark || text) {
+  if (tile.querySelector(".lockup-mark") || tile.querySelector(".lockup-text")) {
+    const top = lockupInkTop(tile, tileRect);
+    if (top != null) return top;
+  }
+
+  const gridLockup = tile.querySelector(".grid-lockup");
+  if (gridLockup) {
     let top = Infinity;
-    for (const element of [mark, text]) {
-      if (!element) continue;
+    for (const element of gridLockup.querySelectorAll(".grid-lockup-mark, .grid-lockup-text")) {
       const rect = element.getBoundingClientRect();
       if (rect.height > 0) top = Math.min(top, rect.top - tileRect.top);
     }
     if (Number.isFinite(top)) return top;
+  }
+
+  const logoSvg = tile.querySelector(".logo-art svg");
+  const logoInkTop = svgInkTop(logoSvg, tileRect);
+  if (logoInkTop != null) return logoInkTop;
+
+  const logoArt = tile.querySelector(".logo-art");
+  if (logoArt) {
+    const rect = logoArt.getBoundingClientRect();
+    if (rect.height > 0) return rect.top - tileRect.top;
+  }
+
+  return null;
+}
+
+function svgInkBottom(svg, tileRect) {
+  if (!(svg instanceof SVGSVGElement)) return null;
+
+  try {
+    const box = svg.getBBox();
+    if (box.width <= 0 || box.height <= 0) return null;
+
+    const point = svg.createSVGPoint();
+    point.x = box.x;
+    point.y = box.y + box.height;
+    const matrix = svg.getScreenCTM();
+    if (!matrix) return null;
+
+    const mapped = point.matrixTransform(matrix);
+    return mapped.y - tileRect.top;
+  } catch {
+    return null;
+  }
+}
+
+function typeSpecimenInkBottom(specimen, tileRect) {
+  if (!specimen) return null;
+
+  const range = document.createRange();
+  range.selectNodeContents(specimen);
+  const glyphRect = range.getBoundingClientRect();
+  if (glyphRect.height <= 0) return null;
+
+  return glyphRect.bottom - tileRect.top;
+}
+
+function lockupInkBottom(tile, tileRect) {
+  let bottom = -Infinity;
+
+  const markBottom = svgInkBottom(tile.querySelector(".lockup-mark svg"), tileRect);
+  if (markBottom != null) bottom = Math.max(bottom, markBottom);
+
+  const text = tile.querySelector(".lockup-text");
+  if (text) {
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    const rect = range.getBoundingClientRect();
+    if (rect.height > 0) bottom = Math.max(bottom, rect.bottom - tileRect.top);
+  }
+
+  return Number.isFinite(bottom) ? bottom : null;
+}
+
+function gridItemInkBottom(tile) {
+  const tileRect = tile.getBoundingClientRect();
+  const specimen = tile.querySelector(".type-specimen");
+  if (specimen) {
+    const bottom = typeSpecimenInkBottom(specimen, tileRect);
+    if (bottom != null) return bottom;
+  }
+
+  if (tile.querySelector(".lockup-mark") || tile.querySelector(".lockup-text")) {
+    const bottom = lockupInkBottom(tile, tileRect);
+    if (bottom != null) return bottom;
+  }
+
+  const gridLockup = tile.querySelector(".grid-lockup");
+  if (gridLockup) {
+    let bottom = -Infinity;
+    for (const element of gridLockup.querySelectorAll(".grid-lockup-mark, .grid-lockup-text")) {
+      const rect = element.getBoundingClientRect();
+      if (rect.height > 0) bottom = Math.max(bottom, rect.bottom - tileRect.top);
+    }
+    if (Number.isFinite(bottom)) return bottom;
+  }
+
+  const logoSvg = tile.querySelector(".logo-art svg");
+  const logoInkBottom = svgInkBottom(logoSvg, tileRect);
+  if (logoInkBottom != null) return logoInkBottom;
+
+  const logoArt = tile.querySelector(".logo-art");
+  if (logoArt) {
+    const rect = logoArt.getBoundingClientRect();
+    if (rect.height > 0) return rect.bottom - tileRect.top;
   }
 
   return null;
@@ -1160,12 +1894,52 @@ function positionGridLockControl(tile) {
   const tileRect = tile.getBoundingClientRect();
   if (tileRect.height <= 0) return;
 
+  const outlineTop = gridTileOutlineInset(tile);
   const inkTop = gridItemInkTop(tile);
-  if (inkTop == null) return;
-
-  const outlineTop = 12;
-  const midY = (outlineTop + inkTop) / 2;
+  const midY = inkTop == null ? outlineTop : (outlineTop + inkTop) / 2;
   lock.style.top = `${Math.round(midY)}px`;
+}
+
+function positionGridDismissControl(tile) {
+  const dismiss = tile.querySelector(".grid-dismiss-control");
+  if (!dismiss) return;
+
+  const tileRect = tile.getBoundingClientRect();
+  if (tileRect.height <= 0) return;
+
+  const outlineBottom = tileRect.height - gridTileOutlineInset(tile);
+  const inkBottom = gridItemInkBottom(tile);
+  const midY = inkBottom == null ? outlineBottom : (inkBottom + outlineBottom) / 2;
+  dismiss.style.top = `${Math.round(midY)}px`;
+}
+
+function positionGridTileControls(tile) {
+  positionGridLockControl(tile);
+  positionGridDismissControl(tile);
+}
+
+function positionLogoTileControls() {
+  grid.querySelectorAll(".logo-tile").forEach(positionGridTileControls);
+}
+
+function positionTypeTileControls() {
+  typeTilePool.forEach(positionGridTileControls);
+}
+
+function positionLockupTileControls() {
+  lockupTilePool.forEach(positionGridTileControls);
+}
+
+function positionLogoTileLockControls() {
+  positionLogoTileControls();
+}
+
+function positionTypeTileLockControls() {
+  positionTypeTileControls();
+}
+
+function positionLockupTileLockControls() {
+  positionLockupTileControls();
 }
 
 function colorSwatchInkTop(swatch) {
@@ -1301,7 +2075,9 @@ function getActiveColorPool() {
 /** Catalog typeface indices available to Lockups, constrained by the Type filter. */
 function getActiveTypefaceIndices() {
   const faces = getTypefaces();
-  const all = faces.map((_, index) => index);
+  const all = faces
+    .map((_, index) => index)
+    .filter((index) => !isTypefaceExcluded(faces[index]));
   if (!all.length) return [];
 
   const filter = gridFilterForTab("Type");
@@ -1319,9 +2095,11 @@ function getActiveTypefaceIndices() {
 function getActiveLogoIds() {
   let logos;
   if (uploadedLogos.size) {
-    logos = getLogoIds();
+    logos = getAvailableLogoIds();
   } else if (lockupCatalogRevealed) {
-    logos = coolshapePlaceholders.map((_, index) => `lockup-ph:${index}`);
+    logos = coolshapePlaceholders
+      .map((_, index) => `lockup-ph:${index}`)
+      .filter((id) => !excludedLogoIds.has(id));
   } else {
     return [];
   }
@@ -1486,10 +2264,31 @@ function attachGridLockControl(container, tab, getSlotIndex, getPinValue) {
   syncGridLockControl(container, tab, getSlotIndex());
 }
 
+function attachGridDismissControl(container, getIdentity, onRemove) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "grid-dismiss-control";
+  button.setAttribute("aria-label", "Remove from grid");
+  button.innerHTML = gridDismissIconMarkup();
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const identity = getIdentity();
+    if (identity == null) return;
+    onRemove(identity);
+    button.blur();
+  });
+
+  container.append(button);
+  positionGridDismissControl(container);
+}
+
 function syncLogoTileLockControls() {
   [...grid.querySelectorAll(".logo-tile")].forEach((tile, slotIndex) => {
     syncGridLockControl(tile, "Logos", slotIndex);
   });
+  positionLogoTileLockControls();
 }
 
 function shuffleArray(values) {
@@ -1724,59 +2523,18 @@ function logoName(id) {
   return uploadedLogos.get(logoId(id))?.name ?? `Logo ${logoId(id)}`;
 }
 
-function logoFaviconHref(id) {
-  const markup = logoMarkup(id);
-  if (!markup) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E";
-
-  const ink = parseColor(currentPalette.ink);
-  const paper = parseColor(currentPalette.paper);
-  const faviconScale = 2.4;
-  const viewBox = markup.match(/\bviewBox="([^"]+)"/i)?.[1]
-    ?.trim()
-    .split(/\s+/)
-    .map(Number);
-  const [minX, minY, width, height] = viewBox?.length === 4 && viewBox.every(Number.isFinite)
-    ? viewBox
-    : [0, 0, 1200, 1200];
-  const translateX = minX + (width * (1 - faviconScale)) / 2;
-  const translateY = minY + (height * (1 - faviconScale)) / 2;
-  const faviconTransform = `translate(${translateX} ${translateY}) scale(${faviconScale})`;
-  const colorStyle = `
-    <style>
-      svg > path,
-      svg > polygon,
-      svg > polyline,
-      svg > rect,
-      svg > circle,
-      svg > ellipse,
-      svg > g path,
-      svg > g polygon,
-      svg > g polyline,
-      svg > g rect,
-      svg > g circle,
-      svg > g ellipse {
-        fill: ${ink} !important;
-      }
-
-      svg > line,
-      svg > g line {
-        stroke: ${ink} !important;
-      }
-
-      svg > g .cls-5 {
-        fill: ${paper} !important;
-      }
-    </style>
-  `;
-  const faviconMarkup = markup
-    .replace(/<svg\b([^>]*)>/, `<svg$1>${colorStyle}<g class="favicon-mark" transform="${faviconTransform}">`)
-    .replace(/<\/svg>\s*$/, "</g></svg>");
-  return `data:image/svg+xml,${encodeURIComponent(faviconMarkup)}`;
+function brandMarkFaviconHref(palette = currentPalette) {
+  const ink = parseColor(palette.ink);
+  const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <g transform="translate(16 16.5) scale(0.0315) translate(-200 -400)">
+      <path fill="${ink}" fill-rule="evenodd" d="${BRAND_MARK_PATH}"/>
+    </g>
+  </svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`;
 }
 
 function updateFaviconForTopLogo() {
-  const topLogoId = grid.querySelector(".logo-tile")?.dataset.logoId ?? "";
-  favicon?.setAttribute("href", logoFaviconHref(topLogoId));
+  favicon?.setAttribute("href", brandMarkFaviconHref());
 }
 
 function isAdmin() {
@@ -1862,6 +2620,7 @@ function setGridLogoScale(nextScale) {
   document.documentElement.style.setProperty("--grid-logo-scale", String(gridLogoScale));
   updateGridColumns();
   scheduleLogoShaderMask();
+  requestAnimationFrame(positionLogoTileLockControls);
   if (activeBrandTab === "Type") requestAnimationFrame(() => updateTypeGridWindow(true));
   else if (activeBrandTab === "Lockups") requestAnimationFrame(() => updateLockupGridWindow(true));
   else requestAnimationFrame(syncBrandGridOffset);
@@ -2023,7 +2782,6 @@ function fitTypeTile(tile) {
   const specimen = tile.querySelector(".type-specimen");
   if (!face || !specimen) return;
 
-  const outlineInset = 6;
   const styles = getComputedStyle(face);
   const padL = Number.parseFloat(styles.paddingLeft) || 0;
   const padR = Number.parseFloat(styles.paddingRight) || 0;
@@ -2072,11 +2830,10 @@ function fitTypeTile(tile) {
   const specimenRect = specimen.getBoundingClientRect();
   if (specimenRect.height > 0) {
     const gapTop = specimenRect.bottom - tileRect.top;
-    const gapBottom = tileRect.height - outlineInset;
-    tile.style.setProperty("--type-label-top", `${(gapTop + gapBottom) / 2}px`);
+    tile.style.setProperty("--type-label-top", `${Math.round(gapTop + 10)}px`);
   }
 
-  positionGridLockControl(tile);
+  positionGridTileControls(tile);
 }
 
 function scheduleFitTypeTile(tile) {
@@ -2088,7 +2845,9 @@ function scheduleFitTypeTile(tile) {
 
 function fitTypeSpecimens() {
   typeTilePool.forEach((tile) => fitTypeTile(tile));
+  positionTypeTileLockControls();
   syncBrandGridOffset();
+  schedulePerIconShaderSync();
 }
 
 function typeGridColumns() {
@@ -2149,6 +2908,11 @@ function createTypeTile(face, index, columns, cellSize) {
     "Type",
     () => Number(tile.dataset.typeIndex),
     () => typefaceLoadKey(getTypefacesForGrid()[Number(tile.dataset.typeIndex)]),
+  );
+  attachGridDismissControl(
+    tile,
+    () => Number(tile.dataset.typeIndex),
+    (typeIndex) => removeTypefaceFromGrid(typeIndex),
   );
   positionTypeTile(tile, index, columns, cellSize);
   ensureTypefaceLoaded(face).then(() => scheduleFitTypeTile(tile));
@@ -2212,6 +2976,7 @@ function updateTypeGridWindow(force = false) {
     if (tile) {
       positionTypeTile(tile, displayIndex, metrics.columns, metrics.cellSize);
       syncGridLockControl(tile, "Type", sourceIndex);
+      scheduleFitTypeTile(tile);
       continue;
     }
 
@@ -2498,6 +3263,7 @@ function bindSwatchDragAdjust(swatch, row, swatchIndex) {
     if (event.button !== 0) return;
     if (event.target.closest(".color-swatch-hex")) return;
     if (event.target.closest(".grid-lock-control")) return;
+    if (event.target.closest(".grid-dismiss-control")) return;
     if (colorDragSession) finishColorDrag(colorDragSession.hasDragged);
 
     event.preventDefault();
@@ -2566,10 +3332,62 @@ function bindSwatchDragAdjust(swatch, row, swatchIndex) {
   });
 }
 
-function applySwatchColor(swatch, row, swatchIndex, color) {
+function pushColorChangeUndo(rowIndex, swatchIndex, previousColor) {
+  colorChangeUndoStack.push({
+    rowIndex,
+    swatchIndex,
+    previousColor: parseColor(previousColor),
+  });
+  if (colorChangeUndoStack.length > COLOR_CHANGE_UNDO_LIMIT) {
+    colorChangeUndoStack.shift();
+  }
+}
+
+function clearColorChangeUndoStack() {
+  colorChangeUndoStack.length = 0;
+}
+
+function applySwatchColorOffscreen(rowIndex, swatchIndex, color) {
+  const normalized = parseColor(color);
+  const combination = colorCombinations[rowIndex];
+  if (!combination || combination.colors[swatchIndex] === undefined) return false;
+
+  combination.colors[swatchIndex] = normalized;
+  const rowLocks = pinnedGridSlots.Colors.get(rowIndex);
+  if (rowLocks?.has(swatchIndex)) {
+    rowLocks.set(swatchIndex, normalized);
+  }
+  return true;
+}
+
+function undoColorChange() {
+  const entry = colorChangeUndoStack.pop();
+  if (!entry) return false;
+
+  const { rowIndex, swatchIndex, previousColor } = entry;
+  const row = colorRowPool.get(rowIndex);
+  if (row) {
+    const swatch = row.querySelectorAll(".color-swatch")[swatchIndex];
+    if (swatch) {
+      applySwatchColor(swatch, row, swatchIndex, previousColor, { recordUndo: false });
+      return true;
+    }
+  }
+
+  return applySwatchColorOffscreen(rowIndex, swatchIndex, previousColor);
+}
+
+function applySwatchColor(swatch, row, swatchIndex, color, { recordUndo = true } = {}) {
   const normalized = parseColor(color);
   const rowIndex = Number(row.dataset.colorIndex);
   const combination = colorCombinations[rowIndex];
+
+  if (recordUndo && combination?.colors?.[swatchIndex] !== undefined) {
+    const previousColor = parseColor(combination.colors[swatchIndex]);
+    if (previousColor !== normalized) {
+      pushColorChangeUndo(rowIndex, swatchIndex, combination.colors[swatchIndex]);
+    }
+  }
 
   swatch.dataset.colorHex = colorNameKey(normalized);
   swatch.style.background = normalized;
@@ -2813,6 +3631,7 @@ function bindColorGridListeners() {
 }
 
 function renderColorGrid() {
+  clearColorChangeUndoStack();
   colorGrid.style.setProperty("--color-swatch-gap", `${colorSwatchGap}px`);
   colorCombinations = buildColorCombinations();
   colorRowPool.clear();
@@ -2830,9 +3649,11 @@ function getLockupLogoIds() {
   const active = getActiveLogoIds();
   // Active Logos filter with an empty pool falls back to the full set.
   if (active.length) return active;
-  if (uploadedLogos.size) return getLogoIds();
+  if (uploadedLogos.size) return getAvailableLogoIds();
   if (lockupCatalogRevealed) {
-    return coolshapePlaceholders.map((_, index) => `lockup-ph:${index}`);
+    return coolshapePlaceholders
+      .map((_, index) => `lockup-ph:${index}`)
+      .filter((id) => !excludedLogoIds.has(id));
   }
   return [];
 }
@@ -2842,7 +3663,9 @@ function getLockupTypeIndices() {
   if (active.length) return active;
   // Active Type filter with an empty pool falls back to the full catalog.
   const faces = getTypefaces();
-  return faces.map((_, index) => index);
+  return faces
+    .map((_, index) => index)
+    .filter((index) => !isTypefaceExcluded(faces[index]));
 }
 
 function lockupsReady() {
@@ -2920,7 +3743,9 @@ function scheduleFitLockupTile(tile) {
 
 function fitLockupTiles() {
   lockupTilePool.forEach((tile) => fitLockupTile(tile));
+  positionLockupTileLockControls();
   syncBrandGridOffset();
+  schedulePerIconShaderSync();
 }
 
 function createLockupTile(combination, index, columns, cellSize) {
@@ -2963,6 +3788,11 @@ function createLockupTile(combination, index, columns, cellSize) {
       const combo = lockupCombinations[Number(tile.dataset.lockupIndex)];
       return combo ? { logoId: combo.logoId, typeIndex: combo.typeIndex } : null;
     },
+  );
+  attachGridDismissControl(
+    tile,
+    () => Number(tile.dataset.lockupIndex),
+    (lockupIndex) => removeLockupFromGrid(lockupIndex),
   );
 
   positionLockupTile(tile, index, columns, cellSize);
@@ -3030,6 +3860,7 @@ function updateLockupGridWindow(force = false) {
     if (tile) {
       positionLockupTile(tile, displayIndex, metrics.columns, metrics.cellSize);
       syncGridLockControl(tile, "Lockups", sourceIndex);
+      scheduleFitLockupTile(tile);
       continue;
     }
 
@@ -3122,6 +3953,12 @@ function syncBrandTabView() {
   requestAnimationFrame(syncGridFiltersPosition);
   requestAnimationFrame(syncGridActionsPosition);
   requestAnimationFrame(validateKeyboardGridSelection);
+  refreshDragImportTarget();
+  validateShaderForActiveTab();
+  if (currentShaderIndex >= 0) {
+    mountShader(currentShaderIndex);
+  }
+  requestAnimationFrame(syncBrandMark);
 }
 
 function lockupMarkup(id) {
@@ -3145,6 +3982,10 @@ function renderGridLogoTile(tile) {
   const showLockup = mobileGridLockupMode && mobileDialogMedia.matches;
   logo.classList.toggle("is-grid-lockup", showLockup);
   logo.innerHTML = showLockup ? gridLockupMarkup(tile.dataset.logoId) : logoMarkup(tile.dataset.logoId);
+  requestAnimationFrame(() => {
+    positionGridTileControls(tile);
+    requestAnimationFrame(() => positionGridTileControls(tile));
+  });
 }
 
 function renderGridLogos() {
@@ -3354,7 +4195,7 @@ function fitLockupTile(tile) {
   const lockupTile = tile.classList.contains("lockup-tile")
     ? tile
     : tile.closest(".lockup-tile");
-  if (lockupTile) positionGridLockControl(lockupTile);
+  if (lockupTile) positionGridTileControls(lockupTile);
 }
 
 function cropLockupSvgToArtwork() {
@@ -3629,6 +4470,11 @@ function createLogoTile(id, name, position) {
     () => logoTileSlotIndex(tile),
     () => tile.dataset.logoId,
   );
+  attachGridDismissControl(
+    tile,
+    () => tile.dataset.logoId,
+    (logoId) => removeLogoFromGrid(logoId),
+  );
   grid.append(tile);
   return tile;
 }
@@ -3895,6 +4741,7 @@ function revealTypeCatalog() {
   syncBrandTabView();
   setStatus("Exploring open-source typefaces");
   saveSessionState();
+  syncBrandMark();
 }
 
 function refreshTypeGrid() {
@@ -3952,6 +4799,7 @@ async function addFontFiles(fileList) {
     typeCatalogRevealed = true;
     refreshTypeGrid();
     syncBrandTabView();
+    syncBrandMark();
   }
 
   const addedMessage = added ? `${added} ${added === 1 ? "font" : "fonts"} added` : "Upload complete";
@@ -3962,31 +4810,55 @@ async function addFontFiles(fileList) {
   setStatus(message);
 }
 
-function syncDropOverlayCopy() {
-  if (activeBrandTab === "Type") {
-    dropOverlayTitle.textContent = "Drop to add fonts";
-    dropOverlayHint.textContent = "WOFF, WOFF2, TTF, or OTF";
-    return;
+function activeUploadEmptyPanel() {
+  if (activeBrandTab === "Logos" && uploadPanel.dataset.empty === "true") {
+    return uploadEmpty;
   }
-
+  if (activeBrandTab === "Type" && !typeCatalogRevealed) {
+    return typeUploadEmpty;
+  }
   if (activeBrandTab === "Lockups" && !lockupsReady()) {
-    dropOverlayTitle.textContent = "Drop to add logos or fonts";
-    dropOverlayHint.textContent = "SVG, WOFF, WOFF2, TTF, or OTF";
+    return lockupUploadEmpty;
+  }
+  return null;
+}
+
+function clearDragImportTargetState() {
+  [uploadEmpty, typeUploadEmpty, lockupUploadEmpty, importDragTarget].forEach((panel) => {
+    panel?.classList.remove("is-drag-target");
+  });
+  if (importDragTarget) importDragTarget.hidden = true;
+}
+
+function showDragImportTarget() {
+  document.body.classList.add("is-dragging-files");
+  clearDragImportTargetState();
+
+  const panel = activeUploadEmptyPanel();
+  if (panel) {
+    panel.classList.add("is-drag-target");
     return;
   }
 
-  dropOverlayTitle.textContent = "Drop to add logos";
-  dropOverlayHint.textContent = "SVG files only";
+  if (!BRAND_TABS.has(activeBrandTab) || !importDragTarget) return;
+  importDragTarget.hidden = false;
+  importDragTarget.classList.add("is-drag-target");
+  requestAnimationFrame(updateUploadBorders);
+}
+
+function refreshDragImportTarget() {
+  if (!document.body.classList.contains("is-dragging-files")) return;
+  showDragImportTarget();
 }
 
 function draggedFiles(event) {
   return [...(event.dataTransfer?.types ?? [])].includes("Files");
 }
 
-function hideDropOverlay() {
+function hideDragImportTarget() {
   dragDepth = 0;
-  dropOverlay.hidden = true;
   document.body.classList.remove("is-dragging-files");
+  clearDragImportTargetState();
 }
 
 placeholderButton.addEventListener("click", populatePlaceholderLogos);
@@ -4036,6 +4908,7 @@ function canUseGridKeyboardNav(event) {
   if (target.closest(".brand-tab")) return false;
   if (target.closest(".grid-filter")) return false;
   if (target.closest(".grid-action")) return false;
+  if (target.closest(".grid-dismiss-control")) return false;
   if (target.closest(".access-panel")) return false;
   if (accessPanel && !accessPanel.hidden) return false;
 
@@ -4229,7 +5102,7 @@ function syncKeyboardGridSelection() {
     || element.classList.contains("type-tile")
     || element.classList.contains("lockup-tile")
   ) {
-    positionGridLockControl(element);
+    positionGridTileControls(element);
   }
 }
 
@@ -4387,16 +5260,10 @@ gridActions?.querySelectorAll(".grid-action").forEach((button) => {
 });
 
 lockedImportInput?.addEventListener("change", async () => {
-  const file = lockedImportInput.files?.[0];
-  const tab = pendingImportTab;
-  pendingImportTab = null;
+  const files = lockedImportInput.files;
   lockedImportInput.value = "";
-  if (!file || !tab) return;
-  try {
-    await importLockedForTab(tab, file);
-  } catch {
-    setStatus(`Could not import ${tab.toLowerCase()}`);
-  }
+  if (!files?.length) return;
+  await handleImportFiles(files);
 });
 
 document.documentElement.style.setProperty("--lockup-font-family", selectedFontFamily());
@@ -4405,9 +5272,7 @@ document.addEventListener("dragenter", (event) => {
   if (!draggedFiles(event)) return;
   event.preventDefault();
   dragDepth += 1;
-  syncDropOverlayCopy();
-  dropOverlay.hidden = false;
-  document.body.classList.add("is-dragging-files");
+  if (dragDepth === 1) showDragImportTarget();
 });
 
 document.addEventListener("dragover", (event) => {
@@ -4419,31 +5284,18 @@ document.addEventListener("dragover", (event) => {
 document.addEventListener("dragleave", (event) => {
   if (!draggedFiles(event)) return;
   dragDepth = Math.max(0, dragDepth - 1);
-  if (!dragDepth) hideDropOverlay();
+  if (!dragDepth) hideDragImportTarget();
 });
 
 document.addEventListener("drop", (event) => {
   if (!draggedFiles(event)) return;
   event.preventDefault();
   const files = event.dataTransfer.files;
-  hideDropOverlay();
-  if (activeBrandTab === "Type") {
-    addFontFiles(files);
-    return;
-  }
-  if (activeBrandTab === "Lockups" && !lockupsReady()) {
-    const logoFiles = [...files].filter((file) => {
-      return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
-    });
-    const fontFiles = [...files].filter((file) => isFontFile(file));
-    if (logoFiles.length) addLogoFiles(logoFiles);
-    if (fontFiles.length) addFontFiles(fontFiles);
-    return;
-  }
-  addLogoFiles(files);
+  hideDragImportTarget();
+  void handleImportFiles(files);
 });
 
-window.addEventListener("dragend", hideDropOverlay);
+window.addEventListener("dragend", hideDragImportTarget);
 updateUploadUi();
 updateFaviconForTopLogo();
 
@@ -4488,6 +5340,7 @@ function syncLogoGridPresentation() {
   scheduleLogoShaderMask();
   schedulePerIconShaderSync();
   applyLogoGridFilter();
+  requestAnimationFrame(positionLogoTileLockControls);
   requestAnimationFrame(syncBrandGridOffset);
 }
 
@@ -4879,7 +5732,7 @@ function randomizeActiveTab() {
   }
 
   const paletteOk = randomizePaletteFromCombinations();
-  const nextIds = permuteIdsWithPinnedSlots(tiles.length, pinnedGridSlots.Logos, getLogoIds());
+  const nextIds = permuteIdsWithPinnedSlots(tiles.length, pinnedGridSlots.Logos, getAvailableLogoIds());
   const tileById = new Map(tiles.map((tile) => [tile.dataset.logoId, tile]));
   nextIds.forEach((id) => {
     const tile = tileById.get(id);
@@ -4977,7 +5830,7 @@ const commonShaderSizing = {
 
 const shaderPresets = [
   {
-    label: "Gem Smoke - Fire",
+    label: "Fire",
     perIcon: true,
     logoTexture: "logo",
     fragment: gemSmokeFragmentShader,
@@ -5002,7 +5855,7 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
   {
-    label: "Gem Smoke - Infrared",
+    label: "Infrared",
     perIcon: true,
     logoTexture: "logo",
     fragment: gemSmokeFragmentShader,
@@ -5027,30 +5880,7 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
   {
-    label: "Liquid Metal - Noir",
-    perIcon: true,
-    logoTexture: "logo",
-    fragment: liquidMetalFragmentShader,
-    speed: 0.28,
-    uniforms: (palette, image) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_colorBack: shaderColor(palette.paper, 0),
-      u_colorTint: shaderColor(mixColors(palette.ink, "#050505", 0.44), 0.86),
-      u_repetition: 3.4,
-      u_shiftRed: 0.02,
-      u_shiftBlue: -0.02,
-      u_contour: 0.72,
-      u_softness: 0.28,
-      u_distortion: 0.34,
-      u_angle: 72,
-      u_shape: LiquidMetalShapes.none,
-      u_isImage: true,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Heatmap - Default",
+    label: "Heatmap",
     perIcon: true,
     logoTexture: "heatmap",
     fragment: heatmapFragmentShader,
@@ -5075,7 +5905,33 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
   {
-    label: "Halftone Dots - LED Screen",
+    label: "Liquid Metal",
+    perIcon: true,
+    logoTexture: "logo",
+    fragment: liquidMetalFragmentShader,
+    speed: 0.28,
+    uniforms: (palette, image) => ({
+      ...commonShaderSizing,
+      u_image: image,
+      u_colorBack: shaderColor(palette.paper, 0),
+      u_colorTint: shaderColor(mixColors(palette.ink, "#050505", 0.44), 0.86),
+      u_repetition: 3.4,
+      u_shiftRed: 0.02,
+      u_shiftBlue: -0.02,
+      u_contour: 0.72,
+      u_softness: 0.28,
+      u_distortion: 0.34,
+      u_angle: 72,
+      u_shape: LiquidMetalShapes.none,
+      u_isImage: true,
+    }),
+    mipmaps: ["u_image"],
+  },
+  {
+    label: "LED Screen",
+    logosOnly: true,
+    perIcon: true,
+    logoTexture: "source",
     fragment: halftoneDotsFragmentShader,
     speed: 0,
     uniforms: (palette, image) => ({
@@ -5097,39 +5953,10 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
   {
-    label: "Halftone CMYK",
-    fragment: halftoneCmykFragmentShader,
-    speed: 0,
-    uniforms: (palette, image, noiseTexture) => ({
-      ...commonShaderSizing,
-      u_image: image,
-      u_noiseTexture: noiseTexture,
-      u_colorBack: shaderColor(palette.paper),
-      u_colorC: shaderColor(mixColors(palette.paper, "#00b3ff", 0.78), 0.54),
-      u_colorM: shaderColor(mixColors(palette.ink, "#fc4f9d", 0.42), 0.44),
-      u_colorY: shaderColor(mixColors(palette.paper, "#ffd900", 0.72), 0.36),
-      u_colorK: shaderColor(palette.ink, 0.74),
-      u_size: 0.18,
-      u_gridNoise: 0.22,
-      u_type: HalftoneCmykTypes.ink,
-      u_softness: 0.72,
-      u_contrast: 1.1,
-      u_floodC: 0.08,
-      u_floodM: 0,
-      u_floodY: 0.06,
-      u_floodK: 0.02,
-      u_gainC: 0.2,
-      u_gainM: 0.05,
-      u_gainY: 0.14,
-      u_gainK: 0.18,
-      u_grainMixer: 0.08,
-      u_grainOverlay: 0.05,
-      u_grainSize: 0.52,
-    }),
-    mipmaps: ["u_image"],
-  },
-  {
-    label: "Halftone CMYK - Drops",
+    label: "Halftone Drops",
+    logosOnly: true,
+    perIcon: true,
+    logoTexture: "source",
     fragment: halftoneCmykFragmentShader,
     speed: 0,
     uniforms: (palette, image, noiseTexture) => ({
@@ -5161,7 +5988,10 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
   {
-    label: "Halftone CMYK - Vintage",
+    label: "Vintage Halftone",
+    logosOnly: true,
+    perIcon: true,
+    logoTexture: "source",
     fragment: halftoneCmykFragmentShader,
     speed: 0,
     uniforms: (palette, image, noiseTexture) => ({
@@ -5193,6 +6023,31 @@ const shaderPresets = [
     mipmaps: ["u_image"],
   },
 ];
+
+function shaderPresetIsAvailable(preset, tab = activeBrandTab) {
+  if (preset.logosOnly && tab !== "Logos") return false;
+  return true;
+}
+
+function availableShaderIndices(tab = activeBrandTab) {
+  return shaderPresets
+    .map((_, index) => index)
+    .filter((index) => shaderPresetIsAvailable(shaderPresets[index], tab));
+}
+
+function shaderCycleOptions(tab = activeBrandTab) {
+  return [-1, ...availableShaderIndices(tab)];
+}
+
+function validateShaderForActiveTab() {
+  if (currentShaderIndex < 0) return;
+  if (shaderPresetIsAvailable(shaderPresets[currentShaderIndex])) return;
+
+  const restore = preShaderPalette;
+  preShaderPalette = null;
+  resetShaderView();
+  if (restore) applyPalette(restore);
+}
 
 function shaderColor(color, alpha = 1) {
   const [r, g, b] = getShaderColorFromString(parseColor(color));
@@ -5290,34 +6145,81 @@ function svgMarkupScaledTo(svg, width, height, x = 0, y = 0) {
 function scheduleLogoShaderMask() {
   if (currentShaderIndex < 0 || !shaderLayer?.classList.contains("is-active")) return;
   window.cancelAnimationFrame(maskFrame);
-  maskFrame = window.requestAnimationFrame(updateLogoShaderMask);
+  maskFrame = window.requestAnimationFrame(updateShaderLayerMask);
 }
 
-function updateLogoShaderMask() {
+function shaderMaskMarkupForViewport() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  if (activeBrandTab === "Logos") {
+    const visibleLogos = [...grid.querySelectorAll(".logo-art svg")]
+      .map((svg) => ({ svg, box: svg.getBoundingClientRect() }))
+      .filter(({ box }) => {
+        return box.width > 0
+          && box.height > 0
+          && box.right >= 0
+          && box.bottom >= 0
+          && box.left <= width
+          && box.top <= height;
+      });
+
+    if (!visibleLogos.length) return "";
+
+    return visibleLogos.map(({ svg, box }) => {
+      return svgMarkupScaledTo(svg, box.width, box.height, box.left, box.top);
+    }).join("");
+  }
+
+  if (activeBrandTab === "Type") {
+    return visibleShaderTiles().map((tile) => {
+      const geometry = gridTypeGeometry(tile);
+      const button = tile.querySelector(".type-button");
+      if (!geometry || !button) return "";
+      const buttonBox = button.getBoundingClientRect();
+      const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+      const safeText = escapeSvgText(geometry.text);
+      const x = buttonBox.left + geometry.textX;
+      const y = buttonBox.top + geometry.textY;
+      return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="white" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="${geometry.fontWeight}" text-anchor="middle" dominant-baseline="central">${safeText}</text>`;
+    }).join("");
+  }
+
+  if (activeBrandTab === "Lockups") {
+    return visibleShaderTiles().map((tile) => {
+      const geometry = gridLockupGeometry(tile);
+      const button = tile.querySelector(".lockup-button");
+      if (!geometry || !button) return "";
+      const buttonBox = button.getBoundingClientRect();
+      const iconScaleX = geometry.markWidth / geometry.viewWidth;
+      const iconScaleY = geometry.markHeight / geometry.viewHeight;
+      const iconX = buttonBox.left + geometry.markX;
+      const iconY = buttonBox.top + geometry.markY;
+      const iconTransform = `translate(${iconX.toFixed(2)} ${iconY.toFixed(2)}) scale(${iconScaleX.toFixed(6)} ${iconScaleY.toFixed(6)}) translate(${-geometry.viewX.toFixed(2)} ${-geometry.viewY.toFixed(2)})`;
+      const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+      const safeText = escapeSvgText(geometry.text);
+      const textX = buttonBox.left + geometry.textX;
+      const textY = buttonBox.top + geometry.textY;
+      return `<g class="logo-mask" transform="${iconTransform}">${geometry.svg.innerHTML}</g><text x="${textX.toFixed(2)}" y="${textY.toFixed(2)}" fill="white" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="${geometry.fontWeight}" text-anchor="middle" dominant-baseline="central">${safeText}</text>`;
+    }).join("");
+  }
+
+  return "";
+}
+
+function updateShaderLayerMask() {
   if (currentShaderIndex < 0 || !shaderLayer?.classList.contains("is-active")) return;
 
   const width = window.innerWidth;
   const height = window.innerHeight;
-  const visibleLogos = [...grid.querySelectorAll(".logo-art svg")]
-    .map((svg) => ({ svg, box: svg.getBoundingClientRect() }))
-    .filter(({ box }) => {
-      return box.width > 0
-        && box.height > 0
-        && box.right >= 0
-        && box.bottom >= 0
-        && box.left <= width
-        && box.top <= height;
-    });
+  const maskMarkup = shaderMaskMarkupForViewport();
 
-  if (!visibleLogos.length) {
+  if (!maskMarkup) {
     shaderLayer.style.webkitMaskImage = "";
     shaderLayer.style.maskImage = "";
     return;
   }
 
-  const logoMarkup = visibleLogos.map(({ svg, box }) => {
-    return svgMarkupScaledTo(svg, box.width, box.height, box.left, box.top);
-  }).join("");
   const maskSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
     <style>
       .logo-mask :is(path, polygon, polyline, rect, circle, ellipse) { fill: white !important; stroke: white !important; }
@@ -5325,12 +6227,12 @@ function updateLogoShaderMask() {
       .logo-mask .cls-5 { fill: black !important; stroke: black !important; opacity: 1 !important; }
     </style>
     <defs>
-      <mask id="logo-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+      <mask id="shader-layer-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
         <rect width="${width}" height="${height}" fill="black"/>
-        <g class="logo-mask">${logoMarkup}</g>
+        <g class="logo-mask">${maskMarkup}</g>
       </mask>
     </defs>
-    <rect width="${width}" height="${height}" fill="white" mask="url(#logo-mask)"/>
+    <rect width="${width}" height="${height}" fill="white" mask="url(#shader-layer-mask)"/>
   </svg>`;
   const maskUrl = `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")`;
   shaderLayer.style.webkitMaskImage = maskUrl;
@@ -5339,6 +6241,70 @@ function updateLogoShaderMask() {
 
 function schedulePerIconShaderSync() {
   window.cancelAnimationFrame(perIconFrame);
+  perIconFrame = window.requestAnimationFrame(() => {
+    void runPerIconShaderSync();
+  });
+}
+
+async function runPerIconShaderSync() {
+  if (currentShaderIndex < 0) {
+    disposePerIconShaders();
+    return;
+  }
+
+  const preset = shaderPresets[currentShaderIndex];
+  if (!preset?.perIcon || !shaderGridIsVisible()) {
+    disposePerIconShaders();
+    return;
+  }
+
+  const token = shaderToken;
+  const noiseTexture = await loadedNoiseTexture();
+  if (token !== shaderToken) return;
+  syncPerIconShaders(preset, null, noiseTexture, token);
+}
+
+async function mountBackgroundShader(preset, token) {
+  if (!shaderLayer || !SHADER_UI_TABS.has(activeBrandTab)) return;
+
+  shaderLayer.classList.add("is-active");
+  scheduleLogoShaderMask();
+
+  const [image, noiseTexture] = await Promise.all([
+    paletteTextureImage(currentPalette),
+    loadedNoiseTexture(),
+  ]);
+  if (token !== shaderToken || currentShaderIndex < 0) return;
+
+  try {
+    shaderMount = new ShaderMount(
+      shaderLayer,
+      preset.fragment,
+      preset.uniforms(currentPalette, image, noiseTexture),
+      { alpha: true, premultipliedAlpha: false },
+      preset.speed,
+      Math.random() * 12000,
+      2,
+      1600 * 1600,
+      preset.mipmaps,
+    );
+  } catch (error) {
+    shaderLayer.classList.remove("is-active");
+    console.error("Failed to mount background shader", error);
+  }
+}
+
+function tileMaskUrl(tile) {
+  if (tile.classList.contains("logo-tile")) return logoMaskUrl(tile);
+  if (tile.classList.contains("lockup-tile")) {
+    const maskSvg = gridLockupMaskSvg(tile);
+    return maskSvg ? `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")` : "";
+  }
+  if (tile.classList.contains("type-tile")) {
+    const maskSvg = gridTypeMaskSvg(tile);
+    return maskSvg ? `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")` : "";
+  }
+  return "";
 }
 
 function logoMaskUrl(tile) {
@@ -5402,6 +6368,111 @@ function escapeSvgText(value) {
 
 function escapeSvgAttribute(value) {
   return escapeSvgText(value).replaceAll('"', "&quot;");
+}
+
+function gridTypeGeometry(tile) {
+  const button = tile.querySelector(".type-button");
+  const specimen = tile.querySelector(".type-specimen");
+  if (!button || !specimen) return null;
+
+  const fullBox = button.getBoundingClientRect();
+  const specimenBox = specimen.getBoundingClientRect();
+  const specimenStyle = getComputedStyle(specimen);
+  if (!fullBox.width || !fullBox.height || !specimenBox.width || !specimenBox.height) return null;
+
+  return {
+    fullWidth: fullBox.width,
+    fullHeight: fullBox.height,
+    textX: specimenBox.left - fullBox.left + specimenBox.width / 2,
+    textY: specimenBox.top - fullBox.top + specimenBox.height / 2,
+    fontFamily: specimenStyle.fontFamily,
+    fontSize: Number.parseFloat(specimenStyle.fontSize) || 48,
+    fontWeight: specimenStyle.fontWeight || "700",
+    text: specimen.textContent || lockupText,
+  };
+}
+
+function gridTypeMaskSvg(tile, front = "white", back = "transparent") {
+  const geometry = gridTypeGeometry(tile);
+  if (!geometry) return "";
+  const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+  const safeText = escapeSvgText(geometry.text);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${geometry.fullWidth}" height="${geometry.fullHeight}" viewBox="0 0 ${geometry.fullWidth} ${geometry.fullHeight}">
+    <rect width="100%" height="100%" fill="${back}"/>
+    <text x="${geometry.textX.toFixed(2)}" y="${geometry.textY.toFixed(2)}" fill="${front}" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="${geometry.fontWeight}" text-anchor="middle" dominant-baseline="central">${safeText}</text>
+  </svg>`;
+}
+
+function gridTypeSourceUrl(tile) {
+  const sourceSvg = gridTypeMaskSvg(tile, "black", "transparent");
+  return sourceSvg ? `data:image/svg+xml,${encodeURIComponent(sourceSvg)}` : "";
+}
+
+function gridLockupGeometry(tile) {
+  const button = tile.querySelector(".lockup-button");
+  const mark = tile.querySelector(".lockup-mark");
+  const svg = mark?.querySelector("svg");
+  const text = tile.querySelector(".lockup-text");
+  if (!button || !mark || !svg || !text) return null;
+
+  const fullBox = button.getBoundingClientRect();
+  const markBox = mark.getBoundingClientRect();
+  const textBox = text.getBoundingClientRect();
+  const textStyle = getComputedStyle(text);
+  if (!fullBox.width || !fullBox.height || !markBox.width || !markBox.height || !textBox.width || !textBox.height) {
+    return null;
+  }
+
+  const viewBox = (svg.getAttribute("viewBox") ?? "0 0 1200 1200").split(/\s+/).map(Number);
+  const [viewX = 0, viewY = 0, viewWidth = 1200, viewHeight = 1200] = viewBox;
+
+  return {
+    fullWidth: fullBox.width,
+    fullHeight: fullBox.height,
+    svg,
+    viewX,
+    viewY,
+    viewWidth,
+    viewHeight,
+    markX: markBox.left - fullBox.left,
+    markY: markBox.top - fullBox.top,
+    markWidth: markBox.width,
+    markHeight: markBox.height,
+    textX: textBox.left - fullBox.left + textBox.width / 2,
+    textY: textBox.top - fullBox.top + textBox.height / 2,
+    fontFamily: textStyle.fontFamily,
+    fontSize: Number.parseFloat(textStyle.fontSize) || 16,
+    fontWeight: textStyle.fontWeight || "700",
+    text: text.textContent || lockupText,
+  };
+}
+
+function gridLockupMaskSvg(tile, front = "white", back = "transparent") {
+  const geometry = gridLockupGeometry(tile);
+  if (!geometry) return "";
+
+  const iconScaleX = geometry.markWidth / geometry.viewWidth;
+  const iconScaleY = geometry.markHeight / geometry.viewHeight;
+  const iconTransform = `translate(${geometry.markX.toFixed(2)} ${geometry.markY.toFixed(2)}) scale(${iconScaleX.toFixed(6)} ${iconScaleY.toFixed(6)}) translate(${-geometry.viewX.toFixed(2)} ${-geometry.viewY.toFixed(2)})`;
+  const safeFontFamily = escapeSvgAttribute(geometry.fontFamily);
+  const safeText = escapeSvgText(geometry.text);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${geometry.fullWidth}" height="${geometry.fullHeight}" viewBox="0 0 ${geometry.fullWidth} ${geometry.fullHeight}">
+    <style>
+      .lockup-mask :is(path, polygon, polyline, rect, circle, ellipse) { fill: ${front} !important; stroke: ${front} !important; opacity: 1 !important; }
+      .lockup-mask line { stroke: ${front} !important; opacity: 1 !important; }
+      .lockup-mask .cls-5 { fill: ${back} !important; stroke: ${back} !important; opacity: 1 !important; }
+    </style>
+    <rect width="100%" height="100%" fill="${back}"/>
+    <g class="lockup-mask" transform="${iconTransform}">${geometry.svg.innerHTML}</g>
+    <text x="${geometry.textX.toFixed(2)}" y="${geometry.textY.toFixed(2)}" fill="${front}" font-family="${safeFontFamily}" font-size="${geometry.fontSize.toFixed(2)}" font-weight="${geometry.fontWeight}" text-anchor="middle" dominant-baseline="central">${safeText}</text>
+  </svg>`;
+}
+
+function gridLockupSourceUrl(tile) {
+  const sourceSvg = gridLockupMaskSvg(tile, "black", "transparent");
+  return sourceSvg ? `data:image/svg+xml,${encodeURIComponent(sourceSvg)}` : "";
 }
 
 function lockupGeometry() {
@@ -5624,30 +6695,125 @@ async function lightweightTextureFromImage(image, type, { preserveAspect = false
   return canvasToImage(canvas);
 }
 
+async function compositeSourceOnPaper(image, { preserveAspect = false } = {}) {
+  const baseSize = preserveAspect ? 512 : 384;
+  const aspect = image.naturalWidth > 0 && image.naturalHeight > 0
+    ? image.naturalWidth / image.naturalHeight
+    : 1;
+  const width = preserveAspect
+    ? Math.max(1, Math.round(aspect >= 1 ? baseSize : baseSize * aspect))
+    : baseSize;
+  const height = preserveAspect
+    ? Math.max(1, Math.round(aspect >= 1 ? baseSize / aspect : baseSize))
+    : baseSize;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) throw new Error("Failed to create source texture context");
+
+  canvas.width = width;
+  canvas.height = height;
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(image, 0, 0, width, height);
+
+  const pixels = ctx.getImageData(0, 0, width, height);
+  const ink = hexToRgb(parseColor(currentPalette.ink));
+  const paper = hexToRgb(parseColor(currentPalette.paper));
+  for (let i = 0; i < pixels.data.length; i += 4) {
+    const alpha = pixels.data[i + 3] / 255;
+    pixels.data[i] = Math.round(paper[0] + (ink[0] - paper[0]) * alpha);
+    pixels.data[i + 1] = Math.round(paper[1] + (ink[1] - paper[1]) * alpha);
+    pixels.data[i + 2] = Math.round(paper[2] + (ink[2] - paper[2]) * alpha);
+    pixels.data[i + 3] = 255;
+  }
+  ctx.putImageData(pixels, 0, 0);
+  return canvasToImage(canvas);
+}
+
+async function textureFromSourceImage(image, type, options = {}) {
+  if (!image) return null;
+  if (type === "source") return compositeSourceOnPaper(image, options);
+  return lightweightTextureFromImage(image, type, options);
+}
+
 async function lightweightLogoTexture(sourceElement, type) {
   const svg = sourceElement?.matches?.("svg") ? sourceElement : sourceElement?.querySelector?.("svg");
   const image = await sourceLogoImageFromSvg(svg);
-  return lightweightTextureFromImage(image, type);
+  return textureFromSourceImage(image, type);
 }
 
 async function lightweightLockupTexture(type) {
   const image = await sourceLockupImage();
   if (!image) return null;
-  return lightweightTextureFromImage(image, type, { preserveAspect: true });
+  return textureFromSourceImage(image, type, { preserveAspect: true });
 }
 
 async function processedLogoImage(tile, preset) {
+  return processedTileImage(tile, preset);
+}
+
+function tileShaderCacheKey(tile, preset) {
+  const paletteSuffix = preset.logoTexture === "source"
+    ? `:${currentPalette.ink}:${currentPalette.paper}`
+    : "";
+  if (tile.classList.contains("logo-tile")) {
+    return `${preset.logoTexture}:logo:${tile.dataset.logoId}${paletteSuffix}`;
+  }
+  if (tile.classList.contains("lockup-tile")) {
+    return `${preset.logoTexture}:lockup:${tile.dataset.lockupIndex}${paletteSuffix}`;
+  }
+  if (tile.classList.contains("type-tile")) {
+    return `${preset.logoTexture}:type:${tile.dataset.typeIndex}${paletteSuffix}`;
+  }
+  return null;
+}
+
+async function processedTileImage(tile, preset) {
   if (!preset.logoTexture) return null;
 
-  const cacheKey = `${preset.logoTexture}:${tile.dataset.logoId}`;
+  const cacheKey = tileShaderCacheKey(tile, preset);
+  if (!cacheKey) return null;
+
   if (!perIconLogoImageCache.has(cacheKey)) {
-    perIconLogoImageCache.set(cacheKey, lightweightLogoTexture(tile, preset.logoTexture));
+    let loader = Promise.resolve(null);
+    if (tile.classList.contains("logo-tile")) {
+      loader = lightweightLogoTexture(tile, preset.logoTexture);
+    } else if (tile.classList.contains("lockup-tile")) {
+      loader = processedLockupTileImage(tile, preset.logoTexture);
+    } else if (tile.classList.contains("type-tile")) {
+      loader = processedTypeTileImage(tile, preset.logoTexture);
+    }
+    perIconLogoImageCache.set(cacheKey, loader);
   }
 
   return perIconLogoImageCache.get(cacheKey);
 }
 
+async function processedLockupTileImage(tile, logoTexture) {
+  const url = gridLockupSourceUrl(tile);
+  if (!url) return null;
+  const image = await imageFromDataUrl(url, "Failed to load lockup tile texture");
+  return textureFromSourceImage(image, logoTexture, { preserveAspect: true });
+}
+
+async function processedTypeTileImage(tile, logoTexture) {
+  const url = gridTypeSourceUrl(tile);
+  if (!url) return null;
+  const image = await imageFromDataUrl(url, "Failed to load type tile texture");
+  return textureFromSourceImage(image, logoTexture, { preserveAspect: true });
+}
+
 async function fullscreenShaderImage(preset) {
+  if (previewMode === "type") {
+    if (!preset.logoTexture) return paletteTextureImage(currentPalette);
+    const specimen = fullscreenLogo.querySelector(".fullscreen-type-specimen");
+    if (!specimen) return null;
+    const cacheKey = `${preset.logoTexture}:fullscreen-type:${currentTypeIndex}`;
+    if (!perIconLogoImageCache.has(cacheKey)) {
+      perIconLogoImageCache.set(cacheKey, processedFullscreenTypeImage(preset.logoTexture));
+    }
+    return perIconLogoImageCache.get(cacheKey);
+  }
+
   const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
   if (!svg) return null;
 
@@ -5667,6 +6833,22 @@ async function fullscreenShaderImage(preset) {
   return perIconLogoImageCache.get(cacheKey);
 }
 
+async function processedFullscreenTypeImage(logoTexture) {
+  const specimen = fullscreenLogo.querySelector(".fullscreen-type-specimen");
+  if (!specimen) return null;
+  const box = specimen.getBoundingClientRect();
+  const style = getComputedStyle(specimen);
+  if (!box.width || !box.height) return null;
+
+  const width = Math.max(1, Math.round(box.width));
+  const height = Math.max(1, Math.round(box.height));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <text x="${(width / 2).toFixed(2)}" y="${(height / 2).toFixed(2)}" fill="black" font-family="${escapeSvgAttribute(style.fontFamily)}" font-size="${(Number.parseFloat(style.fontSize) || 48).toFixed(2)}" font-weight="${style.fontWeight || "700"}" text-anchor="middle" dominant-baseline="central">${escapeSvgText(specimen.textContent || lockupText)}</text>
+  </svg>`;
+  const image = await imageFromDataUrl(`data:image/svg+xml,${encodeURIComponent(svg)}`, "Failed to load type texture");
+  return textureFromSourceImage(image, logoTexture, { preserveAspect: true });
+}
+
 function disposeFullscreenShader() {
   shaderToken += 1;
   fullscreenShaderMount?.dispose();
@@ -5681,11 +6863,12 @@ async function mountFullscreenShader() {
   fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
   fullscreenLogo.classList.remove("has-fullscreen-shader");
 
-  if (!dialog.open || currentShaderIndex < 0 || previewMode === "type") return;
+  if (!dialog.open || currentShaderIndex < 0) return;
 
   const preset = shaderPresets[currentShaderIndex];
   const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
-  if (!svg) return;
+  const typeSpecimen = fullscreenLogo.querySelector(".fullscreen-type-specimen");
+  if (!svg && !typeSpecimen) return;
 
   const token = ++shaderToken;
   const [image, noiseTexture] = await Promise.all([
@@ -5694,10 +6877,21 @@ async function mountFullscreenShader() {
   ]);
   if (token !== shaderToken || !dialog.open || !image) return;
 
+  let mask = "";
+  if (previewMode === "type" && typeSpecimen) {
+    const maskSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ${Math.max(1, Math.round(typeSpecimen.getBoundingClientRect().width))} ${Math.max(1, Math.round(typeSpecimen.getBoundingClientRect().height))}">
+      <text x="50%" y="50%" fill="white" font-family="${escapeSvgAttribute(getComputedStyle(typeSpecimen).fontFamily)}" font-size="${(Number.parseFloat(getComputedStyle(typeSpecimen).fontSize) || 48).toFixed(2)}" font-weight="${getComputedStyle(typeSpecimen).fontWeight || "700"}" text-anchor="middle" dominant-baseline="central">${escapeSvgText(typeSpecimen.textContent || lockupText)}</text>
+    </svg>`;
+    mask = `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")`;
+  } else if (isFullscreenLockup()) {
+    mask = lockupMaskUrl();
+  } else if (svg) {
+    mask = logoMaskUrlFromSvg(svg);
+  }
+  if (!mask) return;
+
   const layer = document.createElement("div");
   layer.className = "fullscreen-shader-layer";
-  const mask = isFullscreenLockup() ? lockupMaskUrl() : logoMaskUrlFromSvg(svg);
-  if (!mask) return;
   layer.style.webkitMaskImage = mask;
   layer.style.maskImage = mask;
   fullscreenLogo.append(layer);
@@ -5722,18 +6916,36 @@ async function mountFullscreenShader() {
   }
 }
 
+function tileIsInViewport(tile) {
+  const box = tile.getBoundingClientRect();
+  return box.width > 0
+    && box.height > 0
+    && box.right >= 0
+    && box.bottom >= 0
+    && box.left <= window.innerWidth
+    && box.top <= window.innerHeight;
+}
+
 function visibleTiles() {
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  return [...grid.querySelectorAll(".logo-tile")].filter((tile) => {
-    const box = tile.getBoundingClientRect();
-    return box.width > 0
-      && box.height > 0
-      && box.right >= 0
-      && box.bottom >= 0
-      && box.left <= viewportWidth
-      && box.top <= viewportHeight;
-  });
+  return [...grid.querySelectorAll(".logo-tile")].filter(tileIsInViewport);
+}
+
+function visibleShaderTiles() {
+  if (activeBrandTab === "Logos" && !grid.hidden) {
+    return visibleTiles();
+  }
+  if (activeBrandTab === "Type" && !typeGrid.hidden) {
+    return [...typeGrid.querySelectorAll(".type-tile")].filter(tileIsInViewport);
+  }
+  if (activeBrandTab === "Lockups" && !lockupGrid.hidden) {
+    return [...lockupGrid.querySelectorAll(".lockup-tile")].filter(tileIsInViewport);
+  }
+  return [];
+}
+
+function shaderGridIsVisible() {
+  const activeGrid = activeBrandGridElement();
+  return Boolean(activeGrid && !activeGrid.hidden && SHADER_UI_TABS.has(activeBrandTab));
 }
 
 function disposePerIconShader(tile) {
@@ -5743,7 +6955,7 @@ function disposePerIconShader(tile) {
 
   entry.mount.dispose();
   entry.layer.remove();
-  tile.classList.remove("has-logo-shader");
+  tile.classList.remove("has-logo-shader", "has-tile-shader");
   perIconShaderMounts.delete(tile);
 }
 
@@ -5757,7 +6969,7 @@ async function mountTileShader(tile, preset, image, noiseTexture, token) {
   if (token !== shaderToken) return;
   perIconShaderPending.add(tile);
 
-  const logoImage = await processedLogoImage(tile, preset);
+  const logoImage = await processedTileImage(tile, preset);
   if (token !== shaderToken || !logoImage) {
     perIconShaderPending.delete(tile);
     return;
@@ -5765,11 +6977,15 @@ async function mountTileShader(tile, preset, image, noiseTexture, token) {
 
   const layer = document.createElement("div");
   layer.className = "logo-shader-layer";
-  const mask = logoMaskUrl(tile);
+  const mask = tileMaskUrl(tile);
+  if (!mask) {
+    perIconShaderPending.delete(tile);
+    return;
+  }
   layer.style.webkitMaskImage = mask;
   layer.style.maskImage = mask;
   tile.append(layer);
-  tile.classList.add("has-logo-shader");
+  tile.classList.add("has-logo-shader", "has-tile-shader");
 
   try {
     const mount = new ShaderMount(
@@ -5786,7 +7002,7 @@ async function mountTileShader(tile, preset, image, noiseTexture, token) {
     perIconShaderMounts.set(tile, { mount, layer });
   } catch (error) {
     layer.remove();
-    tile.classList.remove("has-logo-shader");
+    tile.classList.remove("has-logo-shader", "has-tile-shader");
     throw error;
   } finally {
     perIconShaderPending.delete(tile);
@@ -5800,7 +7016,7 @@ function syncPerIconShaders(preset, image, noiseTexture, token) {
     return;
   }
 
-  const liveTiles = new Set(visibleTiles());
+  const liveTiles = new Set(visibleShaderTiles());
   [...perIconShaderMounts.keys()].forEach((tile) => {
     if (!liveTiles.has(tile)) disposePerIconShader(tile);
   });
@@ -5835,15 +7051,47 @@ function clearShaderMounts() {
 }
 
 async function mountShader(index) {
+  shaderToken += 1;
+  const token = shaderToken;
   clearShaderMounts();
 
+  if (index < 0) {
+    currentShaderIndex = -1;
+    disposeFullscreenShader();
+    syncShaderButtons();
+    syncBrandMark();
+    return;
+  }
+
   currentShaderIndex = ((index % shaderPresets.length) + shaderPresets.length) % shaderPresets.length;
+  const preset = shaderPresets[currentShaderIndex];
+
+  if (!shaderPresetIsAvailable(preset)) {
+    currentShaderIndex = -1;
+    disposeFullscreenShader();
+    syncShaderButtons();
+    syncBrandMark();
+    return;
+  }
 
   if (dialog.open) {
     await mountFullscreenShader();
   } else {
     disposeFullscreenShader();
   }
+
+  if (preset.perIcon) {
+    if (shaderGridIsVisible()) {
+      schedulePerIconShaderSync();
+    }
+    syncShaderButtons();
+    syncBrandMark();
+    return;
+  }
+
+  await mountBackgroundShader(preset, token);
+  syncShaderButtons();
+  syncBrandMark();
 }
 
 function resetShaderView() {
@@ -5855,6 +7103,8 @@ function resetShaderView() {
     shaderLayer.style.maskImage = "";
   }
   disposeFullscreenShader();
+  syncShaderButtons();
+  syncBrandMark();
 }
 
 function setShaderCycleIndex(index) {
@@ -5866,11 +7116,31 @@ function setShaderCycleIndex(index) {
   mountShader(index);
 }
 
-function cycleShader(direction) {
-  const optionCount = shaderPresets.length + 1;
-  const currentOption = currentShaderIndex + 1;
-  const nextOption = ((currentOption + direction) % optionCount + optionCount) % optionCount;
-  setShaderCycleIndex(nextOption - 1);
+function cycleShader(direction = 1) {
+  if (!SHADER_UI_TABS.has(activeBrandTab)) return;
+
+  const options = shaderCycleOptions();
+  let currentPos = options.indexOf(currentShaderIndex);
+  if (currentPos < 0) currentPos = 0;
+
+  const nextPos = ((currentPos + direction) % options.length + options.length) % options.length;
+  const nextIndex = options[nextPos];
+
+  if (currentShaderIndex < 0 && nextIndex >= 0) {
+    preShaderPalette = { ...currentPalette };
+  }
+
+  if (nextIndex < 0) {
+    const restore = preShaderPalette;
+    preShaderPalette = null;
+    resetShaderView();
+    if (restore) {
+      applyPalette(restore);
+    }
+    return;
+  }
+
+  setShaderCycleIndex(nextIndex);
 }
 
 function refreshShaderPalette() {
@@ -5883,6 +7153,7 @@ window.addEventListener("beforeunload", () => {
   shaderMount?.dispose();
   fullscreenShaderMount?.dispose();
   disposePerIconShaders();
+  disposeBrandMarkShaders();
   saveSessionState();
   try {
     sessionStorage.setItem(SESSION_KEYS.reloadPending, "1");
@@ -6514,12 +7785,17 @@ function applyPalette(palette) {
   document.documentElement.style.setProperty("--logo-bg-paint", palette.paper);
   document.documentElement.style.setProperty("--editor-mark-color", alphaColor(palette.ink, 0.36));
   updateFaviconForTopLogo();
+  if (currentShaderIndex >= 0) {
+    preShaderPalette = null;
+  }
   refreshShaderPalette();
   if (!isMonochromePalette(palette)) {
     bwModeActive = false;
     preBwPalette = null;
   }
   syncBwButtons();
+  syncShaderButtons();
+  syncBrandMark();
 }
 
 function isMonochromePalette(palette = currentPalette) {
@@ -6564,6 +7840,59 @@ document.addEventListener("keydown", (event) => {
   const target = event.target;
 
   const isTyping = target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+  const isEditingSwatchHex = target instanceof HTMLElement
+    && target.closest(".color-swatch-hex")
+    && target.isContentEditable;
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z" && !event.shiftKey) {
+    if (activeBrandTab === "Colors" && !isTyping && !isEditingSwatchHex && !colorDragSession) {
+      event.preventDefault();
+      if (undoColorChange()) {
+        setStatus("Undid color change");
+      }
+      return;
+    }
+    if (
+      (activeBrandTab === "Logos" || activeBrandTab === "Type" || activeBrandTab === "Lockups")
+      && !isTyping
+      && !isEditingSwatchHex
+      && !colorDragSession
+    ) {
+      event.preventDefault();
+      if (undoDeletion(activeBrandTab)) {
+        setStatus("Undid removal");
+      }
+      return;
+    }
+  }
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "l" && !event.shiftKey && !event.altKey) {
+    if (dialog.open) return;
+    if (!BRAND_TABS.has(activeBrandTab)) return;
+    if (isTyping || isEditingSwatchHex) return;
+    event.preventDefault();
+    clearLockedForTab(activeBrandTab);
+    return;
+  }
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && !event.shiftKey && !event.altKey) {
+    if (dialog.open) return;
+    if (!BRAND_TABS.has(activeBrandTab)) return;
+    if (isTyping || isEditingSwatchHex) return;
+    event.preventDefault();
+    exportForTab(activeBrandTab);
+    return;
+  }
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o" && !event.shiftKey && !event.altKey) {
+    if (dialog.open) return;
+    if (!BRAND_TABS.has(activeBrandTab)) return;
+    if (isTyping || isEditingSwatchHex) return;
+    event.preventDefault();
+    importForTab(activeBrandTab);
+    return;
+  }
+
   if (isTyping || event.metaKey || event.ctrlKey || event.altKey) return;
 
   if (event.key === "Tab") {
@@ -6622,21 +7951,26 @@ document.addEventListener("keydown", (event) => {
     }
   }
 
-  if (event.code === "ArrowDown") {
+  if (event.key.toLowerCase() === "b") {
+    event.preventDefault();
+    toggleDefaultPalette();
+    return;
+  }
+
+  if (event.key.toLowerCase() === "s") {
+    if (dialog.open) return;
+    if (!SHADER_UI_TABS.has(activeBrandTab)) return;
     event.preventDefault();
     cycleShader(1);
     return;
   }
 
-  if (event.code === "ArrowUp") {
+  if (event.key.toLowerCase() === "l") {
+    if (dialog.open) return;
+    if (!BRAND_TABS.has(activeBrandTab)) return;
     event.preventDefault();
-    cycleShader(-1);
+    toggleLockedGridFilter();
     return;
-  }
-
-  if (event.key.toLowerCase() === "b") {
-    event.preventDefault();
-    toggleDefaultPalette();
   }
 
   if (event.key === "+" || event.key === "=") {
@@ -6677,8 +8011,7 @@ function updateUploadBorders() {
 window.addEventListener("resize", updateUploadBorders);
 window.addEventListener("resize", syncGridFiltersPosition);
 window.addEventListener("resize", syncGridActionsPosition);
-window.addEventListener("scroll", syncGridFiltersPosition, { passive: true });
-window.addEventListener("scroll", syncGridActionsPosition, { passive: true });
+window.addEventListener("scroll", syncScrollUpButtons, { passive: true });
 
 // Must run after paletteSources is initialized (used by color generator filters).
 initTypeRegistryFilters();
@@ -6687,3 +8020,4 @@ initColorGeneratorFilters();
 restoreSessionState();
 syncBrandTabView();
 initializeClientAccess();
+syncBrandMark();
