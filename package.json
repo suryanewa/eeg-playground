@@ -1,13 +1,17 @@
 {
-  "name": "eeg-brand-playground",
+  "name": "brandy",
   "version": "1.0.0",
-  "description": "",
-  "main": "logos-data.js",
+  "description": "A playground for exploring logos, type, colors, and lockups.",
+  "private": true,
   "scripts": {
-  "typefaces:import": "node scripts/import-typefaces.js",
     "build": "node scripts/write-env.js && esbuild src/app.js --bundle --format=iife --outfile=dist/app.js",
+    "dev": "npm run build && python3 -m http.server 4173",
     "og:image": "node scripts/make-og-image.js",
+    "typefaces:import": "node scripts/import-typefaces.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +19,12 @@
   "dependencies": {
     "@paper-design/shaders": "^0.0.76",
     "@supabase/supabase-js": "2.110.0",
-    "esbuild": "^0.28.1",
     "fettepalette": "^3.3.0",
     "poline": "^0.13.1",
     "rampensau": "^2.4.0",
     "rybitten": "^1.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
   }
 }
