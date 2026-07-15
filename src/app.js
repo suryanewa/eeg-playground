@@ -1860,7 +1860,9 @@ function setFullscreenLogoScale(nextScale) {
   fullscreenLogoScale = clampLogoScale(nextScale);
   document.documentElement.style.setProperty("--fullscreen-logo-scale", String(fullscreenLogoScale));
   if (!dialog.open) return;
-  if (lockupMode) {
+  if (previewMode === "type") {
+    scheduleFullscreenTypeLayout();
+  } else if (isFullscreenLockup()) {
     scheduleLockupLayout();
   } else {
     mountFullscreenShader();
@@ -2127,6 +2129,11 @@ function createTypeTile(face, index, columns, cellSize) {
   specimen.dataset.fontWeight = String(face.weight);
   specimen.style.fontFamily = `"${face.family}", sans-serif`;
   specimen.style.fontWeight = String(face.weight);
+
+  button.addEventListener("click", () => {
+    if (mobileDialogMedia.matches) return;
+    openTypeDialog(index);
+  });
 
   button.append(specimen);
   tile.append(button);
@@ -2789,10 +2796,34 @@ function getLogoIds() {
   return [...uploadedLogos.keys()];
 }
 
-function buildLockupCombinations() {
-  const logos = getLogoIds();
+function getLockupLogoIds() {
+  const active = getActiveLogoIds();
+  // Active Logos filter with an empty pool falls back to the full set.
+  if (active.length) return active;
+  if (uploadedLogos.size) return getLogoIds();
+  if (lockupCatalogRevealed) {
+    return coolshapePlaceholders.map((_, index) => `lockup-ph:${index}`);
+  }
+  return [];
+}
+
+function getLockupTypeIndices() {
+  const active = getActiveTypefaceIndices();
+  if (active.length) return active;
+  // Active Type filter with an empty pool falls back to the full catalog.
   const faces = getTypefaces();
-  if (!logos.length || !faces.length) return [];
+  return faces.map((_, index) => index);
+}
+
+function lockupsReady() {
+  if (lockupCatalogRevealed) return true;
+  return uploadedLogos.size > 0 && (uploadedTypefaces.length > 0 || typeCatalogRevealed);
+}
+
+function buildLockupCombinations() {
+  const logos = getLockupLogoIds();
+  const typeIndices = getLockupTypeIndices();
+  if (!logos.length || !typeIndices.length) return [];
 
   const combinations = new Array(lockupCombinationCount);
 
@@ -2890,7 +2921,8 @@ function createLockupTile(combination, index, columns, cellSize) {
   button.append(content);
   tile.append(button);
   tile.addEventListener("click", () => {
-    setStatus(lockupLabel(combination));
+    if (mobileDialogMedia.matches) return;
+    openLockupDialog(index);
   });
 
   attachGridLockControl(
@@ -3093,10 +3125,116 @@ function toggleMobileGridLockups() {
   renderGridLogos();
 }
 
-function fullscreenMarkup(id) {
+function isFullscreenLockup() {
+  return lockupMode || previewMode === "lockup";
+}
+
+function resetPreviewState() {
+  previewMode = "logo";
+  currentTypeIndex = -1;
+  currentLockupIndex = -1;
+  lockupMode = false;
+}
+
+function lockupLayoutTypeface() {
+  if (previewMode === "lockup") {
+    const combination = lockupCombinations[currentLockupIndex];
+    const face = combination ? getTypefaces()[combination.typeIndex] : null;
+    if (face) {
+      return {
+        family: `"${face.family}", sans-serif`,
+        weight: String(face.weight),
+      };
+    }
+  }
+
+  return {
+    family: selectedFontFamily(),
+    weight: "700",
+  };
+}
+
+function fullscreenTypeMarkup(face) {
+  return `<span class="fullscreen-type-specimen" data-font-family="${face.family}" data-font-weight="${face.weight}" style="font-family:&quot;${face.family}&quot;,sans-serif;font-weight:${face.weight}">${lockupText}</span>`;
+}
+
+function lockupCombinationMarkup(combination) {
+  const face = getTypefaces()[combination.typeIndex];
+  const fontFamily = face ? `"${face.family}", sans-serif` : selectedFontFamily();
+  const fontWeight = face ? String(face.weight) : "700";
+  return `<div class="fullscreen-lockup" aria-hidden="true">
+    <span class="fullscreen-logo-art fullscreen-lockup-mark">${logoMarkup(combination.logoId)}</span>
+    <span class="fullscreen-lockup-text" style="font-family:${fontFamily};font-weight:${fontWeight}">${lockupText}</span>
+  </div>`;
+}
+
+function fullscreenPreviewMarkup() {
+  if (previewMode === "type") {
+    const face = getTypefacesForGrid()[currentTypeIndex];
+    return face ? fullscreenTypeMarkup(face) : "";
+  }
+
+  if (previewMode === "lockup") {
+    const combination = lockupCombinations[currentLockupIndex];
+    return combination ? lockupCombinationMarkup(combination) : "";
+  }
+
   return lockupMode
-    ? lockupMarkup(id)
-    : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(id)}</span>`;
+    ? lockupMarkup(currentLogoId)
+    : `<span class="fullscreen-logo-art" aria-hidden="true">${logoMarkup(currentLogoId)}</span>`;
+}
+
+function fullscreenPreviewLabel() {
+  if (previewMode === "type") {
+    const face = getTypefacesForGrid()[currentTypeIndex];
+    return face?.family ?? "Type specimen";
+  }
+
+  if (previewMode === "lockup") {
+    const combination = lockupCombinations[currentLockupIndex];
+    return combination ? lockupLabel(combination) : "Lockup preview";
+  }
+
+  const name = logoName(currentLogoId);
+  return lockupMode ? `${name} lockup with EEG text` : name;
+}
+
+function fullscreenDialogLabel() {
+  if (previewMode === "type") return "Selected typeface preview";
+  if (previewMode === "lockup") return "Selected lockup preview";
+  return "Selected logo preview";
+}
+
+function fitFullscreenType() {
+  const specimen = fullscreenLogo.querySelector(".fullscreen-type-specimen");
+  if (!specimen || !dialog.open || previewMode !== "type") return;
+
+  const box = fullscreenLogo.getBoundingClientRect();
+  if (!box.width || !box.height) return;
+
+  const family = specimen.dataset.fontFamily || "sans-serif";
+  const weight = specimen.dataset.fontWeight || "400";
+  const sample = specimen.textContent || lockupText;
+  let fontSize = Math.min(box.height * 0.5, box.width * 0.35, 220);
+  let ink = measureTypeInk(family, weight, fontSize, sample);
+
+  if (ink) {
+    const fit = Math.min(
+      1,
+      (box.width * 0.85) / ink.width,
+      (box.height * 0.72) / ink.height,
+    );
+    if (fit < 1) fontSize *= fit;
+  }
+
+  specimen.style.fontSize = `${Math.max(1, Math.round(fontSize))}px`;
+}
+
+function scheduleFullscreenTypeLayout() {
+  window.requestAnimationFrame(() => {
+    fitFullscreenType();
+    document.fonts?.ready?.then(() => fitFullscreenType());
+  });
 }
 
 function measureLockupText(fontSize, fontFamily, fontWeight = 700) {
@@ -3230,26 +3368,28 @@ function updateLockupLayout() {
 function scheduleLockupLayout() {
   window.requestAnimationFrame(() => {
     updateLockupLayout();
-    if (dialog.open && lockupMode && currentShaderIndex >= 0) mountFullscreenShader();
+    if (dialog.open && isFullscreenLockup() && currentShaderIndex >= 0) mountFullscreenShader();
     document.fonts?.ready?.then(() => {
       updateLockupLayout();
-      if (dialog.open && lockupMode && currentShaderIndex >= 0) mountFullscreenShader();
+      if (dialog.open && isFullscreenLockup() && currentShaderIndex >= 0) mountFullscreenShader();
     });
   });
 }
 
-function renderFullscreenLogo() {
-  fullscreenLogo.classList.toggle("is-lockup", lockupMode);
-  fullscreenLogo.innerHTML = fullscreenMarkup(currentLogoId);
-  const name = logoName(currentLogoId);
-  fullscreenLogo.setAttribute(
-    "aria-label",
-    lockupMode
-      ? `${name} lockup with EEG text`
-      : name,
-  );
+function renderFullscreenPreview() {
+  fullscreenLogo.classList.toggle("is-lockup", isFullscreenLockup());
+  fullscreenLogo.classList.toggle("is-type", previewMode === "type");
+  fullscreenLogo.innerHTML = fullscreenPreviewMarkup();
+  fullscreenLogo.setAttribute("aria-label", fullscreenPreviewLabel());
+  dialog.setAttribute("aria-label", fullscreenDialogLabel());
 
-  if (lockupMode) {
+  if (previewMode === "type") {
+    disposeFullscreenShader();
+    scheduleFullscreenTypeLayout();
+    return;
+  }
+
+  if (isFullscreenLockup()) {
     disposeFullscreenShader();
     updateLockupLayout();
     scheduleLockupLayout();
@@ -3260,8 +3400,9 @@ function renderFullscreenLogo() {
 }
 
 function setLockupMode(enabled) {
+  if (previewMode !== "logo") return;
   lockupMode = enabled;
-  if (dialog.open) renderFullscreenLogo();
+  if (dialog.open) renderFullscreenPreview();
 }
 
 function toggleLockupMode() {
@@ -3339,27 +3480,49 @@ function showAdjacentLogo(offset) {
 function openLogoDialog(id) {
   if (!uploadedLogos.has(logoId(id))) return;
   document.activeElement?.blur?.();
+  previewMode = "logo";
   lockupMode = false;
+  currentTypeIndex = -1;
+  currentLockupIndex = -1;
   showLogoById(id);
   dialog.showModal();
   dialog.focus({ preventScroll: true });
   mountFullscreenShader();
 }
 
+function openTypeDialog(index) {
+  const faces = getTypefacesForGrid();
+  if (!faces[index]) return;
+  document.activeElement?.blur?.();
+  previewMode = "type";
+  lockupMode = false;
+  currentLockupIndex = -1;
+  showTypeByIndex(index);
+  dialog.showModal();
+  dialog.focus({ preventScroll: true });
+}
+
+function openLockupDialog(index) {
+  if (!lockupCombinations[index]) return;
+  document.activeElement?.blur?.();
+  previewMode = "lockup";
+  lockupMode = false;
+  currentTypeIndex = -1;
+  showLockupByIndex(index);
+  dialog.showModal();
+  dialog.focus({ preventScroll: true });
+}
+
 function createLogoTile(id, name, position) {
   const tile = document.createElement("figure");
   const button = document.createElement("button");
   const logo = document.createElement("span");
-  const voteControls = document.createElement("figcaption");
-  const upButton = document.createElement("button");
-  const downButton = document.createElement("button");
 
   tile.className = "logo-tile";
   tile.dataset.logoIndex = String(id);
   tile.dataset.logoId = logoId(id);
   tile.dataset.logoName = name;
   tile.dataset.sortIndex = String(position);
-  tile.dataset.vote = "0";
   button.className = "logo-button";
   button.type = "button";
   button.setAttribute("aria-pressed", "false");
@@ -5468,7 +5631,7 @@ async function mountFullscreenShader() {
   fullscreenLogo.querySelector(".fullscreen-shader-layer")?.remove();
   fullscreenLogo.classList.remove("has-fullscreen-shader");
 
-  if (!dialog.open || currentShaderIndex < 0) return;
+  if (!dialog.open || currentShaderIndex < 0 || previewMode === "type") return;
 
   const preset = shaderPresets[currentShaderIndex];
   const svg = fullscreenLogo.querySelector(".fullscreen-logo-art svg");
